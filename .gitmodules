@@ -1,0 +1,8 @@
+[submodule "clingo"]
+	path = clingo
+	url = https://github.com/ArthurGW/clingo.git
+	branch = latest-release
+[submodule "CppSharp"]
+	path = CppSharp
+	url = https://github.com/mono/CppSharp.git
+	branch = main
