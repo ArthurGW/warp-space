@@ -1,0 +1,54 @@
+using CppSharp;
+using CppSharp.AST;
+using CppSharp.Passes;
+using CppSharp.Generators;
+using CppSharp.Parser;
+
+namespace bindings_gen
+{
+    internal class Bindings : ILibrary
+    {
+        public void Setup(Driver driver)
+        {
+            var options = driver.Options;
+            options.CompileCode = true;
+            options.GenerateObjectOverrides = true;
+            options.GeneratorKind = GeneratorKind.CSharp;
+            options.GenerateDebugOutput = true;
+
+            var parserOptions = driver.ParserOptions;
+            parserOptions.LanguageVersion = LanguageVersion.CPP14;
+            parserOptions.UnityBuild = true;
+            parserOptions.Setup(TargetPlatform.Windows);
+
+            var module = options.AddModule("bindings");
+            parserOptions.AddIncludeDirs(@"$<TARGET_PROPERTY:bindings-cpp,INCLUDE_DIRECTORIES>");
+            module.LibraryDirs.Add(@"$<TARGET_FILE_DIR:bindings-cpp>");
+            module.Headers.Add("bindings.h");
+            module.Libraries.Add("bindings-cpp.dll");
+            options.OutputDir = "bindings";
+        }
+
+        public void SetupPasses(Driver driver)
+        {
+//             driver.Context.TranslationUnitPasses.AddPass(new FunctionToInstanceMethodPass());
+        }
+
+        public void Preprocess(Driver driver, ASTContext ctx)
+        {
+
+        }
+
+        public void Postprocess(Driver driver, ASTContext ctx)
+        {
+        }
+
+        private static class Program
+        {
+            public static void Main(string[] args)
+            {
+                ConsoleDriver.Run(new Clingo());
+            }
+        }
+    }
+}
