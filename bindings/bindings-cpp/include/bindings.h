@@ -1,5 +1,5 @@
-#ifndef BINDINGS_CSCLINGO_H
-#define BINDINGS_CSCLINGO_H
+#ifndef BINDINGS_H
+#define BINDINGS_H
 
 #ifdef BINDINGS_EXPORT
   #define BINDINGS_API __declspec(dllexport)
@@ -11,10 +11,17 @@ BINDINGS_API void hello();
 
 class BINDINGS_API Test {
     public:
-    Test() = default;
-    unsigned short x = 0;
+        Test(int x, const char* log);
+        unsigned short x = 2;
+
+        Test(Test&&) = default;
+        Test(const Test&) = default;
+        Test& operator=(const Test&) = default;
 
 };
 
+BINDINGS_API Test createTest(const char *txt);
+inline BINDINGS_API Test createTest2() { return {33, "asdsads"}; }
 
-#endif //BINDINGS_CSCLINGO_H
+
+#endif //BINDINGS_H
