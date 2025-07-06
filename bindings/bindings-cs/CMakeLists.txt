@@ -1,6 +1,3 @@
-enable_language(CSharp)
-#set(CMAKE_DOTNET_TARGET_FRAMEWORK "netstandard2.0")
-
 # ===================================================
 # Set up CppSharp build
 # ===================================================
@@ -28,5 +25,14 @@ file(GENERATE
         INPUT Program.cs.in
         NEWLINE_STYLE WIN32)
 
-add_library(bindings-cs SHARED "Program-$<CONFIG>.cs")
+add_executable(bindings-cs "Program-$<CONFIG>.cs")
+set_target_properties(bindings-cs PROPERTIES DOTNET_SDK "Microsoft.NET.Sdk" VS_GLOBAL_ROOTNAMESPACE Bindings)
 add_dependencies(bindings-cs bindings-cpp CppSharp)
+set_property(TARGET bindings-cs
+        PROPERTY
+            VS_DOTNET_REFERENCES
+                "Microsoft.CSharp"
+                "System"
+                "System.Core"
+                "System.Data"
+)
