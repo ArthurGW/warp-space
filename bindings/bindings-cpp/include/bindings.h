@@ -11,6 +11,7 @@ BINDINGS_API void hello();
 
 class BINDINGS_API Test {
     public:
+        Test() = default;
         Test(int x, const char* log);
         unsigned short x = 2;
 
@@ -21,7 +22,7 @@ class BINDINGS_API Test {
 };
 
 BINDINGS_API Test createTest(const char *txt);
-inline BINDINGS_API Test createTest2() { return {33, "asdsads"}; }
+BINDINGS_API Test* createTest2();
 
 
 #endif //BINDINGS_H

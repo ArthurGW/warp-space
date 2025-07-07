@@ -7,6 +7,9 @@ cmake_path(APPEND CPPSHARP_SOURCE_DIR "bin" "Release" "CppSharp.CLI.exe" OUTPUT_
 
 add_custom_command(
     OUTPUT "${CPPSHARP_EXE}"
+#    COMMAND build.sh ARGS clone_llvm
+#    COMMAND build.sh ARGS build_llvm
+#    COMMAND build.sh ARGS package_llvm
     COMMAND build.sh ARGS generate -configuration Release -platform x64 -target-framework .netstandard2.1
     COMMAND build.sh ARGS -configuration Release -platform x64
     VERBATIM
@@ -33,19 +36,21 @@ add_custom_command(
         "${OUTPUT_DIR}/Bindings.dll"
     COMMAND "${CPPSHARP_EXE}"
         ARGS
-            --iln=$<TARGET_FILE_BASE_NAME:bindings-cpp>
+            --iln=bindings-cpp
             "$<LIST:TRANSFORM,$<SHELL_PATH:$<TARGET_PROPERTY:bindings-cpp,INCLUDE_DIRECTORIES>>,PREPEND,-I=>"
             -L=$<SHELL_PATH:$<TARGET_FILE_DIR:bindings-cpp>>
             --output=$<SHELL_PATH:${TARGET_DIR}>
             $<$<CONFIG:Debug,RelWithDebInfo>:--debug>
+#            -D=_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
             --compile
             --module=Bindings
             --outputnamespace=Bindings
             --arch=x64
             --platform=win
             --generator=csharp
-            --checksymbols
+#            --checksymbols
             --unity
+            -A=-std=c++14
             -v
             $<SHELL_PATH:$<TARGET_PROPERTY:bindings-cpp,SOURCE_DIR>/include/bindings.h>
     COMMAND
