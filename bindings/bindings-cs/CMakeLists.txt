@@ -24,16 +24,12 @@ add_custom_target(CppSharp
 # ===================================================
 # Build the bindings C# library using CppSharp
 # ===================================================
-set(OUTPUT_DIR "../../Assets/Bindings")
-cmake_path(ABSOLUTE_PATH OUTPUT_DIR NORMALIZE)
-
-cmake_path(APPEND CMAKE_CURRENT_BINARY_DIR "Bindings" "Bindings.dll" OUTPUT_VARIABLE TARGET_PATH)
 cmake_path(APPEND CMAKE_CURRENT_BINARY_DIR "Bindings" OUTPUT_VARIABLE TARGET_DIR)
+cmake_path(APPEND TARGET_DIR "Bindings.dll" OUTPUT_VARIABLE TARGET_PATH)
 
-# https://cmake.org/cmake/help/v3.31/manual/cmake-generator-expressions.7.html#whitespace-and-quoting
+# LIST generator: https://cmake.org/cmake/help/v3.31/manual/cmake-generator-expressions.7.html#whitespace-and-quoting
 add_custom_command(
     OUTPUT "${TARGET_PATH}"
-        "${OUTPUT_DIR}/Bindings.dll"
     COMMAND "${CPPSHARP_EXE}"
         ARGS
             --iln=bindings-cpp
@@ -53,8 +49,6 @@ add_custom_command(
             -A=-std=c++14
             -v
             $<SHELL_PATH:$<TARGET_PROPERTY:bindings-cpp,SOURCE_DIR>/include/bindings.h>
-    COMMAND
-        ${CMAKE_COMMAND} -E copy ARGS "${TARGET_PATH}" "${OUTPUT_DIR}"
     DEPENDS
         $<TARGET_FILE:bindings-cpp>
     COMMAND_EXPAND_LISTS
@@ -62,8 +56,13 @@ add_custom_command(
 )
 
 add_custom_target(bindings-cs
+    ALL
     COMMAND echo Bindings target finished
     VERBATIM
     DEPENDS "${TARGET_PATH}")
-
 add_dependencies(bindings-cs bindings-cpp CppSharp)
+
+install(DIRECTORY ${TARGET_DIR}
+    COMPONENT bindings
+    DESTINATION "."  # "Bindings" is already in the target dir path
+    FILES_MATCHING REGEX "/Bindings/([^/]*\.dll|[^/]*\.pdb)$")

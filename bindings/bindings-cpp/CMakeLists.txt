@@ -38,7 +38,14 @@ add_subdirectory("${CLINGO_SOURCE_DIR}/libclingo" "./clingo/libclingo")
 # Build the bindings C++ library
 # ===================================================
 add_library(bindings-cpp SHARED bindings.cpp)
-add_dependencies(bindings-cpp libclingo)
 target_include_directories(bindings-cpp PUBLIC include)
 target_link_libraries(bindings-cpp PRIVATE libclingo)
 target_compile_definitions(bindings-cpp PRIVATE BINDINGS_EXPORT)
+install(TARGETS bindings-cpp
+    RUNTIME
+        DESTINATION "Bindings"
+    COMPONENT bindings)
+
+set(HEADER_PATH "include/bindings.h")
+cmake_path(ABSOLUTE_PATH HEADER_PATH NORMALIZE)
+set_property(TARGET bindings-cpp PROPERTY PUBLIC_HEADER ${HEADER_PATH})
