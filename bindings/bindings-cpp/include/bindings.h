@@ -7,17 +7,19 @@
   #define BINDINGS_API  _declspec(dllimport)
 #endif
 
+#define CS_IGNORE
+
 BINDINGS_API void hello();
 
 class BINDINGS_API Test {
     public:
         Test() = default;
         Test(int x, const char* log);
-        unsigned short x = 2;
+        unsigned short x = 3;
 
-        Test(Test&&) = default;
-        Test(const Test&) = default;
-        Test& operator=(const Test&) = default;
+        Test(Test&& other) = default;
+        CS_IGNORE Test(const Test& other) = default;
+        CS_IGNORE Test& operator=(const Test& other) = default;
 
 };
 
