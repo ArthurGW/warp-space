@@ -25,8 +25,10 @@ add_custom_target(CppSharp
 # ===================================================
 cmake_path(APPEND CMAKE_CURRENT_BINARY_DIR $<CONFIG> OUTPUT_VARIABLE CSPROJ_DIR)
 cmake_path(APPEND CSPROJ_DIR "build" OUTPUT_VARIABLE CSPROJ_BUILD_DIR)
-cmake_path(APPEND CMAKE_CURRENT_BINARY_DIR $<CONFIG> "output" "Bindings" OUTPUT_VARIABLE OUTPUT_DIR)
-cmake_path(APPEND OUTPUT_DIR "Bindings.dll" OUTPUT_VARIABLE TARGET_PATH)
+cmake_path(APPEND CSPROJ_DIR "obj" OUTPUT_VARIABLE CSPROJ_OBJ_DIR)
+cmake_path(APPEND CMAKE_CURRENT_BINARY_DIR $<CONFIG> "output" OUTPUT_VARIABLE OUTPUT_DIR)
+cmake_path(APPEND OUTPUT_DIR "Bindings" OUTPUT_VARIABLE TARGET_DIR)
+cmake_path(APPEND TARGET_DIR "Bindings.dll" OUTPUT_VARIABLE TARGET_PATH)
 
 configure_file(Program.cs.in Program.cs.in NEWLINE_STYLE WIN32)
 configure_file(Bindings.csproj.in Bindings.csproj.in NEWLINE_STYLE WIN32)
@@ -44,6 +46,7 @@ file(GLOB CLANG_LIB LIST_DIRECTORIES true CONFIGURE_DEPENDS ${CPPSHARP_SOURCE_DI
 
 add_custom_command(
         OUTPUT "${TARGET_PATH}"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CSPROJ_BUILD_DIR} ${CSPROJ_OBJ_DIR} ${OUTPUT_DIR}
         COMMAND dotnet build
             ARGS
                 -o ${CSPROJ_BUILD_DIR}
@@ -51,6 +54,7 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy ${CPPSHARP_BINARY_DIR}/ijwhost.dll ${CPPSHARP_BINARY_DIR}/CppSharp.CppParser.dll ${CSPROJ_BUILD_DIR}
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CLANG_LIB} ${CSPROJ_BUILD_DIR}/lib
         COMMAND ${CSPROJ_BUILD_DIR}/Bindings.exe
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${TARGET_DIR}/obj
         DEPENDS
             $<TARGET_FILE:bindings-cpp>
             ${CPPSHARP_RUNTIME}
@@ -66,7 +70,7 @@ add_custom_target(bindings-cs
     DEPENDS "${TARGET_PATH}")
 add_dependencies(bindings-cs bindings-cpp CppSharp)
 
-install(DIRECTORY ${OUTPUT_DIR}
+install(DIRECTORY ${TARGET_DIR}
     COMPONENT bindings
     DESTINATION .  # "Bindings" is already in the target dir path
     FILES_MATCHING REGEX "/Bindings/([^/]*\.dll|[^/]*\.pdb)$")

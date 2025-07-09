@@ -26,7 +26,7 @@ namespace Bindings
             module.LibraryDirs.Add(@"$<SHELL_PATH:$<TARGET_FILE_DIR:bindings-cpp>>");
             module.Headers.Add(@"$<SHELL_PATH:$<TARGET_PROPERTY:bindings-cpp,PUBLIC_HEADER>>");
             module.Libraries.Add(@"$<TARGET_FILE_NAME:bindings-cpp>");
-            options.OutputDir = @"$<SHELL_PATH:${OUTPUT_DIR}>";
+            options.OutputDir = @"$<SHELL_PATH:${TARGET_DIR}>";
             options.CheckSymbols = true;
             options.Verbose = true;
         }
