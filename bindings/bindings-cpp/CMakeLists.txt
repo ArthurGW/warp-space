@@ -49,3 +49,18 @@ install(TARGETS bindings-cpp
 set(HEADER_PATH "include/bindings.h")
 cmake_path(ABSOLUTE_PATH HEADER_PATH NORMALIZE)
 set_property(TARGET bindings-cpp PROPERTY PUBLIC_HEADER ${HEADER_PATH})
+
+# ===================================================
+# Test the bindings C++ library
+# ===================================================
+if(BUILD_TESTING)
+    add_subdirectory(${CLINGO_SOURCE_DIR}/third_party/catch "./catch")
+    include(Catch)
+
+    add_executable(bindings-cpp-test
+            tests/test-create.cpp
+    )
+    target_link_libraries(bindings-cpp-test PRIVATE Catch2::Catch2WithMain bindings-cpp)
+
+    catch_discover_tests(bindings-cpp-test)
+endif ()
