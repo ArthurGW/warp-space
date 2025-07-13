@@ -9,22 +9,20 @@
 
 #define CS_IGNORE
 
-LEVEL_GEN_API void hello();
+#include <memory>
 
-class LEVEL_GEN_API Test {
+class LEVEL_GEN_API LevelGenerator {
     public:
-        Test() = default;
-        Test(int x, const char* log);
-        unsigned short x = 3;
+        LevelGenerator();
+        ~LevelGenerator();
+        CS_IGNORE LevelGenerator(LevelGenerator&& other) noexcept;
+        CS_IGNORE LevelGenerator& operator=(LevelGenerator&& other) noexcept;
+        CS_IGNORE LevelGenerator(const LevelGenerator& other) = delete;
+        CS_IGNORE LevelGenerator& operator=(const LevelGenerator& other) = delete;
 
-        Test(Test&& other) = default;
-        CS_IGNORE Test(const Test& other) = default;
-        CS_IGNORE Test& operator=(const Test& other) = default;
-
+    private:
+        CS_IGNORE class LevelGenImpl;  // Internal implementation class
+        CS_IGNORE std::unique_ptr<LevelGenImpl> impl;
 };
-
-LEVEL_GEN_API Test createTest(const char *txt);
-LEVEL_GEN_API Test* createTest2();
-
 
 #endif // LEVEL_GEN_H

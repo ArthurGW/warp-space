@@ -1,43 +1,24 @@
 #include <catch2/catch_test_macros.hpp>
+#include "level_gen.h"
 
-SCENARIO( "vectors can be sized and resized", "[vector]" ) {
+SCENARIO( "level generators can be created", "[levelgen][creation]" ) {
 
-    GIVEN( "A vector with some items" ) {
-        std::vector<int> v( 5 );
-
-        REQUIRE( v.size() == 5 );
-        REQUIRE( v.capacity() >= 5 );
-
-        WHEN( "the size is increased" ) {
-            v.resize( 10 );
-
-            THEN( "the size and capacity change" ) {
-                REQUIRE( v.size() == 10 );
-                REQUIRE( v.capacity() >= 10 );
+    GIVEN( "Nothing" ) {
+        WHEN( "a level generator is created" ) {
+            THEN( "it exists" ) {
+                LevelGenerator gen;
+                REQUIRE_NOTHROW(gen = {});
             }
         }
-        WHEN( "the size is reduced" ) {
-            v.resize( 0 );
+    }
+    GIVEN( "A level generator pointer" ) {
+        std::unique_ptr<LevelGenerator> gen_ptr;
 
-            THEN( "the size changes but not capacity" ) {
-                REQUIRE( v.size() == 0 );
-                REQUIRE( v.capacity() >= 5 );
-            }
-        }
-        WHEN( "more capacity is reserved" ) {
-            v.reserve( 10 );
+        REQUIRE_NOTHROW(gen_ptr.reset(new LevelGenerator{}));
 
-            THEN( "the capacity changes but not the size" ) {
-                REQUIRE( v.size() == 5 );
-                REQUIRE( v.capacity() >= 10 );
-            }
-        }
-        WHEN( "less capacity is reserved" ) {
-            v.reserve( 0 );
-
-            THEN( "neither size nor capacity are changed" ) {
-                REQUIRE( v.size() == 5 );
-                REQUIRE( v.capacity() >= 5 );
+        WHEN( "it is deleted" ) {
+            THEN( "it no longer exists" ) {
+                REQUIRE_NOTHROW(gen_ptr = nullptr);
             }
         }
     }

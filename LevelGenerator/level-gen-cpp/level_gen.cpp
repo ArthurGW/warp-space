@@ -1,22 +1,23 @@
 #include "level_gen.h"
 #include "clingo.hh"
 
-#include <iostream>
 #include <memory>
 
-void hello()
-{
-    std::cout << "Hello, World!" << std::endl;
-}
+namespace {
 
-Test createTest(const char *txt)
-{
-    return {2 ,txt};
-}
+} // unnamed namespace
 
-Test* createTest2()
-{ return std::make_unique<Test>(33, "asdsads").release(); }
+class LevelGenerator::LevelGenImpl {
+    std::unique_ptr<Clingo::SolveControl> solver;
 
-Test::Test(int x, const char* log)  : x(x) {
-    std::cout << log << std::endl;
-}
+    LevelGenImpl() : solver(nullptr) {};
+};
+
+
+LevelGenerator::LevelGenerator() = default; //: impl(std::make_unique<LevelGenImpl>())
+
+LevelGenerator& LevelGenerator::operator=(LevelGenerator&& other) noexcept = default;
+
+LevelGenerator::LevelGenerator(LevelGenerator&& other) noexcept = default;
+
+LevelGenerator::~LevelGenerator() = default;
