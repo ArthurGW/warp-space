@@ -4,4 +4,4 @@
 
 %CMAKE_EXE% --build ninja_build --config Release
 
-%CMAKE_EXE% --install ninja_build --config Release --prefix ../Assets --component bindings
+%CMAKE_EXE% --install ninja_build --config Release --prefix ../Assets --component level-gen

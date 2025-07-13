@@ -1,10 +1,10 @@
-#include "bindings.h"
+#include "level_gen.h"
 #include "clingo.hh"
 
 #include <iostream>
 #include <memory>
 
-void BINDINGS_API hello()
+void hello()
 {
     std::cout << "Hello, World!" << std::endl;
 }

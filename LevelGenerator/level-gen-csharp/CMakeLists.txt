@@ -21,25 +21,25 @@ add_custom_target(CppSharp
     DEPENDS "${CPPSHARP_RUNTIME}")
 
 # ===================================================
-# Build the bindings C# library using CppSharp
+# Build the level generator C# library using CppSharp
 # ===================================================
 cmake_path(APPEND CMAKE_CURRENT_BINARY_DIR $<CONFIG> OUTPUT_VARIABLE CSPROJ_DIR)
 cmake_path(APPEND CSPROJ_DIR "build" OUTPUT_VARIABLE CSPROJ_BUILD_DIR)
 cmake_path(APPEND CSPROJ_DIR "obj" OUTPUT_VARIABLE CSPROJ_OBJ_DIR)
 cmake_path(APPEND CMAKE_CURRENT_BINARY_DIR $<CONFIG> "output" OUTPUT_VARIABLE OUTPUT_DIR)
-cmake_path(APPEND OUTPUT_DIR "Bindings" OUTPUT_VARIABLE TARGET_DIR)
-cmake_path(APPEND TARGET_DIR "Bindings.dll" OUTPUT_VARIABLE TARGET_PATH)
+cmake_path(APPEND OUTPUT_DIR "LevelGenerator" OUTPUT_VARIABLE TARGET_DIR)
+cmake_path(APPEND TARGET_DIR "LevelGenerator.dll" OUTPUT_VARIABLE TARGET_PATH)
 
 configure_file(Program.cs.in Program.cs.in NEWLINE_STYLE WIN32)
-configure_file(Bindings.csproj.in Bindings.csproj.in NEWLINE_STYLE WIN32)
+configure_file(LevelGenerator.csproj.in LevelGenerator.csproj.in NEWLINE_STYLE WIN32)
 
 file(GENERATE
     OUTPUT ${CSPROJ_DIR}/Program.cs
     INPUT ${CMAKE_CURRENT_BINARY_DIR}/Program.cs.in
     NEWLINE_STYLE WIN32)
 file(GENERATE
-    OUTPUT ${CSPROJ_DIR}/Bindings.csproj
-    INPUT ${CMAKE_CURRENT_BINARY_DIR}/Bindings.csproj.in
+    OUTPUT ${CSPROJ_DIR}/LevelGenerator.csproj
+    INPUT ${CMAKE_CURRENT_BINARY_DIR}/LevelGenerator.csproj.in
     NEWLINE_STYLE WIN32)
 
 file(GLOB CLANG_LIB LIST_DIRECTORIES true CONFIGURE_DEPENDS ${CPPSHARP_SOURCE_DIR}/build/llvm/llvm-*/lib)
@@ -53,24 +53,24 @@ add_custom_command(
                 -c $<IF:$<CONFIG:Debug>,Debug,Release>
         COMMAND ${CMAKE_COMMAND} -E copy ${CPPSHARP_BINARY_DIR}/ijwhost.dll ${CPPSHARP_BINARY_DIR}/CppSharp.CppParser.dll ${CSPROJ_BUILD_DIR}
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CLANG_LIB} ${CSPROJ_BUILD_DIR}/lib
-        COMMAND ${CSPROJ_BUILD_DIR}/Bindings.exe
+        COMMAND ${CSPROJ_BUILD_DIR}/LevelGenerator.exe
         COMMAND ${CMAKE_COMMAND} -E remove_directory ${TARGET_DIR}/obj
         DEPENDS
-            $<TARGET_FILE:bindings-cpp>
+            $<TARGET_FILE:level-gen-cpp>
             ${CPPSHARP_RUNTIME}
-            ${CSPROJ_DIR}/Bindings.csproj
+            ${CSPROJ_DIR}/LevelGenerator.csproj
         WORKING_DIRECTORY
             ${CSPROJ_DIR}
         VERBATIM
 )
 
-add_custom_target(bindings-cs
+add_custom_target(level-gen-csharp
     ALL
     VERBATIM
     DEPENDS "${TARGET_PATH}")
-add_dependencies(bindings-cs bindings-cpp CppSharp)
+add_dependencies(level-gen-csharp level-gen-cpp CppSharp)
 
 install(DIRECTORY ${TARGET_DIR}
-    COMPONENT bindings
-    DESTINATION .  # "Bindings" is already in the target dir path
-    FILES_MATCHING REGEX "/Bindings/([^/]*\.dll|[^/]*\.pdb)$")
+    COMPONENT level-gen
+    DESTINATION .  # "LevelGenerator" is already in the target dir path
+    FILES_MATCHING REGEX "/LevelGenerator/([^/]*\.dll|[^/]*\.pdb)$")

@@ -7,7 +7,7 @@ using CppSharp.Parser;
 
 namespace Bindings
 {
-    internal class Bindings : ILibrary
+    internal class LevelGenerator : ILibrary
     {
         public void Setup(Driver driver)
         {
@@ -22,10 +22,10 @@ namespace Bindings
             parserOptions.UnityBuild = true;
             parserOptions.Setup(TargetPlatform.Windows);
 
-            var module = options.AddModule("Bindings");
-            module.LibraryDirs.Add(@"$<SHELL_PATH:$<TARGET_FILE_DIR:bindings-cpp>>");
-            module.Headers.Add(@"$<SHELL_PATH:$<TARGET_PROPERTY:bindings-cpp,PUBLIC_HEADER>>");
-            module.Libraries.Add(@"$<TARGET_FILE_NAME:bindings-cpp>");
+            var module = options.AddModule("LevelGenerator");
+            module.LibraryDirs.Add(@"$<SHELL_PATH:$<TARGET_FILE_DIR:level-gen-cpp>>");
+            module.Headers.Add(@"$<SHELL_PATH:$<TARGET_PROPERTY:level-gen-cpp,PUBLIC_HEADER>>");
+            module.Libraries.Add(@"$<TARGET_FILE_NAME:level-gen-cpp>");
             options.OutputDir = @"$<SHELL_PATH:${TARGET_DIR}>";
             options.CheckSymbols = true;
             options.Verbose = true;
@@ -54,7 +54,7 @@ namespace Bindings
         {
             public static void Main(string[] args)
             {
-                ConsoleDriver.Run(new Bindings());
+                ConsoleDriver.Run(new LevelGenerator());
             }
         }
     }
