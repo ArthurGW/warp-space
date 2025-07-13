@@ -45,6 +45,11 @@ install(TARGETS level-gen-cpp
     RUNTIME
         DESTINATION "LevelGenerator"
     COMPONENT level-gen)
+    
+install(DIRECTORY programs
+    COMPONENT level-gen
+    DESTINATION .  # "programs" is already in the target dir path
+    FILES_MATCHING PATTERN "*.lp")
 
 set(HEADER_PATH "include/level_gen.h")
 cmake_path(ABSOLUTE_PATH HEADER_PATH NORMALIZE)
@@ -60,8 +65,14 @@ if(BUILD_TESTING)
 
     add_executable(level-gen-cpp-test
             tests/test-create.cpp
+            tests/test-solve.cpp
     )
     target_link_libraries(level-gen-cpp-test PRIVATE Catch2::Catch2WithMain level-gen-cpp)
+
+    add_custom_command(TARGET level-gen-cpp-test
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+            ARGS -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/programs $<TARGET_FILE_DIR:level-gen-cpp-test>/programs)
 
     catch_discover_tests(level-gen-cpp-test)
 endif ()
