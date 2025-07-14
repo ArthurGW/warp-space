@@ -20,28 +20,35 @@ class LevelGenerator::LevelGenImpl {
             solver = std::make_unique<Clingo::Control>();
 
             std::ifstream ship;
+            auto success = false;
             try {
                 ship.open("programs/ship.lp");
-                std::cout << "OPEN: " <<ship.is_open() << std::endl;
-                std::string p{};
-                if (!(ship >> p)) {
+                std::cout << "OPEN: " << ship.is_open() << std::endl;
+                std::stringstream buffer;
+                if (!(buffer << ship.rdbuf())) {
                     throw std::exception("failed to read ship.lp");
                 }
-                solver->add("ship", {"w", "h"}, p.c_str());
+                solver->add("ship", {}, buffer.str().c_str());
+                success = true;
             } catch(const std::exception& e) {
                 std::cout << e.what();
             }
             if (ship.is_open()) {
                 ship.close();
             }
-
-            Clingo::Part base_part{"base", {}};
-            Clingo::Part ship_part{"ship", {Clingo::Number(width), Clingo::Number(height)}};
-
+            if(!success) {
+                throw std::exception("error creating logic program");
+            }
             std::ostringstream out;
-            solver->ground({base_part, ship_part});
+
+            // Add inputs
+            std::stringstream inputs;
+            inputs << "#const width = " << Clingo::Number(width) << ". #const height = " << Clingo::Number(height) << ".";
+            solver->add("base", {}, inputs.str().c_str());
+
+            solver->ground({{"base", {}}, {"ship", {}}});
             for (auto &m : solver->solve()) {
-                out << "Model:";
+                out << "Model: ";
                 for (auto &atom : m.symbols()) {
                     out << " " << atom;
                 }

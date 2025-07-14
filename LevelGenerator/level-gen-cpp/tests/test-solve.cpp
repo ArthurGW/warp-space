@@ -6,7 +6,7 @@ SCENARIO( "level generators can be solved", "[levelgen][solve]" ) {
     GIVEN( "A level generator with a valid width and height" ) {
         WHEN( "solve() is called" ) {
             THEN( "a solution is returned" ) {
-                LevelGenerator gen{4, 3};
+                LevelGenerator gen{4, 4};
                 std::string res;
                 REQUIRE_NOTHROW(res = gen.solve());
                 REQUIRE(!res.empty());

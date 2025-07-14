@@ -1,8 +1,9 @@
-﻿% Specification for the ship, i.e. the overall level shape
+% Specification for the ship, i.e. the overall level shape.
 
-width(w).
-height(h).
+grid(1..width, 1..height).
 
-ship(X, Y) :- X = 2..W-1, Y = 2..H-1, width(W), height(H).
-hull(X, Y) := X = (1;W), Y = 1..H, width(W), height(H).
-hull(X, Y) := X = 1..W, Y = (1;H), width(W), height(H).
+ship(X, Y) :- X = 2..width-1, Y = 2..height-1.
+hull(X, Y) :- grid(X, Y), not ship(X, Y).
+
+#show ship/2.
+#show hull/2.
