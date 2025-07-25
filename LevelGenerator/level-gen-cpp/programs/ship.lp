@@ -9,7 +9,7 @@ hull(X, Y) :- grid(X, Y), not ship(X, Y).
 
 %2 { room(XX, YY, W, H) : ship(XX + W - 1, YY + H - 1), ship(XX, YY) } 4 :- W=2..3, H=2..3.
 %1 { room(XX, YY, W, H) : ship(XX + W - 1, YY + H - 1), ship(XX, YY) } 1 :- W=4, H=4.
-8 { room(XX, YY, W, H) : W=2..4, H=2..4, ship(XX + W - 1, YY + H - 1), ship(XX, YY) } 16.
+min_rooms { room(XX, YY, W, H) : W=2..4, H=2..4, ship(XX + W - 1, YY + H - 1), ship(XX, YY) } max_rooms.
 
 room_square(X..(X + W - 1), Y..(Y + H - 1), X, Y, W, H) :- room(X, Y, W, H), W > 1, H > 1.
 room_square(X, Y, X, Y, 1, 1) :- room(X, Y, 1, 1).

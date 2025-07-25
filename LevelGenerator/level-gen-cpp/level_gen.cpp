@@ -15,15 +15,17 @@ class LevelGenerator::LevelGenImpl {
 
         uint8_t width;
         uint8_t height;
+        uint8_t min_rooms = 8;
+        uint8_t max_rooms = 16;
 
         std::string solve() {
-            solver = std::make_unique<Clingo::Control>();
+            auto cx = Clingo::StringSpan {"1"};
+            solver = std::make_unique<Clingo::Control>(cx);
 
             std::ifstream ship;
             auto success = false;
             try {
                 ship.open("programs/ship.lp");
-                std::cout << "OPEN: " << ship.is_open() << std::endl;
                 std::stringstream buffer;
                 if (!(buffer << ship.rdbuf())) {
                     throw std::exception("failed to read ship.lp");
@@ -39,14 +41,19 @@ class LevelGenerator::LevelGenImpl {
             if(!success) {
                 throw std::exception("error creating logic program");
             }
-            std::ostringstream out;
 
             // Add inputs
             std::stringstream inputs;
-            inputs << "#const width = " << Clingo::Number(width) << ". #const height = " << Clingo::Number(height) << ".";
+            inputs
+                << "#const width = " << Clingo::Number(width) << "." << std::endl
+                << "#const height = " << Clingo::Number(height) << "." << std::endl
+                << "#const min_rooms = " << Clingo::Number(min_rooms) << "." << std::endl
+                << "#const max_rooms = " << Clingo::Number(max_rooms) << "." << std::endl;
             solver->add("base", {}, inputs.str().c_str());
 
             solver->ground({{"base", {}}, {"ship", {}}});
+
+            std::ostringstream out;
             for (auto &m : solver->solve()) {
                 out << "Model: ";
                 for (auto &atom : m.symbols()) {
@@ -60,6 +67,9 @@ class LevelGenerator::LevelGenImpl {
 
     public:
         LevelGenImpl(uint8_t width, uint8_t height) : solver(nullptr), width(width), height(height) {}
+
+        LevelGenImpl& set_min_rooms(uint8_t new_min_rooms) { min_rooms = new_min_rooms; return *this; }
+        LevelGenImpl& set_max_rooms(uint8_t new_max_rooms) { max_rooms = new_max_rooms; return *this; }
 
         friend class LevelGenerator;
 };
@@ -78,4 +88,16 @@ LevelGenerator::~LevelGenerator() = default;
 std::string LevelGenerator::solve()
 {
     return impl->solve();
+}
+
+LevelGenerator& LevelGenerator::set_min_rooms(uint8_t new_min_rooms)
+{
+    impl->set_min_rooms(new_min_rooms);
+    return *this;
+}
+
+LevelGenerator& LevelGenerator::set_max_rooms(uint8_t new_max_rooms)
+{
+    impl->set_max_rooms(new_max_rooms);
+    return *this;
 }

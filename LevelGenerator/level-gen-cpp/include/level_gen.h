@@ -22,6 +22,9 @@ class LEVEL_GEN_API LevelGenerator {
         CS_IGNORE LevelGenerator(const LevelGenerator& other) = delete;
         CS_IGNORE LevelGenerator& operator=(const LevelGenerator& other) = delete;
 
+        LevelGenerator& set_min_rooms(uint8_t new_min_rooms);
+        LevelGenerator& set_max_rooms(uint8_t new_max_rooms);
+
         std::string solve();
 
     private:

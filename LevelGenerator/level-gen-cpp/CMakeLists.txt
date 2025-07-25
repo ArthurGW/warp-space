@@ -10,9 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CLINGO_SOURCE_DIR "../../external/clingo")
 cmake_path(ABSOLUTE_PATH CLINGO_SOURCE_DIR NORMALIZE)
 
-include(CheckCXXSourceCompiles)
-list(APPEND CMAKE_MODULE_PATH "${CLINGO_SOURCE_DIR}/cmake")
-include(clingo_functions)
+cmake_policy(SET CMP0077 NEW)
 
 set(CLINGO_BUILD_TESTS OFF)
 set(CLINGO_BUILD_EXAMPLES OFF)
@@ -20,19 +18,10 @@ set(CLINGO_BUILD_APPS OFF)
 set(CLINGO_BUILD_STATIC ON)
 set(CLINGO_BUILD_SHARED OFF)
 set(CLINGO_INSTALL_LIB OFF)
-set(CLINGO_MAP_TYPE "hopscotch")
 
-find_package(BISON "2.5")
-find_package(RE2C "0.101")
-
-add_subdirectory("${CLINGO_SOURCE_DIR}/third_party" "./clingo/third_party")
 set(CLASP_BUILD_APP OFF)
 set(CLASP_USE_LOCAL_LIB_POTASSCO ON)
-add_subdirectory("${CLINGO_SOURCE_DIR}/clasp" "./clingo/clasp")
-
-add_subdirectory("${CLINGO_SOURCE_DIR}/libreify" "./clingo/libreify")
-add_subdirectory("${CLINGO_SOURCE_DIR}/libgringo" "./clingo/libgringo")
-add_subdirectory("${CLINGO_SOURCE_DIR}/libclingo" "./clingo/libclingo")
+add_subdirectory("${CLINGO_SOURCE_DIR}" "./clingo")
 
 # ===================================================
 # Build the level generator C++ library
