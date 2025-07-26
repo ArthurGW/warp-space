@@ -1,15 +1,24 @@
-% Specification for the ship, i.e. the overall level shape.
+%* Specification for the ship, i.e. the overall level shape *%
 
 grid(1..width, 1..height).
 
-ship(X, Y) :- grid(X, Y), X != 1, X != width, Y != 1, Y != width.
-hull(X, Y) :- grid(X, Y), not ship(X, Y).
+in_space(X, Y) :- grid(X, Y), X <= height / 2, Y <= height / 2 - X + 2.
+in_space(X, Y) :- grid(X, Y), X <= height / 2, Y > height / 2 + X - 1.
+in_space(X, Y) :- grid(X, Y), X = width.
+in_space(X, Y) :- grid(X, Y), Y = 1.
+in_space(X, Y) :- grid(X, Y), Y = height.
+hull(X, Y) :- grid(X, Y), not in_space(X, Y), in_space(X,Y-1; X,Y+1; X-1,Y; X+1,Y).
+hull(X, Y) :- grid(X, Y), hull(X-1, Y), hull(X, Y-1), hull(X, Y+1).
+ship(X, Y) :- grid(X, Y), not in_space(X, Y), not hull(X, Y).
 
-% Rooms within the ship.
+% Rooms within the ship
 
-%2 { room(XX, YY, W, H) : ship(XX + W - 1, YY + H - 1), ship(XX, YY) } 4 :- W=2..3, H=2..3.
-%1 { room(XX, YY, W, H) : ship(XX + W - 1, YY + H - 1), ship(XX, YY) } 1 :- W=4, H=4.
-min_rooms { room(XX, YY, W, H) : W=2..4, H=2..4, ship(XX + W - 1, YY + H - 1), ship(XX, YY) } max_rooms.
+min_rooms { room(XX, YY, W, H)
+    : W=2..4, H=2..4,
+    ship(XX, YY),
+    ship(XX, YY + H - 1),
+    ship(XX + W - 1, YY),
+    ship(XX + W - 1, YY + H - 1) } max_rooms.
 
 room_square(X..(X + W - 1), Y..(Y + H - 1), X, Y, W, H) :- room(X, Y, W, H), W > 1, H > 1.
 room_square(X, Y, X, Y, 1, 1) :- room(X, Y, 1, 1).
@@ -45,6 +54,9 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 
 %* Constraints *%
 
+% height must be an odd number, so there is a central point for the nose of the ship
+:- height \ 2 = 0.
+
 % No ship square can be part of more than one room
 :- 2 { room_square(X, Y, _, _, _, _)  }, ship(X, Y).
 
@@ -54,12 +66,12 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 % Every room must be reachable
 :- room(X1, Y1, W1, H1), not reachable(room(X1, Y1, W1, H1)).
 
-% Every (ship) row and column must have some part of a room in it
-:- #count { 1,X : room_square(X, _, _, _, _, _), ship(X, _) } < width - 2.
-:- #count { 1,Y : room_square(_, Y, _, _, _, _), ship(_, Y) } < height - 2.
+% Every (ship) row and column must have some part of a room in it (-4/-5 to account for space and hull around ship)
+:- #count { 1,X : room_square(X, _, _, _, _, _), ship(X, _) } < width - 5.
+:- #count { 1,Y : room_square(_, Y, _, _, _, _), ship(_, Y) } < height - 4.
 
-% No more than 3/4 of the (ship) map is filled
-:- ((width - 2) * (height - 2) * 3 / 4) < { room_square(X, Y, _, _, _, _) : ship(X, Y) }.
+% No more than 3/4 of the (ship) map is filled (roughly, not accounting for nose section)
+:- ((width - 5) * (height - 4) * 3 / 4) < { room_square(X, Y, _, _, _, _) : ship(X, Y) }.
 
 %* Preferences *%
 
@@ -69,8 +81,9 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 % Output predicates.
 
 %#show ship/2.
+%#show in_space/2.
 #show hull/2.
-#show room/4.
+%#show room/4.
 #show room_square/6.
 #show corridor/2.
 %#show min_room_X/1.
