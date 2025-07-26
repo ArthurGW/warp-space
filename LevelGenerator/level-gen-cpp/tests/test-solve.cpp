@@ -6,11 +6,12 @@ SCENARIO( "level generators can be solved", "[levelgen][solve]" ) {
     GIVEN( "A level generator with a valid width and height" ) {
         WHEN( "solve() is called" ) {
             THEN( "a solution is returned" ) {
-                LevelGenerator gen{6, 6};
-                gen.set_min_rooms(2).set_max_rooms(6);
+                LevelGenerator gen{10, 7};
+                gen.set_min_rooms(2).set_max_rooms(6).set_seed(1234);
                 std::string res;
                 REQUIRE_NOTHROW(res = gen.solve());
                 REQUIRE(!res.empty());
+                FAIL(res);
             }
         }
     }

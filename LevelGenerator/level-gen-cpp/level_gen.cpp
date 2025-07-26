@@ -15,12 +15,22 @@ class LevelGenerator::LevelGenImpl {
 
         uint8_t width;
         uint8_t height;
-        uint8_t min_rooms = 8;
+        uint8_t min_rooms = 2;
         uint8_t max_rooms = 16;
+        unsigned seed = 0;
+        bool seed_set = false;
 
         std::string solve() {
-            auto cx = Clingo::StringSpan {"1"};
-            solver = std::make_unique<Clingo::Control>(cx);
+            solver = std::make_unique<Clingo::Control>();
+            auto config = solver->configuration();
+            config["solve.models"] = "1";
+            config["solve.parallel_mode"] = "4";
+            if (!seed_set) {
+                seed = rand();
+                seed_set = true;
+            }
+            config["solver.seed"] = std::to_string(seed).c_str();
+            config["solver.rand_freq"] = "1.0";
 
             std::ifstream ship;
             auto success = false;
@@ -30,7 +40,7 @@ class LevelGenerator::LevelGenImpl {
                 if (!(buffer << ship.rdbuf())) {
                     throw std::exception("failed to read ship.lp");
                 }
-                solver->add("ship", {}, buffer.str().c_str());
+                solver->add("base", {}, buffer.str().c_str());
                 success = true;
             } catch(const std::exception& e) {
                 std::cout << e.what();
@@ -51,7 +61,7 @@ class LevelGenerator::LevelGenImpl {
                 << "#const max_rooms = " << Clingo::Number(max_rooms) << "." << std::endl;
             solver->add("base", {}, inputs.str().c_str());
 
-            solver->ground({{"base", {}}, {"ship", {}}});
+            solver->ground({{"base", {}}});
 
             std::ostringstream out;
             for (auto &m : solver->solve()) {
@@ -70,6 +80,7 @@ class LevelGenerator::LevelGenImpl {
 
         LevelGenImpl& set_min_rooms(uint8_t new_min_rooms) { min_rooms = new_min_rooms; return *this; }
         LevelGenImpl& set_max_rooms(uint8_t new_max_rooms) { max_rooms = new_max_rooms; return *this; }
+        LevelGenImpl& set_seed(unsigned new_seed) { seed = new_seed; seed_set = true; return *this; }
 
         friend class LevelGenerator;
 };
@@ -99,5 +110,10 @@ LevelGenerator& LevelGenerator::set_min_rooms(uint8_t new_min_rooms)
 LevelGenerator& LevelGenerator::set_max_rooms(uint8_t new_max_rooms)
 {
     impl->set_max_rooms(new_max_rooms);
+    return *this;
+}
+
+LevelGenerator& LevelGenerator::set_seed(unsigned new_seed) {
+    impl->set_seed(new_seed);
     return *this;
 }

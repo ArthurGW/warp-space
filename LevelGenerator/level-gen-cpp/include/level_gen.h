@@ -24,6 +24,7 @@ class LEVEL_GEN_API LevelGenerator {
 
         LevelGenerator& set_min_rooms(uint8_t new_min_rooms);
         LevelGenerator& set_max_rooms(uint8_t new_max_rooms);
+        LevelGenerator& set_seed(unsigned new_seed);
 
         std::string solve();
 
