@@ -37,7 +37,7 @@ install(TARGETS level-gen-cpp
     
 install(DIRECTORY programs
     COMPONENT level-gen
-    DESTINATION .  # "programs" is already in the target dir path
+    DESTINATION "LevelGenerator"  # "programs" is already in the target dir path
     FILES_MATCHING PATTERN "*.lp")
 
 set(HEADER_PATH "include/level_gen.h")
