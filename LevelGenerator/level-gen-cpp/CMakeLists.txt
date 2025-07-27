@@ -26,7 +26,7 @@ add_subdirectory("${CLINGO_SOURCE_DIR}" "./clingo")
 # ===================================================
 # Build the level generator C++ library
 # ===================================================
-add_library(level-gen-cpp SHARED level_gen.cpp)
+add_library(level-gen-cpp SHARED level_gen.cpp level.cpp)
 target_include_directories(level-gen-cpp PUBLIC include)
 target_link_libraries(level-gen-cpp PRIVATE libclingo)
 target_compile_definitions(level-gen-cpp PRIVATE LEVEL_GEN_EXPORT)

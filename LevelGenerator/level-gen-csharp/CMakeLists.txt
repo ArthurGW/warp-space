@@ -59,6 +59,7 @@ add_custom_command(
             $<TARGET_FILE:level-gen-cpp>
             ${CPPSHARP_RUNTIME}
             ${CSPROJ_DIR}/LevelGenerator.csproj
+            ${CSPROJ_DIR}/Program.cs
         WORKING_DIRECTORY
             ${CSPROJ_DIR}
         VERBATIM

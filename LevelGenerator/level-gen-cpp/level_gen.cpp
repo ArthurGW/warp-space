@@ -1,22 +1,19 @@
 #include "level_gen.h"
+#include "level_impl.h"
 #include "clingo.hh"
 
 #include <memory>
 #include <sstream>
 #include <fstream>
 
-namespace {
-
-} // unnamed namespace
-
 class LevelGenerator::LevelGenImpl {
     private:
-        std::unique_ptr<Clingo::Control> solver;
+        std::unique_ptr<Clingo::Control> solver = nullptr;
 
-        uint8_t width;
-        uint8_t height;
-        uint8_t min_rooms = 2;
-        uint8_t max_rooms = 16;
+        unsigned width = 8;
+        unsigned height = 7;
+        unsigned min_rooms = 2;
+        unsigned max_rooms = 16;
         unsigned seed = 0;
         bool seed_set = false;
 
@@ -75,18 +72,20 @@ class LevelGenerator::LevelGenImpl {
             return out.str();
         }
 
-    public:
-        LevelGenImpl(uint8_t width, uint8_t height) : solver(nullptr), width(width), height(height) {}
+        LevelGenImpl() = default;
 
-        LevelGenImpl& set_min_rooms(uint8_t new_min_rooms) { min_rooms = new_min_rooms; return *this; }
-        LevelGenImpl& set_max_rooms(uint8_t new_max_rooms) { max_rooms = new_max_rooms; return *this; }
-        LevelGenImpl& set_seed(unsigned new_seed) { seed = new_seed; seed_set = true; return *this; }
+        void set_width(unsigned new_width) { width = new_width; }
+        void set_height(unsigned new_height) { height = new_height; }
+        void set_min_rooms(unsigned new_min_rooms) { min_rooms = new_min_rooms; }
+        void set_max_rooms(unsigned new_max_rooms) { max_rooms = new_max_rooms; }
+        void set_seed(unsigned new_seed) { seed = new_seed; seed_set = true; }
 
         friend class LevelGenerator;
+        friend std::unique_ptr<LevelGenImpl> std::make_unique<LevelGenImpl>();
 };
 
 
-LevelGenerator::LevelGenerator(uint8_t width, uint8_t height) : impl(std::make_unique<LevelGenImpl>(width, height)){
+LevelGenerator::LevelGenerator() : impl(std::make_unique<LevelGenImpl>()){
 
 }
 
@@ -101,13 +100,13 @@ std::string LevelGenerator::solve()
     return impl->solve();
 }
 
-LevelGenerator& LevelGenerator::set_min_rooms(uint8_t new_min_rooms)
+LevelGenerator& LevelGenerator::set_min_rooms(unsigned new_min_rooms)
 {
     impl->set_min_rooms(new_min_rooms);
     return *this;
 }
 
-LevelGenerator& LevelGenerator::set_max_rooms(uint8_t new_max_rooms)
+LevelGenerator& LevelGenerator::set_max_rooms(unsigned new_max_rooms)
 {
     impl->set_max_rooms(new_max_rooms);
     return *this;
@@ -116,4 +115,21 @@ LevelGenerator& LevelGenerator::set_max_rooms(uint8_t new_max_rooms)
 LevelGenerator& LevelGenerator::set_seed(unsigned new_seed) {
     impl->set_seed(new_seed);
     return *this;
+}
+
+LevelGenerator& LevelGenerator::set_width(unsigned new_width)
+{
+    impl->set_width(new_width);
+    return *this;
+}
+
+LevelGenerator& LevelGenerator::set_height(unsigned new_height)
+{
+    impl->set_height(new_height);
+    return *this;
+}
+
+Level LevelGenerator::best_level() const
+{
+    return Level(std::make_unique<Level::LevelImpl>());
 }

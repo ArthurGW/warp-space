@@ -13,6 +13,8 @@ namespace Bindings
         {
             var options = driver.Options;
             options.CompileCode = true;
+            options.GenerateClassTemplates = true;
+            // options.GenerateFunctionTemplates = true;
             // options.GenerateObjectOverrides = true;
             options.GeneratorKind = GeneratorKind.CSharp;
             options.GenerateDebugOutput = $<IF:$<CONFIG:Debug,RelWithDebInfo>,true,false>;
