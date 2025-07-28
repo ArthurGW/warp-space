@@ -5,12 +5,14 @@
 #include "clingo.hh"
 
 class Level::LevelImpl {
-    private:
-        explicit LevelImpl(const Clingo::Model& model);
+    public:
+        explicit LevelImpl(const Clingo::SymbolVector& symbols);
         LevelImpl();
 
-        friend class LevelGenerator;
-        friend std::unique_ptr<LevelImpl> std::make_unique<LevelImpl>();
+    private:
+        Clingo::SymbolVector symbols;
+
+        friend class Level;
 };
 
 

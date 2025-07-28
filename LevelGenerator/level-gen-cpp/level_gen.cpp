@@ -5,10 +5,15 @@
 #include <memory>
 #include <sstream>
 #include <fstream>
+#include <numeric>
 
 class LevelGenerator::LevelGenImpl {
+    public:
+        LevelGenImpl() = default;
+
     private:
         std::unique_ptr<Clingo::Control> solver = nullptr;
+        std::vector<std::pair<int64_t, Clingo::SymbolVector>> costs_solutions;
 
         unsigned width = 8;
         unsigned height = 7;
@@ -62,6 +67,8 @@ class LevelGenerator::LevelGenImpl {
 
             std::ostringstream out;
             for (auto &m : solver->solve()) {
+                const auto costs = m.cost();
+                costs_solutions.emplace_back(std::accumulate(costs.cbegin(), costs.cend(), (int64_t)0), m.symbols());
                 out << "Model: ";
                 for (auto &atom : m.symbols()) {
                     out << " " << atom;
@@ -72,7 +79,10 @@ class LevelGenerator::LevelGenImpl {
             return out.str();
         }
 
-        LevelGenImpl() = default;
+        const Clingo::SymbolVector& best_level() {
+            std::sort(costs_solutions.begin(), costs_solutions.end());
+            return costs_solutions[0].second;
+        }
 
         void set_width(unsigned new_width) { width = new_width; }
         void set_height(unsigned new_height) { height = new_height; }
@@ -81,7 +91,6 @@ class LevelGenerator::LevelGenImpl {
         void set_seed(unsigned new_seed) { seed = new_seed; seed_set = true; }
 
         friend class LevelGenerator;
-        friend std::unique_ptr<LevelGenImpl> std::make_unique<LevelGenImpl>();
 };
 
 
@@ -131,5 +140,5 @@ LevelGenerator& LevelGenerator::set_height(unsigned new_height)
 
 Level LevelGenerator::best_level() const
 {
-    return Level(std::make_unique<Level::LevelImpl>());
+    return Level(std::make_unique<Level::LevelImpl>(impl->best_level()));
 }

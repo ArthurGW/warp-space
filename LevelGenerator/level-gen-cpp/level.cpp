@@ -6,7 +6,7 @@
 
 Level::LevelImpl::LevelImpl() = default;
 
-Level::LevelImpl::LevelImpl(const Clingo::Model& model)
+Level::LevelImpl::LevelImpl(const Clingo::SymbolVector& symbols) : symbols(symbols)
 {
 
 }
