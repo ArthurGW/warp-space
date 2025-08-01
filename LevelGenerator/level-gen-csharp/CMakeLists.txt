@@ -74,4 +74,4 @@ add_dependencies(level-gen-csharp level-gen-cpp CppSharp)
 install(DIRECTORY ${TARGET_DIR}
     COMPONENT level-gen
     DESTINATION .  # "LevelGenerator" is already in the target dir path
-    FILES_MATCHING REGEX "/LevelGenerator/([^/]*\.dll|[^/]*\.pdb)$")
+    FILES_MATCHING REGEX "/LevelGenerator/([\.A-Za-z\-]+\.dll|[\.A-Za-z\-]+\.pdb)$")

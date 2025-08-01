@@ -25,6 +25,7 @@ add_subdirectory("${CLINGO_SOURCE_DIR}" "./clingo")
 # Build the level generator C++ library
 # ===================================================
 add_library(level-gen-cpp SHARED level_gen.cpp level.cpp)
+set_property(TARGET level-gen-cpp PROPERTY OUTPUT_NAME LevelGenCpp)
 target_include_directories(level-gen-cpp PUBLIC include)
 target_link_libraries(level-gen-cpp PRIVATE libclingo)
 target_compile_definitions(level-gen-cpp PRIVATE LEVEL_GEN_EXPORT)
@@ -32,11 +33,19 @@ install(TARGETS level-gen-cpp
     RUNTIME
         DESTINATION "LevelGenerator"
     COMPONENT level-gen)
-    
-install(DIRECTORY programs
+
+install(FILES $<TARGET_PDB_FILE:level-gen-cpp>
     COMPONENT level-gen
-    DESTINATION "LevelGenerator"  # "programs" is already in the target dir path
-    FILES_MATCHING PATTERN "*.lp")
+    DESTINATION "LevelGenerator"
+    CONFIGURATIONS Debug
+    CONFIGURATIONS RelWithDebInfo
+)
+
+    
+install(FILES "programs/ship.lp"
+    COMPONENT level-gen
+    DESTINATION "LevelGenerator/Resources/programs"
+    RENAME "ship.txt")
 
 set(HEADER_PATH "include/level_gen.h")
 cmake_path(ABSOLUTE_PATH HEADER_PATH NORMALIZE)

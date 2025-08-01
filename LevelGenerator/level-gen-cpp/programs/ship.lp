@@ -98,15 +98,15 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 
 %* Output predicates *%
 
-%#show ship/2.
-%#show in_space/2.
+#show ship/2.
+#show in_space/2.
 #show hull/2.
-#show room/4.
 #show room_square/6.
 #show corridor/2.
 %#show min_room_X/1.
 %#show min_room_Y/1.
 %#show min_room/2.
-#show initial_room/4.
-#show reachable/1.
+%#show initial_room/4.
+%#show reachable/1.
+#show room/4.
 #show adjacent/2.

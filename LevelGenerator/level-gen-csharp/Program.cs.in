@@ -1,9 +1,10 @@
-using System.Collections.Generic;
+using System.Text;
+
 using CppSharp;
 using CppSharp.AST;
-using CppSharp.Passes;
 using CppSharp.Generators;
 using CppSharp.Parser;
+using CppSharp.Passes;
 
 namespace Bindings
 {
@@ -14,10 +15,18 @@ namespace Bindings
             var options = driver.Options;
             options.CompileCode = true;
             options.GenerateClassTemplates = true;
-            // options.GenerateFunctionTemplates = true;
-            // options.GenerateObjectOverrides = true;
             options.GeneratorKind = GeneratorKind.CSharp;
             options.GenerateDebugOutput = $<IF:$<CONFIG:Debug,RelWithDebInfo>,true,false>;
+            options.Encoding = Encoding.ASCII;
+            options.PropertyDetectionMode = PropertyDetectionMode.Keywords;
+            options.OutputDir = @"$<SHELL_PATH:${TARGET_DIR}>";
+            options.CheckSymbols = true;
+            options.Verbose = false;
+
+            var compilation = options.Compilation;
+            compilation.Target = CompilationTarget.SharedLibrary;
+            compilation.Platform = TargetPlatform.Windows;
+            compilation.DebugMode = $<IF:$<CONFIG:Debug,RelWithDebInfo>,true,false>;
 
             var parserOptions = driver.ParserOptions;
             parserOptions.LanguageVersion = LanguageVersion.CPP14;
@@ -27,10 +36,7 @@ namespace Bindings
             var module = options.AddModule("LevelGenerator");
             module.LibraryDirs.Add(@"$<SHELL_PATH:$<TARGET_FILE_DIR:level-gen-cpp>>");
             module.Headers.Add(@"$<SHELL_PATH:$<TARGET_PROPERTY:level-gen-cpp,PUBLIC_HEADER>>");
-            module.Libraries.Add(@"$<TARGET_FILE_NAME:level-gen-cpp>");
-            options.OutputDir = @"$<SHELL_PATH:${TARGET_DIR}>";
-            options.CheckSymbols = true;
-            options.Verbose = true;
+            module.Libraries.Add(@"$<TARGET_FILE_BASE_NAME:level-gen-cpp>");
         }
 
         public void SetupPasses(Driver driver)
@@ -43,13 +49,52 @@ namespace Bindings
 
         }
 
-        public void GenerateCode(Driver driver, List<GeneratorOutput> outputs)
+        public void Postprocess(Driver driver, ASTContext ctx)
         {
 
         }
 
-        public void Postprocess(Driver driver, ASTContext ctx)
+        public void GenerateCode(Driver driver, List<GeneratorOutput> outputs)
         {
+            // Make generated assembly internals visible to Unity Assembly for ease of working with the API
+            foreach (var generator in outputs)
+            {
+                foreach (var output in generator.Outputs)
+                {
+                    // Add to the end of the existing using declarations, if present
+                    var blockToEdit = output.FindBlocks(BlockKind.Usings).FirstOrDefault(output.RootBlock);
+                    if (blockToEdit == output.RootBlock || blockToEdit.Parent != output.RootBlock)
+                    {
+                        // No top-level usings, so we need to insert directly into the root block
+                        // To do this, we need to insert into its first (depth-first) child
+                        blockToEdit = output.RootBlock;
+                        while (blockToEdit.Blocks.Count > 0)
+                        {
+                            blockToEdit = blockToEdit.Blocks[0];
+                        }
+
+                        // There is no "prepend" function, so instead we insert at the start, in reverse order
+                        var text = blockToEdit.Text;
+                        var builder = text.StringBuilder;
+                        builder.Insert(0, TextGenerator.NewLineChar);
+                        builder.Insert(0, TextGenerator.NewLineChar);
+                        builder.Insert(0, "[assembly:InternalsVisibleTo(\"Assembly-CSharp\")]");
+                        builder.Insert(0, TextGenerator.NewLineChar);
+                        builder.Insert(0, "using System.Runtime.CompilerServices;");
+                    }
+                    else
+                    {
+                        // We have a valid using block, append to that
+                        if (!blockToEdit.Text.ToString().Contains("using System.Runtime.CompilerServices;"))
+                        {
+                            blockToEdit.WriteLine("using System.Runtime.CompilerServices;");
+                        }
+                        blockToEdit.NewLine();
+                        blockToEdit.WriteLine("[assembly:InternalsVisibleTo(\"Assembly-CSharp\")]");
+                        blockToEdit.NewLine();
+                    }
+                }
+            }
         }
 
         private static class Program
