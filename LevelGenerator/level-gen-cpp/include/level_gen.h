@@ -59,13 +59,13 @@ struct LevelPartIter {
     CS_IGNORE typedef typename std::vector<T> PartVec;
 
     T current() const {
-        return parts[static_cast<size_t>(pos)];
+        return (*parts)[static_cast<size_t>(pos)];
     }
 
     bool move_next() {
         if (pos < std::numeric_limits<intmax_t>::max()) {
             pos += 1;
-            return pos < parts.size();
+            return pos < count();
         }
         return false;
     };
@@ -75,11 +75,10 @@ struct LevelPartIter {
     }
 
     size_t count() const {
-        return parts.size();
+        return parts->size();
     }
 
-    explicit CS_IGNORE LevelPartIter(PartVec parts) : parts(std::move(parts)) {}
-    CS_IGNORE LevelPartIter() = default;
+    explicit CS_IGNORE LevelPartIter(PartVec* parts) : parts(parts) {}
     CS_IGNORE LevelPartIter(LevelPartIter&& other) noexcept = default;
     CS_IGNORE LevelPartIter& operator=(LevelPartIter&& other) = default;
     CS_IGNORE LevelPartIter(const LevelPartIter& other) = default;
@@ -87,7 +86,7 @@ struct LevelPartIter {
 
 private:
     CS_IGNORE intmax_t pos = -1;
-    CS_IGNORE PartVec parts;
+    CS_IGNORE PartVec* parts;
 };
 
 // Explicit instantiations for export in the API
@@ -99,8 +98,9 @@ class LEVEL_GEN_API Level {
 public:
     // Note - to avoid exposing clingo in the header here, we use a vector of clingo's numeric symbol representation,
     // rather than a more specific type
+
     CS_IGNORE Level(int64_t cost, const std::vector<uint64_t>& data);
-    CS_IGNORE Level(Level&& other);
+    CS_IGNORE Level(Level&& other) noexcept;
     CS_IGNORE Level& operator=(Level&& other) = delete;
     CS_IGNORE Level(const Level& other) = delete;
     CS_IGNORE Level& operator=(const Level& other) = delete;
@@ -109,8 +109,8 @@ public:
     int get_cost() const;
 
     LevelPartIter<MapSquare> map_squares() const;
-    LevelPartIter<Room>* rooms() const;
-    LevelPartIter<Adjacency>& adjacencies() const;
+    LevelPartIter<Room> rooms() const;
+    LevelPartIter<Adjacency> adjacencies() const;
 
     size_t num_map_squares() const;
     size_t num_rooms() const;
@@ -123,19 +123,18 @@ private:
 
 class LEVEL_GEN_API LevelGenerator {
 public:
-    LevelGenerator();
+    LevelGenerator(unsigned width,
+        unsigned height,
+        unsigned min_rooms,
+        unsigned max_rooms,
+        int64_t seed = -1,  // Indicates "unset"
+        const char *program = nullptr
+    );
     virtual ~LevelGenerator();
     CS_IGNORE LevelGenerator(LevelGenerator&& other) noexcept;
     CS_IGNORE LevelGenerator& operator=(LevelGenerator&& other) noexcept;
     CS_IGNORE LevelGenerator(const LevelGenerator& other) = delete;
     CS_IGNORE LevelGenerator& operator=(const LevelGenerator& other) = delete;
-
-    LevelGenerator& set_width(unsigned new_width);
-    LevelGenerator& set_height(unsigned new_height);
-    LevelGenerator& set_min_rooms(unsigned new_min_rooms);
-    LevelGenerator& set_max_rooms(unsigned new_max_rooms);
-    LevelGenerator& set_seed(unsigned new_seed);
-    LevelGenerator& set_program(const char *program);
 
     unsigned get_width() const;
     unsigned get_height() const;
@@ -144,9 +143,8 @@ public:
     unsigned get_seed() const;
     const char* get_program() const;
 
-    std::string solve();
-
-    std::string solve_safe();
+    const char* solve();
+    const char* solve_safe();
 
     Level* best_level() const;
 

@@ -7,7 +7,9 @@ SCENARIO( "level generators can be created", "[levelgen][creation]" ) {
         WHEN( "a level generator is created" ) {
             THEN( "it exists" ) {
                 LevelGenerator* gen = nullptr;
-                REQUIRE_NOTHROW(gen = new LevelGenerator());
+                REQUIRE_NOTHROW(gen = new LevelGenerator{
+                    1, 2, 3, 4, 5
+                });
                 delete gen;
             }
         }
@@ -15,11 +17,14 @@ SCENARIO( "level generators can be created", "[levelgen][creation]" ) {
     GIVEN( "A level generator unique pointer" ) {
         std::unique_ptr<LevelGenerator> gen_ptr;
 
-        REQUIRE_NOTHROW(gen_ptr.reset(new LevelGenerator{}));
+        REQUIRE_NOTHROW(gen_ptr.reset(new LevelGenerator{
+            1, 2, 3, 4, 5
+        }));
 
-        WHEN( "it is deleted" ) {
+        WHEN( "it is reset" ) {
             THEN( "it no longer exists" ) {
-                REQUIRE_NOTHROW(gen_ptr = nullptr);
+                REQUIRE_NOTHROW(gen_ptr.reset());
+                REQUIRE(gen_ptr == nullptr);
             }
         }
     }

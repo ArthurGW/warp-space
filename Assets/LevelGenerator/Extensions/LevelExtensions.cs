@@ -19,14 +19,8 @@ namespace LevelGenerator.Extensions
         {
             _levelPartIter =  null;
         }
-        
-        public T Current
-        {
-            get
-            {
-                return _levelPartIter.Current();
-            }
-        }
+
+        public T Current => _levelPartIter.Current();
         
         public bool MoveNext()
         {
@@ -47,47 +41,20 @@ namespace LevelGenerator.Extensions
         {
             return (LevelPartIterAsEnumerator<T>)iter;
         }
+
+        public static string AsString(this Room room)
+        {
+            return $"Room({room.X},{room.Y},{room.W},{room.H},{room.IsCorridor})";
+        }
         
-        // public static unsafe List<MapSquare> MapSquaresList(this Level level)
-        // {
-        //     var ret = new List<MapSquare>();
-        //     var current = level.MapSquares;
-        //     MapSquare.__Internal* ptr = (MapSquare.__Internal*)current.__Instance;
-        //     var count = level.NumMapSquares;
-        //     var square = new MapSquare();
-        //     var old = square.__Instance;
-        //     for (var i = 0UL; i < count; i++)
-        //     {
-        //         var n = ptr[i].GetType().FullName;
-        //         Debug.Log(n);
-        //         *((MapSquare.__Internal*) square.__Instance) = ptr[i];
-        //         ret.Add(new MapSquare(square));
-        //     }
-        //     // *((MapSquare.__Internal*) square.__Instance) =
-        //     //     *((MapSquare.__Internal*)Marshal.AllocHGlobal(sizeof(MapSquare.__Internal)));
-        //     return ret;
-        // }
-        //
-        // public static IEnumerable<Room> IterRooms(this Level level)
-        // {
-        //     var current = level.Rooms;
-        //     yield return current;
-        // }
-        //     while (current != null)
-        //     {
-        //         yield return current;
-        //         current = level.NextRoom;
-        //     }
-        // }
-        //
-        // public static IEnumerable<Adjacency> IterAdjacencies(this Level level)
-        // {
-        //     var current = level.A;
-        //     while (current != null)
-        //     {
-        //         yield return current;
-        //         current = level.NextAdjacency;
-        //     }
-        // }
+        public static string AsString(this Adjacency adjacency)
+        {
+            return $"Adjacency({adjacency.First.AsString()},{adjacency.Second.AsString()})";
+        }
+        
+        public static string AsString(this MapSquare square)
+        {
+            return $"MapSquare({square.X},{square.Y},{square.Type})";
+        }
     }
 }

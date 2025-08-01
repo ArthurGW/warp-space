@@ -1,48 +1,72 @@
 #include <catch2/catch_test_macros.hpp>
 #include "level_gen.h"
 
+namespace {
+    template <class T>
+    size_t count_parts(LevelPartIter<T> iter) {
+        iter.reset();
+        auto sum = 0UL;
+        while(iter.move_next())
+        {
+            // Check retrieval
+            auto current = iter.current();
+            sum += 1UL;
+        }
+        return sum;
+    }
+}
+
 SCENARIO( "level generators can be solved", "[levelgen][solve]" ) {
 
     GIVEN( "A level generator with valid params" ) {
         WHEN( "solve() is called" ) {
             THEN( "a solution is returned" ) {
-                LevelGenerator gen{};
-                std::string res;
-                REQUIRE_NOTHROW(res = gen
-                        .set_width(10)
-                        .set_height(7)
-                        .set_min_rooms(2)
-                        .set_max_rooms(6)
-                        .set_seed(1234)
-                        .solve());
-                REQUIRE(!res.empty());
+                LevelGenerator gen{
+                    10, 7, 2, 6, 1234
+                };
+                const char* res;
+                REQUIRE_NOTHROW(res = gen.solve());
+                REQUIRE_FALSE(res == nullptr);
+                REQUIRE_FALSE(std::string(res).empty());
             }
 
             THEN( "a best level exists" ) {
-                LevelGenerator gen{};
-                std::string res;
-                REQUIRE_NOTHROW(res = gen
-                        .set_width(10)
-                        .set_height(7)
-                        .set_min_rooms(2)
-                        .set_max_rooms(6)
-                        .set_seed(1234)
-                        .solve());
-                REQUIRE_NOTHROW(gen.best_level());
+                LevelGenerator gen{
+                    10, 7, 2, 6, 1234
+                };
+                REQUIRE_NOTHROW(gen.solve());
+                REQUIRE_FALSE(gen.best_level() == nullptr);
             }
 
-            THEN( "the best level has valid symbols of each type" ) {
-                LevelGenerator gen{};
-                gen
-                    .set_width(10)
-                    .set_height(7)
-                    .set_min_rooms(2)
-                    .set_max_rooms(6)
-                    .set_seed(1234)
-                    .solve();
-                auto level = gen.best_level();
-                // At least one type per square (some can have multiple types i.e. ship and room)
-                REQUIRE(level->num_map_squares() >= 10UL * 7UL);
+            THEN( "the best level has the correct count of symbols" ) {
+                LevelGenerator gen{
+                    10, 7, 2, 6, 1234
+                };
+                REQUIRE_NOTHROW(gen.solve());
+
+                const auto* level = gen.best_level();
+
+                // These values have been determined empirically
+                REQUIRE(level->num_map_squares() == 84UL);
+                REQUIRE(level->num_rooms() == 5UL);
+                REQUIRE(level->num_adjacencies() == 8UL);
+            }
+
+            THEN( "the best level can iterate over symbols" ) {
+                LevelGenerator gen{
+                        10, 7, 2, 6, 1234
+                };
+                REQUIRE_NOTHROW(gen.solve());
+
+                const auto* level = gen.best_level();
+
+                // These values match the test above
+                REQUIRE(count_parts(level->map_squares()) == 84UL);
+                REQUIRE(count_parts(level->rooms()) == 5UL);
+                REQUIRE(count_parts(level->adjacencies()) == 8UL);
+
+                // At least one square type per grid square plus some duplicates
+                REQUIRE(level->num_map_squares() > 10UL * 7UL);
 
                 // Num rooms within specified limits
                 REQUIRE(level->num_rooms() >= 2UL);

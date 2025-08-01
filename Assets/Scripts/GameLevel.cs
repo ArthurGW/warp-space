@@ -28,17 +28,11 @@ public class GameLevel : MonoBehaviour
             }
         }
         
-        var gen = new LevelGenerator.LevelGenerator();
-        Debug.Log(gen.SetHeight(height).SetWidth(width).SetMinRooms(minRooms).SetMaxRooms(maxRooms).SetSeed(seed).SetProgram(_program).SolveSafe());
+        var gen = new LevelGenerator.LevelGenerator(
+            width, height, minRooms, maxRooms, seed, _program
+        );
+        Debug.Log(gen.SolveSafe());
         PrintLevel(gen);
-        GC.Collect();
-        PrintLevel(gen);
-        // Debug.Log(level.NumAdjacencies);
-        // Debug.Log(level.Cost);
-        // foreach (var sq in gen.BestLevel.MapSquares)
-        // {
-        //     Debug.Log(sq.Type);
-        // }
     }
 
     private void PrintLevel(LevelGenerator.LevelGenerator levelgen)
@@ -47,12 +41,29 @@ public class GameLevel : MonoBehaviour
         Debug.Log(levelgen.Height);
         Debug.Log(levelgen.Width);
         Debug.Log(levelgen.Program);
-        Debug.Log(lvl.NumMapSquares());
-        Debug.Log(lvl.NumRooms());
-        Debug.Log(lvl.NumAdjacencies());
-        foreach (var rm in lvl.Rooms())
+        if (lvl != null)
         {
-            Debug.Log(rm.X);
+            Debug.Log(lvl.NumMapSquares());
+            Debug.Log(lvl.NumRooms());
+            Debug.Log(lvl.NumAdjacencies());
+            
+            foreach (var sq in lvl.MapSquares())
+            {
+                Debug.Log(sq.AsString());
+            }
+            foreach (var rm in lvl.Rooms())
+            {
+                Debug.Log(rm.AsString());
+            }
+            foreach (var adj in lvl.Adjacencies())
+            {
+                Debug.Log(adj.AsString());
+            }
         }
+        else
+        {
+            Debug.Log("NULL");
+        }
+        
     }
 }

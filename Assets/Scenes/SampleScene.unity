@@ -439,11 +439,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b85840acd4f64d168028a60fce39e0c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 13
-  width: 14
+  height: 7
+  width: 10
   minRooms: 2
-  maxRooms: 8
-  seed: 11
+  maxRooms: 6
+  seed: 1234
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

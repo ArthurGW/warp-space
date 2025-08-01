@@ -39,10 +39,6 @@ class Level::LevelImpl {
     public:
         LevelImpl(int64_t cost, const std::vector<uint64_t>& data) : cost(static_cast<int>(cost))
         {
-            std::vector<MapSquare> square_vec;
-            std::vector<Room> room_vec;
-            std::vector<Adjacency> adjacency_vec;
-
             // Map symbols to simple data structures to return from the API
             for (const auto& sym_val : data) {
                 const Clingo::Symbol sym{sym_val};
@@ -98,49 +94,45 @@ class Level::LevelImpl {
                     adjacency_vec.push_back({&(*first_it), &(*second_it)});
                 }
             }
-
-            map_squares_iter = LevelPartIter<MapSquare>{square_vec};
-            rooms_iter = LevelPartIter<Room>{room_vec};
-            adjacencies_iter = LevelPartIter<Adjacency>{adjacency_vec};
         }
 
     private:
-        LevelPartIter<MapSquare> map_squares_iter;
-        LevelPartIter<Room> rooms_iter;
-        LevelPartIter<Adjacency> adjacencies_iter;
-
         LevelPartIter<MapSquare> map_squares() {
-            auto iter = map_squares_iter;
-            iter.reset();
-            return iter;
+            return LevelPartIter<MapSquare>{&square_vec};
         }
 
-        LevelPartIter<Room>* rooms() {
-            rooms_iter.reset();
-            return &rooms_iter;
+        LevelPartIter<Room> rooms() {
+            return LevelPartIter<Room>{&room_vec};
         }
 
-        LevelPartIter<Adjacency>& adjacencies() {
-            adjacencies_iter.reset();
-            return adjacencies_iter;
+        LevelPartIter<Adjacency> adjacencies() {
+            return LevelPartIter<Adjacency>{&adjacency_vec};
         }
 
         size_t num_map_squares() const
         {
-            return map_squares_iter.count();
+            return square_vec.size();
         }
 
         size_t num_rooms() const
         {
-            return rooms_iter.count();
+            return room_vec.size();
         }
 
         size_t num_adjacencies() const
         {
-            return adjacencies_iter.count();
+            return adjacency_vec.size();
         }
 
-        int cost;
+        int get_cost() const {
+            return cost;
+        }
+
+        const int cost;
+
+        std::vector<MapSquare> square_vec;
+        std::vector<Room> room_vec;
+        std::vector<Adjacency> adjacency_vec;
 
         friend class Level;
 };
@@ -153,12 +145,12 @@ LevelPartIter<MapSquare> Level::map_squares() const
     return impl->map_squares();
 }
 
-LevelPartIter<Room>* Level::rooms() const
+LevelPartIter<Room> Level::rooms() const
 {
     return impl->rooms();
 }
 
-LevelPartIter<Adjacency>& Level::adjacencies() const
+LevelPartIter<Adjacency> Level::adjacencies() const
 {
     return impl->adjacencies();
 }
@@ -180,11 +172,11 @@ size_t Level::num_adjacencies() const
 
 int Level::get_cost() const
 {
-    return impl->cost;
+    return impl->get_cost();
 }
 
 Level::Level(int64_t cost, const std::vector<uint64_t>& data) : impl(std::make_unique<Level::LevelImpl>(cost, data)) {}
 
-Level::Level(Level&& other) = default;
+Level::Level(Level&& other) noexcept = default;
 
 Level::~Level() = default;

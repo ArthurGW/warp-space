@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using CppSharp;
@@ -17,7 +19,6 @@ namespace Bindings
             options.GenerateClassTemplates = true;
             options.GeneratorKind = GeneratorKind.CSharp;
             options.GenerateDebugOutput = $<IF:$<CONFIG:Debug,RelWithDebInfo>,true,false>;
-            options.Encoding = Encoding.ASCII;
             options.PropertyDetectionMode = PropertyDetectionMode.Keywords;
             options.OutputDir = @"$<SHELL_PATH:${TARGET_DIR}>";
             options.CheckSymbols = true;
