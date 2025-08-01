@@ -1,22 +1,32 @@
 ﻿using System;
 using LevelGenerator;
 using LevelGenerator.Extensions;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameLevel : MonoBehaviour
 {
     #region Level Generator Params
 
-    public uint height;
+    public uint numLevels;
     public uint width;
+    public uint height;
     public uint minRooms;
     public uint maxRooms;
-    public uint seed;
+    
+    [Tooltip("seed=0 means use a random seed rather than a fixed value")]
+    public uint seed = 0;
 
     private string _program;
     
     #endregion
-    
+
+    private void Start()
+    {
+        GenerateNewLevel();
+        // Thread
+    }
+
     public void GenerateNewLevel()
     {
         if (_program == null)
@@ -29,7 +39,7 @@ public class GameLevel : MonoBehaviour
         }
         
         var gen = new LevelGenerator.LevelGenerator(
-            width, height, minRooms, maxRooms, seed, _program
+            numLevels, width, height, minRooms, maxRooms, seed, _program
         );
         Debug.Log(gen.SolveSafe());
         PrintLevel(gen);
@@ -38,9 +48,6 @@ public class GameLevel : MonoBehaviour
     private void PrintLevel(LevelGenerator.LevelGenerator levelgen)
     {
         var lvl = levelgen.BestLevel();
-        Debug.Log(levelgen.Height);
-        Debug.Log(levelgen.Width);
-        Debug.Log(levelgen.Program);
         if (lvl != null)
         {
             Debug.Log(lvl.NumMapSquares());

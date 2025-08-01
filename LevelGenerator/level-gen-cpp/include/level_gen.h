@@ -123,11 +123,13 @@ private:
 
 class LEVEL_GEN_API LevelGenerator {
 public:
-    LevelGenerator(unsigned width,
+    LevelGenerator(
+        unsigned num_levels,
+        unsigned width,
         unsigned height,
         unsigned min_rooms,
         unsigned max_rooms,
-        int64_t seed = -1,  // Indicates "unset"
+        size_t seed = 0,  // Indicates "unset"
         const char *program = nullptr
     );
     virtual ~LevelGenerator();
@@ -135,13 +137,6 @@ public:
     CS_IGNORE LevelGenerator& operator=(LevelGenerator&& other) noexcept;
     CS_IGNORE LevelGenerator(const LevelGenerator& other) = delete;
     CS_IGNORE LevelGenerator& operator=(const LevelGenerator& other) = delete;
-
-    unsigned get_width() const;
-    unsigned get_height() const;
-    unsigned get_min_rooms() const;
-    unsigned get_max_rooms() const;
-    unsigned get_seed() const;
-    const char* get_program() const;
 
     const char* solve();
     const char* solve_safe();

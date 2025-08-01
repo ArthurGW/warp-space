@@ -22,7 +22,7 @@ SCENARIO( "level generators can be solved", "[levelgen][solve]" ) {
         WHEN( "solve() is called" ) {
             THEN( "a solution is returned" ) {
                 LevelGenerator gen{
-                    10, 7, 2, 6, 1234
+                    1, 10, 7, 2, 6, 1234
                 };
                 const char* res;
                 REQUIRE_NOTHROW(res = gen.solve());
@@ -32,7 +32,7 @@ SCENARIO( "level generators can be solved", "[levelgen][solve]" ) {
 
             THEN( "a best level exists" ) {
                 LevelGenerator gen{
-                    10, 7, 2, 6, 1234
+                    1, 10, 7, 2, 6, 1234
                 };
                 REQUIRE_NOTHROW(gen.solve());
                 REQUIRE_FALSE(gen.best_level() == nullptr);
@@ -40,7 +40,7 @@ SCENARIO( "level generators can be solved", "[levelgen][solve]" ) {
 
             THEN( "the best level has the correct count of symbols" ) {
                 LevelGenerator gen{
-                    10, 7, 2, 6, 1234
+                    1, 10, 7, 2, 6, 1234
                 };
                 REQUIRE_NOTHROW(gen.solve());
 
@@ -54,7 +54,7 @@ SCENARIO( "level generators can be solved", "[levelgen][solve]" ) {
 
             THEN( "the best level can iterate over symbols" ) {
                 LevelGenerator gen{
-                        10, 7, 2, 6, 1234
+                        1, 10, 7, 2, 6, 1234
                 };
                 REQUIRE_NOTHROW(gen.solve());
 
