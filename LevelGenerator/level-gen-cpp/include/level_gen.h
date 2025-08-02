@@ -37,13 +37,14 @@ struct LEVEL_GEN_API Room {
     unsigned h;
 
     bool is_corridor;
+    size_t room_id = 0;
 
     friend bool operator==(const Room& first, const Room& second);
 };
 
 struct LEVEL_GEN_API Adjacency {
-    const Room* first;
-    const Room* second;
+    size_t first_id;
+    size_t second_id;
 };
 
 struct LEVEL_GEN_API MapSquare {
@@ -113,6 +114,7 @@ public:
     LevelPartIter<Adjacency> adjacencies() const;
 
     size_t get_num_map_squares() const;
+    size_t get_num_corridors() const;
     size_t get_num_rooms() const;
     size_t get_num_adjacencies() const;
 
@@ -142,8 +144,10 @@ public:
     const char* solve();
     const char* solve_safe();
 
+    /// Get a pointer to the best level - note this is only valid for the lifetime of the generator
     Level* best_level();
-    size_t num_levels() const;
+
+    size_t get_num_levels() const;
 
 private:
     CS_IGNORE class LevelGenImpl;  // Internal implementation class

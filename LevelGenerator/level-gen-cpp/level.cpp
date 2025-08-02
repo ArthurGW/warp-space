@@ -31,7 +31,9 @@ bool operator==(const Room& first, const Room& second) {
         && first.y == second.y
         && first.w == second.w
         && first.h == second.h
-        && first.is_corridor == second.is_corridor;
+        && first.is_corridor == second.is_corridor
+        // ID may not be set, so allow one or both to be unset (zero), but if both set then check
+        && (first.room_id == 0 || second.room_id == 0 || first.room_id == second.room_id);
 }
 
 
@@ -52,7 +54,13 @@ class Level::LevelImpl {
                     const auto y = args[1];
                     const auto width = args[2];
                     const auto height = args[3];
-                    room_vec.push_back({x, y, width, height, height == 1U});
+                    const auto is_corridor = height == 1U;
+                    if (is_corridor)
+                    {
+                        ++corridors;
+                    }
+
+                    room_vec.push_back({x, y, width, height, is_corridor, room_vec.size() + 1});
                     continue;
                 }
 
@@ -91,7 +99,7 @@ class Level::LevelImpl {
                         continue;
                     }
 
-                    adjacency_vec.push_back({&(*first_it), &(*second_it)});
+                    adjacency_vec.push_back({first_it->room_id, second_it->room_id});
                 }
             }
         }
@@ -114,6 +122,11 @@ class Level::LevelImpl {
             return square_vec.size();
         }
 
+        size_t num_corridors() const
+        {
+            return corridors;
+        }
+
         size_t num_rooms() const
         {
             return room_vec.size();
@@ -133,6 +146,7 @@ class Level::LevelImpl {
         std::vector<MapSquare> square_vec;
         std::vector<Room> room_vec;
         std::vector<Adjacency> adjacency_vec;
+        size_t corridors = 0;
 
         friend class Level;
 };
@@ -159,6 +173,12 @@ size_t Level::get_num_map_squares() const
 {
     return impl->num_map_squares();
 }
+
+size_t Level::get_num_corridors() const
+{
+    return impl->num_corridors();
+}
+
 
 size_t Level::get_num_rooms() const
 {

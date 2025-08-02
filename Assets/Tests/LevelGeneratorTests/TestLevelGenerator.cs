@@ -74,7 +74,7 @@ namespace LevelGeneratorTests
                 // Assert
                 Assert.That(result, Is.Not.Null.And.Not.Empty);
                 Assert.That(result.Replace('\n', ' ').Split(' ').Count(word => word == "Model:"), Is.EqualTo(2));
-                Assert.That(genUnderTest.NumLevels(), Is.EqualTo(2));
+                Assert.That(genUnderTest.NumLevels, Is.EqualTo(2));
             }
         }
         

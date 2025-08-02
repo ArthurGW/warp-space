@@ -138,10 +138,12 @@ class LevelGenerator::LevelGenImpl
                 return nullptr;
             }
 
-            return &(*std::min_element(levels.begin(), levels.end(), [&](const auto& left, const auto& right)
-            {
-                return left.get_cost() <= right.get_cost();
-            }));
+            return &(*std::min_element(levels.begin(), levels.end(),
+                [&](const auto& left, const auto& right)
+                {
+                    return left.get_cost() <= right.get_cost();
+                }
+            ));
         }
 
         size_t num_levels() const {
@@ -184,7 +186,7 @@ Level* LevelGenerator::best_level()
     return impl->best_level();
 }
 
-size_t LevelGenerator::num_levels() const
+size_t LevelGenerator::get_num_levels() const
 {
     return impl->num_levels();
 }

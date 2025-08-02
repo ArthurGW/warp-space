@@ -1,20 +1,10 @@
-using System;
 using UnityEngine;
 
 namespace Layout
 {
-    [Flags]
-    public enum Direction
-    {
-        North,
-        East,
-        South,
-        West,
-    }
-    
     public class Corridor : MonoBehaviour
     {
-        public Direction selected;
+        public Directions selected;
         
         void Awake()
         {
@@ -25,7 +15,7 @@ namespace Layout
         {
             foreach (var child in GetComponentsInChildren<CorridorEntrance>())
             {
-                child.SetOpen(selected.HasFlag(child.direction));
+                child.SetOpen(selected.HasFlag((Directions)child.direction));
             }
         }
     }
