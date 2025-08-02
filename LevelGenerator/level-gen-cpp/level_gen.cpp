@@ -11,8 +11,9 @@ class LevelGenerator::LevelGenImpl
 {
     public:
         LevelGenImpl(unsigned max_num_levels, unsigned width, unsigned height, unsigned min_rooms, unsigned max_rooms,
-                     size_t seed, const char* prog, unsigned num_threads) : width(width), height(height), min_rooms(min_rooms), max_rooms(
-                max_rooms), solver(std::make_unique<Clingo::Control>())
+                size_t seed, const char* prog, unsigned num_threads)
+                 : width(width), height(height), min_rooms(min_rooms), max_rooms(max_rooms),
+                 solver(std::make_unique<Clingo::Control>())
         {
             auto config = solver->configuration();
             if (num_threads > 1)
@@ -113,10 +114,10 @@ class LevelGenerator::LevelGenImpl
             for (const auto& m : solver->solve())
             {
                 const auto costs = m.cost();
-                const auto total_cost = std::accumulate(costs.cbegin(), costs.cend(), (decltype(costs)::value_type)0);
+                const auto total_cost = std::accumulate(costs.cbegin(), costs.cend(), (decltype(costs)::value_type) 0);
 
                 const auto model_symbols = m.symbols();
-                std::vector<clingo_symbol_t> transformed_symbols(model_symbols.size(), (clingo_symbol_t)0);
+                std::vector<clingo_symbol_t> transformed_symbols(model_symbols.size(), (clingo_symbol_t) 0);
                 std::transform(model_symbols.cbegin(), model_symbols.cend(), transformed_symbols.begin(),
                                [](const auto& sym) { return sym.to_c(); });
                 levels.emplace_back(total_cost, transformed_symbols);
@@ -139,14 +140,15 @@ class LevelGenerator::LevelGenImpl
             }
 
             return &(*std::min_element(levels.begin(), levels.end(),
-                [&](const auto& left, const auto& right)
-                {
-                    return left.get_cost() <= right.get_cost();
-                }
+                                       [&](const auto& left, const auto& right)
+                                       {
+                                           return left.get_cost() <= right.get_cost();
+                                       }
             ));
         }
 
-        size_t num_levels() const {
+        size_t num_levels() const
+        {
             return levels.size();
         }
 

@@ -5,13 +5,17 @@
 #include <unordered_map>
 #include <sstream>
 
-namespace {
+namespace
+{
     inline std::vector<unsigned> unsigned_args(const Clingo::Symbol& sym)
     {
         std::vector<unsigned> ret;
-        if (sym.type() == Clingo::SymbolType::Function) {
-            for (const auto& arg : sym.arguments()) {
-                if (arg.type() != Clingo::SymbolType::Number) {
+        if (sym.type() == Clingo::SymbolType::Function)
+        {
+            for (const auto& arg : sym.arguments())
+            {
+                if (arg.type() != Clingo::SymbolType::Number)
+                {
                     return {};
                 }
                 ret.push_back(static_cast<unsigned>(arg.number()));
@@ -20,35 +24,41 @@ namespace {
         return ret;
     }
 
-    inline auto find_room(const std::vector<Room>& rooms, Clingo::Symbol room_sym) {
+    inline auto find_room(const std::vector<Room>& rooms, Clingo::Symbol room_sym)
+    {
         auto args = unsigned_args(room_sym);
         return std::find(rooms.cbegin(), rooms.cend(), Room{args[0], args[1], args[2], args[3], args[3] == 1U});
     }
 } // unnamed namespace
 
-bool operator==(const Room& first, const Room& second) {
+bool operator==(const Room& first, const Room& second)
+{
     return first.x == second.x
-        && first.y == second.y
-        && first.w == second.w
-        && first.h == second.h
-        && first.is_corridor == second.is_corridor
-        // ID may not be set, so allow one or both to be unset (zero), but if both set then check
-        && (first.room_id == 0 || second.room_id == 0 || first.room_id == second.room_id);
+           && first.y == second.y
+           && first.w == second.w
+           && first.h == second.h
+           && first.is_corridor == second.is_corridor
+           // ID may not be set, so allow one or both to be unset (zero), but if both set then check
+           && (first.room_id == 0 || second.room_id == 0 || first.room_id == second.room_id);
 }
 
 
-class Level::LevelImpl {
+class Level::LevelImpl
+{
     public:
         LevelImpl(int64_t cost, const std::vector<uint64_t>& data) : cost(static_cast<int>(cost))
         {
             // Map symbols to simple data structures to return from the API
-            for (const auto& sym_val : data) {
+            for (const auto& sym_val : data)
+            {
                 const Clingo::Symbol sym{sym_val};
-                if (sym.type() != Clingo::SymbolType::Function || sym.arguments().size() < 2) {
+                if (sym.type() != Clingo::SymbolType::Function || sym.arguments().size() < 2)
+                {
                     continue;
                 }
 
-                if (sym.match("room", 4)) {
+                if (sym.match("room", 4))
+                {
                     const auto args = unsigned_args(sym);
                     const auto x = args[0];
                     const auto y = args[1];
@@ -65,17 +75,28 @@ class Level::LevelImpl {
                 }
 
                 SquareType type;
-                if (sym.match("in_space", 2)) {
+                if (sym.match("in_space", 2))
+                {
                     type = SquareType::Space;
-                } else if (sym.match("hull", 2)) {
+                }
+                else if (sym.match("hull", 2))
+                {
                     type = SquareType::Hull;
-                } else if (sym.match("ship", 2)) {
+                }
+                else if (sym.match("ship", 2))
+                {
                     type = SquareType::Ship;
-                } else if (sym.match("corridor", 2)) {
+                }
+                else if (sym.match("corridor", 2))
+                {
                     type = SquareType::Corridor;
-                } else if (sym.match("room_square", 6)) {
+                }
+                else if (sym.match("room_square", 6))
+                {
                     type = SquareType::Room;
-                } else {
+                }
+                else
+                {
                     continue;  // Not a map square symbol
                 }
 
@@ -84,18 +105,22 @@ class Level::LevelImpl {
             }
 
             // Third pass to get adjacencies pointing to already-created rooms
-            for (const auto& sym_val : data) {
+            for (const auto& sym_val : data)
+            {
                 const Clingo::Symbol sym{sym_val};
                 const auto args = sym.arguments();
-                if (sym.match("adjacent", 2)) {
+                if (sym.match("adjacent", 2))
+                {
                     const auto first = args[0];
                     const auto second = args[1];
-                    if(!(first.match("room", 4) && second.match("room", 4))) {
+                    if (!(first.match("room", 4) && second.match("room", 4)))
+                    {
                         continue;
                     }
                     const auto first_it = find_room(room_vec, first);
                     const auto second_it = find_room(room_vec, second);
-                    if (first_it == room_vec.cend() || second_it == room_vec.cend()) {
+                    if (first_it == room_vec.cend() || second_it == room_vec.cend())
+                    {
                         continue;
                     }
 
@@ -105,15 +130,18 @@ class Level::LevelImpl {
         }
 
     private:
-        LevelPartIter<MapSquare> map_squares() {
+        LevelPartIter<MapSquare> map_squares()
+        {
             return LevelPartIter<MapSquare>{&square_vec};
         }
 
-        LevelPartIter<Room> rooms() {
+        LevelPartIter<Room> rooms()
+        {
             return LevelPartIter<Room>{&room_vec};
         }
 
-        LevelPartIter<Adjacency> adjacencies() {
+        LevelPartIter<Adjacency> adjacencies()
+        {
             return LevelPartIter<Adjacency>{&adjacency_vec};
         }
 
@@ -137,7 +165,8 @@ class Level::LevelImpl {
             return adjacency_vec.size();
         }
 
-        int get_cost() const {
+        int get_cost() const
+        {
             return cost;
         }
 
@@ -150,8 +179,6 @@ class Level::LevelImpl {
 
         friend class Level;
 };
-
-
 
 
 LevelPartIter<MapSquare> Level::map_squares() const
@@ -195,7 +222,8 @@ int Level::get_cost() const
     return impl->get_cost();
 }
 
-Level::Level(int64_t cost, const std::vector<uint64_t>& data) : impl(std::make_unique<Level::LevelImpl>(cost, data)) {}
+Level::Level(int64_t cost, const std::vector<uint64_t>& data) : impl(std::make_unique<Level::LevelImpl>(cost, data))
+{}
 
 Level::Level(Level&& other) noexcept = default;
 

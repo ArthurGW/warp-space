@@ -1,6 +1,6 @@
-from collections import defaultdict
 import re
 import subprocess
+from collections import defaultdict
 from time import time
 
 num_models = 0
@@ -14,8 +14,6 @@ args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
         f" {num_models} -c width={width} -c height={height}"
         f" -c min_rooms={min_rooms} -c max_rooms={max_rooms}"
         f" -t 4 --rand-freq=1.0 --seed={seed}"
-        # ' -o reify'
-        # ' --verbose'
         r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\ship.lp")
 
 start = time()
@@ -26,7 +24,8 @@ print(f'Solving took {end - start}s')
 
 data = ret.stdout
 if ('SATISFIABLE' not in data and 'OPTIMUM FOUND' not in data) or 'UNSATISFIABLE' in data:
-    raise ChildProcessError(f'failed to generate level:{f'\n{ret.stderr}' if ret.stderr else ''}{f'\n{data}' if data else ''}')
+    raise ChildProcessError(
+        f'failed to generate level:{f'\n{ret.stderr}' if ret.stderr else ''}{f'\n{data}' if data else ''}')
 
 
 def yield_ints(pattern, inp):
@@ -76,17 +75,14 @@ def room_name(r):
 for x, y in yield_ints(hull_square, data):
     assign(x, y, '  H  ')
 
-
 for mch in yield_ints(reachable, data):
     reachable_r.add(mch)
 
 for mch in room.findall(data):
     all_r.add(mch)
 
-
 for mch in yield_ints(adjacent, data):
     adjacency[mch[:4]].append(mch[4:])
-
 
 for x, y, rx, ry, rw, rh in yield_ints(room_square, data):
     if (rw, rh) == (1, 1):
@@ -101,7 +97,6 @@ for x, y, rx, ry, rw, rh in yield_ints(room_square, data):
             rid += 1
 
         assign(x, y, f' R{rooms[(rx, ry, rw, rh)]: <2} ')
-
 
 for r in list(adjacency):
     adj_rooms = adjacency.pop(r)

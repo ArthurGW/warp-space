@@ -2,18 +2,18 @@
 #define LEVEL_GEN_H
 
 #ifdef LEVEL_GEN_EXPORT
-  #define LEVEL_GEN_API __declspec(dllexport)
+#define LEVEL_GEN_API __declspec(dllexport)
 #else
-  #define LEVEL_GEN_API  _declspec(dllimport)
+#define LEVEL_GEN_API  _declspec(dllimport)
 #endif
 
 // Defines used by CppSharp when creating bindings
 #ifndef CS_IGNORE
-    #define CS_IGNORE
+#define CS_IGNORE
 #endif
 
 #ifndef CS_FLAGS
-    #define CS_FLAGS
+#define CS_FLAGS
 #endif
 
 #include <memory>
@@ -21,7 +21,8 @@
 #include <utility>
 #include <vector>
 
-enum class CS_FLAGS SquareType {
+enum class CS_FLAGS SquareType
+{
     Unknown = 1 << 0,
     Space = 1 << 1,
     Hull = 1 << 2,
@@ -31,127 +32,150 @@ enum class CS_FLAGS SquareType {
 };
 
 struct LEVEL_GEN_API Room {
-    unsigned x;
-    unsigned y;
-    unsigned w;
-    unsigned h;
+        unsigned x;
+        unsigned y;
+        unsigned w;
+        unsigned h;
 
-    bool is_corridor;
-    size_t room_id = 0;
+        bool is_corridor;
+        size_t room_id = 0;
 
-    friend bool operator==(const Room& first, const Room& second);
+        friend bool operator==(const Room& first, const Room& second);
 };
 
 struct LEVEL_GEN_API Adjacency {
-    size_t first_id;
-    size_t second_id;
+        size_t first_id;
+        size_t second_id;
 };
 
 struct LEVEL_GEN_API MapSquare {
-    unsigned x;
-    unsigned y;
+        unsigned x;
+        unsigned y;
 
-    SquareType type;
+        SquareType type;
 };
 
 /// Template for creating a C#-style IEnumerator over a type of level part
 template<class T>
-struct LevelPartIter {
-    CS_IGNORE typedef typename std::vector<T> PartVec;
+struct LevelPartIter
+{
+        CS_IGNORE typedef typename std::vector<T> PartVec;
 
-    T current() const {
-        return (*parts)[static_cast<size_t>(pos)];
-    }
-
-    bool move_next() {
-        if (pos < std::numeric_limits<intmax_t>::max()) {
-            pos += 1;
-            return pos < count();
+        T current() const
+        {
+            return (*parts)[static_cast<size_t>(pos)];
         }
-        return false;
-    };
 
-    void reset() {
-        pos = -1;
-    }
+        bool move_next()
+        {
+            if (pos < std::numeric_limits<intmax_t>::max())
+            {
+                pos += 1;
+                return pos < count();
+            }
+            return false;
+        };
 
-    size_t count() const {
-        return parts->size();
-    }
+        void reset()
+        {
+            pos = -1;
+        }
 
-    explicit CS_IGNORE LevelPartIter(PartVec* parts) : parts(parts) {}
-    CS_IGNORE LevelPartIter(LevelPartIter&& other) noexcept = default;
-    CS_IGNORE LevelPartIter& operator=(LevelPartIter&& other) = default;
-    CS_IGNORE LevelPartIter(const LevelPartIter& other) = default;
-    CS_IGNORE LevelPartIter& operator=(const LevelPartIter& other) = default;
+        size_t count() const
+        {
+            return parts->size();
+        }
 
-private:
-    CS_IGNORE intmax_t pos = -1;
-    CS_IGNORE PartVec* parts;
+        explicit CS_IGNORE LevelPartIter(PartVec* parts) : parts(parts) {}
+        CS_IGNORE LevelPartIter(LevelPartIter&& other) noexcept = default;
+        CS_IGNORE LevelPartIter& operator=(LevelPartIter&& other) = default;
+        CS_IGNORE LevelPartIter(const LevelPartIter& other) = default;
+        CS_IGNORE LevelPartIter& operator=(const LevelPartIter& other) = default;
+
+    private:
+        CS_IGNORE intmax_t pos = -1;
+        CS_IGNORE PartVec* parts;
 };
 
 // Explicit instantiations for export in the API
-template struct LEVEL_GEN_API LevelPartIter<MapSquare>;
-template struct LEVEL_GEN_API LevelPartIter<Room>;
-template struct LEVEL_GEN_API LevelPartIter<Adjacency>;
+template struct LEVEL_GEN_API
+LevelPartIter<MapSquare>;
+
+template struct LEVEL_GEN_API
+LevelPartIter<Room>;
+
+template struct LEVEL_GEN_API
+LevelPartIter<Adjacency>;
 
 class LEVEL_GEN_API Level {
-public:
-    // Note - to avoid exposing clingo in the header here, we use a vector of clingo's numeric symbol representation,
-    // rather than a more specific type
+    public:
+        // Note - to avoid exposing clingo in the header here, we use a vector of clingo's numeric symbol representation,
+        // rather than a more specific type
 
-    CS_IGNORE Level(int64_t cost, const std::vector<uint64_t>& data);
-    CS_IGNORE Level(Level&& other) noexcept;
-    CS_IGNORE Level& operator=(Level&& other) = delete;
-    CS_IGNORE Level(const Level& other) = delete;
-    CS_IGNORE Level& operator=(const Level& other) = delete;
-    virtual ~Level();
+        CS_IGNORE Level(int64_t cost, const std::vector<uint64_t>& data);
+        CS_IGNORE Level(Level && other) noexcept;
+        CS_IGNORE Level& operator=(Level && other) = delete;
+        CS_IGNORE Level(const Level& other) = delete;
+        CS_IGNORE Level& operator=(const Level& other) = delete;
 
-    int get_cost() const;
+        virtual ~Level();
 
-    LevelPartIter<MapSquare> map_squares() const;
-    LevelPartIter<Room> rooms() const;
-    LevelPartIter<Adjacency> adjacencies() const;
+        int get_cost() const;
 
-    size_t get_num_map_squares() const;
-    size_t get_num_corridors() const;
-    size_t get_num_rooms() const;
-    size_t get_num_adjacencies() const;
+        LevelPartIter<MapSquare> map_squares() const;
 
-private:
-    CS_IGNORE class LevelImpl;  // Internal implementation class
-    CS_IGNORE std::unique_ptr<LevelImpl> impl;
+        LevelPartIter<Room> rooms() const;
+
+        LevelPartIter<Adjacency> adjacencies() const;
+
+        size_t get_num_map_squares() const;
+
+        size_t get_num_corridors() const;
+
+        size_t get_num_rooms() const;
+
+        size_t get_num_adjacencies() const;
+
+    private:
+        CS_IGNORE class LevelImpl;  // Internal implementation class
+        CS_IGNORE std::unique_ptr<LevelImpl> impl;
 };
 
-class LEVEL_GEN_API LevelGenerator {
-public:
-    LevelGenerator(
-        unsigned max_num_levels,
-        unsigned width,
-        unsigned height,
-        unsigned min_rooms,
-        unsigned max_rooms,
-        size_t seed = 0,  // Indicates "unset"
-        const char *program = nullptr,
-        unsigned num_threads = 1
-    );
-    virtual ~LevelGenerator();
-    CS_IGNORE LevelGenerator(LevelGenerator&& other) noexcept;
-    CS_IGNORE LevelGenerator& operator=(LevelGenerator&& other) noexcept;
-    CS_IGNORE LevelGenerator(const LevelGenerator& other) = delete;
-    CS_IGNORE LevelGenerator& operator=(const LevelGenerator& other) = delete;
+class LEVEL_GEN_API
 
-    const char* solve();
-    const char* solve_safe();
+LevelGenerator {
+    public:
 
-    /// Get a pointer to the best level - note this is only valid for the lifetime of the generator
-    Level* best_level();
+        LevelGenerator(
+               unsigned max_num_levels,
+               unsigned width,
+               unsigned height,
+               unsigned min_rooms,
+               unsigned max_rooms,
+               size_t seed = 0,  // Indicates "unset"
+               const char* program = nullptr,
+               unsigned num_threads = 1
+        );
 
-    size_t get_num_levels() const;
+        virtual ~LevelGenerator();
 
-private:
-    CS_IGNORE class LevelGenImpl;  // Internal implementation class
-    CS_IGNORE std::unique_ptr<LevelGenImpl> impl;
+        CS_IGNORE LevelGenerator(LevelGenerator&& other) noexcept;
+        CS_IGNORE LevelGenerator& operator=(LevelGenerator && other) noexcept;
+        CS_IGNORE LevelGenerator(const LevelGenerator& other) = delete;
+        CS_IGNORE LevelGenerator& operator=(const LevelGenerator& other) = delete;
+
+        const char* solve();
+
+        const char* solve_safe();
+
+        /// Get a pointer to the best level - note this is only valid for the lifetime of the generator
+        Level* best_level();
+
+        size_t get_num_levels() const;
+
+    private:
+        CS_IGNORE class LevelGenImpl;  // Internal implementation class
+        CS_IGNORE std::unique_ptr<LevelGenImpl> impl;
 };
 
 #endif // LEVEL_GEN_H

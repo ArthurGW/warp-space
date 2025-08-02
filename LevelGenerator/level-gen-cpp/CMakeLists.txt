@@ -30,22 +30,22 @@ target_include_directories(level-gen-cpp PUBLIC include)
 target_link_libraries(level-gen-cpp PRIVATE libclingo)
 target_compile_definitions(level-gen-cpp PRIVATE LEVEL_GEN_EXPORT)
 install(TARGETS level-gen-cpp
-    RUNTIME
+        RUNTIME
         DESTINATION "LevelGenerator"
-    COMPONENT level-gen)
+        COMPONENT level-gen)
 
 install(FILES $<TARGET_PDB_FILE:level-gen-cpp>
-    COMPONENT level-gen
-    DESTINATION "LevelGenerator"
-    CONFIGURATIONS Debug
-    CONFIGURATIONS RelWithDebInfo
+        COMPONENT level-gen
+        DESTINATION "LevelGenerator"
+        CONFIGURATIONS Debug
+        CONFIGURATIONS RelWithDebInfo
 )
 
-    
+
 install(FILES "programs/ship.lp"
-    COMPONENT level-gen
-    DESTINATION "LevelGenerator/Resources/programs"
-    RENAME "ship.txt")
+        COMPONENT level-gen
+        DESTINATION "LevelGenerator/Resources/programs"
+        RENAME "ship.txt")
 
 set(HEADER_PATH "include/level_gen.h")
 cmake_path(ABSOLUTE_PATH HEADER_PATH NORMALIZE)
@@ -54,7 +54,7 @@ set_property(TARGET level-gen-cpp PROPERTY PUBLIC_HEADER ${HEADER_PATH})
 # ===================================================
 # Test the level generator C++ library
 # ===================================================
-if(BUILD_TESTING)
+if (BUILD_TESTING)
     # Use clingo's bundled copy of Catch2 for simplicity
     add_subdirectory(${CLINGO_SOURCE_DIR}/third_party/catch "./catch")
     include(Catch)
@@ -66,8 +66,8 @@ if(BUILD_TESTING)
     target_link_libraries(level-gen-cpp-test PRIVATE Catch2::Catch2WithMain level-gen-cpp)
 
     add_custom_command(TARGET level-gen-cpp-test
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND}
             ARGS -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/programs $<TARGET_FILE_DIR:level-gen-cpp-test>/programs)
 
     catch_discover_tests(level-gen-cpp-test)
