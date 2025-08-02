@@ -128,7 +128,7 @@ public class GameMap : MonoBehaviour
         _rooms.ForEach(rm => Debug.Log(rm.AsString()));
         foreach (var adj in _adjacencies)
         {
-            Debug.Log($"{adj.Key}: {String.Join(',', adj.Value)}");
+            Debug.Log($"Adjacency({adj.Key}: {String.Join(',', adj.Value)})");
         }
     }
 
