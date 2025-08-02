@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using LevelGenerator;
 using System.Collections.Generic;
 
 namespace LevelGenerator.Extensions

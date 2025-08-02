@@ -155,17 +155,17 @@ LevelPartIter<Adjacency> Level::adjacencies() const
     return impl->adjacencies();
 }
 
-size_t Level::num_map_squares() const
+size_t Level::get_num_map_squares() const
 {
     return impl->num_map_squares();
 }
 
-size_t Level::num_rooms() const
+size_t Level::get_num_rooms() const
 {
     return impl->num_rooms();
 }
 
-size_t Level::num_adjacencies() const
+size_t Level::get_num_adjacencies() const
 {
     return impl->num_adjacencies();
 }

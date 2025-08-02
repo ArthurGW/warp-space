@@ -10,20 +10,24 @@
 class LevelGenerator::LevelGenImpl
 {
     public:
-        LevelGenImpl(unsigned num_levels, unsigned width, unsigned height, unsigned min_rooms, unsigned max_rooms,
-                     size_t seed, const char* prog) : width(width), height(height), min_rooms(min_rooms), max_rooms(
+        LevelGenImpl(unsigned max_num_levels, unsigned width, unsigned height, unsigned min_rooms, unsigned max_rooms,
+                     size_t seed, const char* prog, unsigned num_threads) : width(width), height(height), min_rooms(min_rooms), max_rooms(
                 max_rooms), solver(std::make_unique<Clingo::Control>())
         {
             auto config = solver->configuration();
-            config["solve.parallel_mode"] = "4";
-            config["solver.rand_freq"] = "1.0";
+            if (num_threads > 1)
+            {
+                config["solve.parallel_mode"] = std::to_string(num_threads).c_str();;
+            }
 
-            config["solve.models"] = std::to_string(num_levels).c_str();;
+            // Note - this is the upper limit, the solver may stop if an optimum is found
+            config["solve.models"] = std::to_string(max_num_levels).c_str();
             if (seed == 0)
             {
                 seed = std::random_device()();
             }
             config["solver.seed"] = std::to_string(seed).c_str();
+            config["solver.rand_freq"] = "1.0";  // Always choose randomly where possible
 
             if (prog)
             {
@@ -106,13 +110,13 @@ class LevelGenerator::LevelGenImpl
             solver->ground({{"base", {}}});
 
             std::ostringstream out;
-            for (auto& m : solver->solve())
+            for (const auto& m : solver->solve())
             {
                 const auto costs = m.cost();
-                const auto total_cost = std::accumulate(costs.cbegin(), costs.cend(), (int64_t) 0);
+                const auto total_cost = std::accumulate(costs.cbegin(), costs.cend(), (decltype(costs)::value_type)0);
 
                 const auto model_symbols = m.symbols();
-                std::vector<uint64_t> transformed_symbols(model_symbols.size(), 0);
+                std::vector<clingo_symbol_t> transformed_symbols(model_symbols.size(), (clingo_symbol_t)0);
                 std::transform(model_symbols.cbegin(), model_symbols.cend(), transformed_symbols.begin(),
                                [](const auto& sym) { return sym.to_c(); });
                 levels.emplace_back(total_cost, transformed_symbols);
@@ -121,7 +125,7 @@ class LevelGenerator::LevelGenImpl
                 {
                     out << " " << atom;
                 }
-                out << "\n";
+                out << std::endl;
             }
             solutions = out.str();
             return solutions.c_str();
@@ -140,12 +144,16 @@ class LevelGenerator::LevelGenImpl
             }));
         }
 
+        size_t num_levels() const {
+            return levels.size();
+        }
+
         friend class LevelGenerator;
 };
 
-LevelGenerator::LevelGenerator(unsigned num_levels, unsigned width, unsigned height, unsigned min_rooms,
-                               unsigned max_rooms, size_t seed, const char* program) : impl(
-        std::make_unique<LevelGenImpl>(num_levels, width, height, min_rooms, max_rooms, seed, program))
+LevelGenerator::LevelGenerator(unsigned max_num_levels, unsigned width, unsigned height, unsigned min_rooms,
+                               unsigned max_rooms, size_t seed, const char* program, unsigned num_threads) : impl(
+        std::make_unique<LevelGenImpl>(max_num_levels, width, height, min_rooms, max_rooms, seed, program, num_threads))
 {}
 
 LevelGenerator& LevelGenerator::operator=(LevelGenerator&& other) noexcept = default;
@@ -171,7 +179,12 @@ const char* LevelGenerator::solve_safe()
     }
 }
 
-Level* LevelGenerator::best_level() const
+Level* LevelGenerator::best_level()
 {
     return impl->best_level();
+}
+
+size_t LevelGenerator::num_levels() const
+{
+    return impl->num_levels();
 }

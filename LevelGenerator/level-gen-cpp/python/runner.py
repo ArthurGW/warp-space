@@ -3,12 +3,12 @@ import re
 import subprocess
 from time import time
 
-num_models = 11
-width = 18
-height = 15
-seed = 12345678
-min_rooms = 4
-max_rooms = 16
+num_models = 0
+width = 10
+height = 7
+seed = 1234
+min_rooms = 2
+max_rooms = 6
 
 args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
         f" {num_models} -c width={width} -c height={height}"
@@ -25,7 +25,7 @@ end = time()
 print(f'Solving took {end - start}s')
 
 data = ret.stdout
-if 'SATISFIABLE' not in data or 'UNSATISFIABLE' in data:
+if ('SATISFIABLE' not in data and 'OPTIMUM FOUND' not in data) or 'UNSATISFIABLE' in data:
     raise ChildProcessError(f'failed to generate level:{f'\n{ret.stderr}' if ret.stderr else ''}{f'\n{data}' if data else ''}')
 
 
@@ -39,7 +39,7 @@ def yield_ints(pattern, inp):
 
 print([opt[0] for opt in yield_ints(re.compile(r'Optimization: (\d+)'), data)])
 
-data = data[data.index(f'Answer: {num_models}'):]
+data = data[data.rfind(f'Answer: '):]
 print(re.findall(r'initial_room\(\d+,\d+,\d+,\d+\)', data))
 
 hull_square = re.compile(r'hull\((\d+),(\d+)\)')

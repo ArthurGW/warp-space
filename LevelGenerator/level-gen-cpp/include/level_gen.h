@@ -112,9 +112,9 @@ public:
     LevelPartIter<Room> rooms() const;
     LevelPartIter<Adjacency> adjacencies() const;
 
-    size_t num_map_squares() const;
-    size_t num_rooms() const;
-    size_t num_adjacencies() const;
+    size_t get_num_map_squares() const;
+    size_t get_num_rooms() const;
+    size_t get_num_adjacencies() const;
 
 private:
     CS_IGNORE class LevelImpl;  // Internal implementation class
@@ -124,13 +124,14 @@ private:
 class LEVEL_GEN_API LevelGenerator {
 public:
     LevelGenerator(
-        unsigned num_levels,
+        unsigned max_num_levels,
         unsigned width,
         unsigned height,
         unsigned min_rooms,
         unsigned max_rooms,
         size_t seed = 0,  // Indicates "unset"
-        const char *program = nullptr
+        const char *program = nullptr,
+        unsigned num_threads = 1
     );
     virtual ~LevelGenerator();
     CS_IGNORE LevelGenerator(LevelGenerator&& other) noexcept;
@@ -141,7 +142,8 @@ public:
     const char* solve();
     const char* solve_safe();
 
-    Level* best_level() const;
+    Level* best_level();
+    size_t num_levels() const;
 
 private:
     CS_IGNORE class LevelGenImpl;  // Internal implementation class

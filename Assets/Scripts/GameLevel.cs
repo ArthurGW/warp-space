@@ -1,23 +1,24 @@
-﻿using System;
-using LevelGenerator;
-using LevelGenerator.Extensions;
-using Unity.VisualScripting;
+﻿using LevelGenerator;
 using UnityEngine;
+using LevelGenerator.Extensions;
 
 public class GameLevel : MonoBehaviour
 {
     #region Level Generator Params
 
-    public uint numLevels;
     public uint width;
     public uint height;
     public uint minRooms;
     public uint maxRooms;
-    
+    public uint maxNumLevels;
+    public uint solverThreads;
+
     [Tooltip("seed=0 means use a random seed rather than a fixed value")]
     public uint seed = 0;
 
     private string _program;
+    
+    private Level _level;
     
     #endregion
 
@@ -25,6 +26,16 @@ public class GameLevel : MonoBehaviour
     {
         GenerateNewLevel();
         // Thread
+    }
+
+    private void OnDestroy()
+    {
+        Debug.Log("OnDestroy");
+        if (_level != null)
+        {
+            _level.Dispose();
+            _level = null;
+        }
     }
 
     public void GenerateNewLevel()
@@ -38,11 +49,11 @@ public class GameLevel : MonoBehaviour
             }
         }
         
-        var gen = new LevelGenerator.LevelGenerator(
-            numLevels, width, height, minRooms, maxRooms, seed, _program
+        using var gen = new LevelGenerator.LevelGenerator(
+            maxNumLevels, width, height, minRooms, maxRooms, seed, _program, solverThreads
         );
         Debug.Log(gen.SolveSafe());
-        PrintLevel(gen);
+        _level = gen.BestLevel();        
     }
 
     private void PrintLevel(LevelGenerator.LevelGenerator levelgen)
@@ -50,9 +61,9 @@ public class GameLevel : MonoBehaviour
         var lvl = levelgen.BestLevel();
         if (lvl != null)
         {
-            Debug.Log(lvl.NumMapSquares());
-            Debug.Log(lvl.NumRooms());
-            Debug.Log(lvl.NumAdjacencies());
+            Debug.Log(lvl.NumMapSquares);
+            Debug.Log(lvl.NumRooms);
+            Debug.Log(lvl.NumAdjacencies);
             
             foreach (var sq in lvl.MapSquares())
             {

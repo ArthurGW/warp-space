@@ -439,10 +439,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b85840acd4f64d168028a60fce39e0c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 7
   width: 10
+  height: 7
   minRooms: 2
   maxRooms: 6
+  maxNumLevels: 0
+  solverThreads: 1
   seed: 1234
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

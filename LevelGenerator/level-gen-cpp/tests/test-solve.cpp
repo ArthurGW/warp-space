@@ -22,12 +22,13 @@ SCENARIO( "level generators can be solved", "[levelgen][solve]" ) {
         WHEN( "solve() is called" ) {
             THEN( "a solution is returned" ) {
                 LevelGenerator gen{
-                    1, 10, 7, 2, 6, 1234
+                    2, 20, 9, 2, 6, 1234
                 };
                 const char* res;
                 REQUIRE_NOTHROW(res = gen.solve());
                 REQUIRE_FALSE(res == nullptr);
                 REQUIRE_FALSE(std::string(res).empty());
+                REQUIRE(gen.num_levels() == 2);
             }
 
             THEN( "a best level exists" ) {
@@ -38,23 +39,24 @@ SCENARIO( "level generators can be solved", "[levelgen][solve]" ) {
                 REQUIRE_FALSE(gen.best_level() == nullptr);
             }
 
-            THEN( "the best level has the correct count of symbols" ) {
+            THEN( "the best level has the correct count of symbols and and cost" ) {
                 LevelGenerator gen{
-                    1, 10, 7, 2, 6, 1234
+                    2, 10, 7, 2, 6, 1234
                 };
                 REQUIRE_NOTHROW(gen.solve());
 
                 const auto* level = gen.best_level();
 
                 // These values have been determined empirically
-                REQUIRE(level->num_map_squares() == 84UL);
-                REQUIRE(level->num_rooms() == 5UL);
-                REQUIRE(level->num_adjacencies() == 8UL);
+                REQUIRE(level->get_cost() == 5);
+                REQUIRE(level->get_num_map_squares() == 84UL);
+                REQUIRE(level->get_num_rooms() == 5UL);
+                REQUIRE(level->get_num_adjacencies() == 8UL);
             }
 
             THEN( "the best level can iterate over symbols" ) {
                 LevelGenerator gen{
-                        1, 10, 7, 2, 6, 1234
+                        2, 10, 7, 2, 6, 1234
                 };
                 REQUIRE_NOTHROW(gen.solve());
 
@@ -66,15 +68,15 @@ SCENARIO( "level generators can be solved", "[levelgen][solve]" ) {
                 REQUIRE(count_parts(level->adjacencies()) == 8UL);
 
                 // At least one square type per grid square plus some duplicates
-                REQUIRE(level->num_map_squares() > 10UL * 7UL);
+                REQUIRE(level->get_num_map_squares() > 10UL * 7UL);
 
                 // Num rooms within specified limits
-                REQUIRE(level->num_rooms() >= 2UL);
-                REQUIRE(level->num_rooms() <= 6UL);
+                REQUIRE(level->get_num_rooms() >= 2UL);
+                REQUIRE(level->get_num_rooms() <= 6UL);
 
                 // Every room must have at least one adjacency, theoretical limit is every room adjacent to every other
-                REQUIRE(level->num_adjacencies() >= level->num_rooms());
-                REQUIRE(level->num_adjacencies() <= level->num_rooms() * level->num_rooms());
+                REQUIRE(level->get_num_adjacencies() >= level->get_num_rooms());
+                REQUIRE(level->get_num_adjacencies() <= level->get_num_rooms() * level->get_num_rooms());
             }
         }
     }
