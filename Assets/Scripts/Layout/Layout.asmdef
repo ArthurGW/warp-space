@@ -1,0 +1,16 @@
+{
+    "name": "Layout",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2a87d07bb98753b49ae78f414ad3c558"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

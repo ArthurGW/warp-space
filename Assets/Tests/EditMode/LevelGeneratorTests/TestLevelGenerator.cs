@@ -1,15 +1,13 @@
 using System;
 using System.Collections;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using UnityEngine.TestTools;
 using LevelGenerator;
 using LevelGenerator.Extensions;
+using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
-namespace LevelGeneratorTests
+namespace Tests.EditMode.LevelGeneratorTests
 {
     public class TestLevelGenerator
     {

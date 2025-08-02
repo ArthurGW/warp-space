@@ -1,5 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <ui:VisualElement>
-        <ui:Button text="Generate New Level" name="generate" style="-unity-text-align: middle-center; margin-top: 4px; margin-right: 0; margin-bottom: 0; margin-left: 2px;" />
-    </ui:VisualElement>
-</ui:UXML>
