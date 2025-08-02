@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8915947831145331141}
   - component: {fileID: 8496709464574427193}
   m_Layer: 0
-  m_Name: CornerWall2
+  m_Name: CornerWallE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 9156661857683413596}
   - component: {fileID: 6132964110806850960}
   m_Layer: 0
-  m_Name: CornerWall1
+  m_Name: CornerWallN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
