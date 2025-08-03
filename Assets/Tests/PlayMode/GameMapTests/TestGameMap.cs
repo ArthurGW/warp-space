@@ -1,11 +1,12 @@
 ﻿using System.Collections;
-using System.Threading.Tasks;
 using Layout;
-using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace Tests.PlayMode.GameMapTests
 {
+    /// <summary>
+    /// GameMap subclass to enable testing by implementing IMonoBehaviourTest
+    /// </summary>
     public class GameMapToTest : GameMap, IMonoBehaviourTest
     {
         public bool IsTestFinished => isGenerated;

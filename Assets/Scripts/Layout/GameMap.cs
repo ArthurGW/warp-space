@@ -29,12 +29,15 @@ namespace Layout
         private List<MapSquare> _squares;
         private List<Room> _rooms;
         private Dictionary<ulong, HashSet<ulong>> _adjacencies;
-        protected bool isGenerated = false;
+        
+        // Flag for testing to notify when generation has finised
+        protected bool isGenerated { private set; get; }
     
         #endregion
 
         private void Awake()
         {
+            isGenerated = false;
             try
             {
                 var prog = Resources.Load<TextAsset>("programs/ship") as TextAsset;

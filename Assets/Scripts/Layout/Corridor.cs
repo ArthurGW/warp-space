@@ -1,10 +1,11 @@
+using System;
 using UnityEngine;
 
 namespace Layout
 {
     public class Corridor : MonoBehaviour
     {
-        public Directions selected;
+        public CardinalDirections selected;
         
         void Awake()
         {
@@ -15,7 +16,7 @@ namespace Layout
         {
             foreach (var child in GetComponentsInChildren<CorridorEntrance>())
             {
-                child.SetOpen(selected.HasFlag((Directions)child.direction));
+                child.SetOpen(selected.HasFlag((CardinalDirections)child.direction));
             }
         }
     }

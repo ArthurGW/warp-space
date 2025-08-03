@@ -4,14 +4,34 @@ namespace Layout
 {
     public class CorridorEntrance : MonoBehaviour
     {
-        public Direction direction;
+        public CardinalDirection direction;
         private bool _isOpen;
-
+        
+        [SerializeField]
+        private GameObject openPrefab;
+        
+        [SerializeField]
+        private GameObject blockedPrefab;
+        
         public void SetOpen(bool isOpen)
         {
-            _isOpen = isOpen;
-            transform.Find("Blocked").gameObject.SetActive(!isOpen);
-            transform.Find("Open").gameObject.SetActive(isOpen);
+            if (_isOpen != isOpen || transform.childCount == 0)
+            {
+                for (var i = transform.childCount - 1; i >= 0; --i)
+                {
+                    var child = transform.GetChild(i).gameObject;
+                    child.SetActive(false);
+#if UNITY_EDITOR
+                    DestroyImmediate(child);
+#else
+                    Destroy(child);
+#endif
+                }
+                _isOpen = isOpen;
+                var prefab = isOpen ? openPrefab : blockedPrefab;
+                var obj = Instantiate(prefab, transform, false);
+                obj.transform.SetLocalPositionAndRotation(Vector3.zero, Directions.DirectionToRotation(direction));
+            }
         }
     }
 }
