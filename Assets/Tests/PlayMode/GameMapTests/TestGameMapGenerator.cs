@@ -5,14 +5,18 @@ using UnityEngine.TestTools;
 namespace Tests.PlayMode.GameMapTests
 {
     /// <summary>
-    /// GameMap subclass to enable testing by implementing IMonoBehaviourTest
+    /// GameMapGenerator subclass to enable testing by implementing IMonoBehaviourTest
     /// </summary>
-    public class GameMapToTest : GameMap, IMonoBehaviourTest
+    public class GameMapGeneratorToTest : GameMapGenerator, IMonoBehaviourTest
     {
-        public bool IsTestFinished => IsGenerated;
+        private bool _isGenerated = false;
+        
+        public bool IsTestFinished => _isGenerated;
 
         private void OnEnable()
         {
+            onMapGenerated.AddListener(OnGenerated);
+            
             // Set valid values, this happens before the parent class' Start method starts level generation
             width = 10;
             height = 7;
@@ -22,15 +26,19 @@ namespace Tests.PlayMode.GameMapTests
             solverThreads = 1;
             seed = 1234;
         }
-        
+
+        private void OnGenerated(MapResult _)
+        {
+            _isGenerated = true;
+        }
     }
     
-    public class TestGameMap
+    public class TestGameMapGenerator
     {
         [UnityTest]
         public IEnumerator GameMapGeneratesLevel()
         {
-            yield return new MonoBehaviourTest<GameMapToTest>();
+            yield return new MonoBehaviourTest<GameMapGeneratorToTest>();
         }
     }
 }

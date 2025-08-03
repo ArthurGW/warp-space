@@ -1,6 +1,7 @@
+using Layout;
 using UnityEngine;
 
-namespace Layout
+namespace MapObjects
 {
     public class CorridorEntrance : MonoBehaviour
     {
@@ -17,20 +18,11 @@ namespace Layout
         {
             if (_isOpen != isOpen || transform.childCount == 0)
             {
-                for (var i = transform.childCount - 1; i >= 0; --i)
-                {
-                    var child = transform.GetChild(i).gameObject;
-                    child.SetActive(false);
-#if UNITY_EDITOR
-                    DestroyImmediate(child);
-#else
-                    Destroy(child);
-#endif
-                }
+                Utils.DestroyAllChildren(transform);
                 _isOpen = isOpen;
                 var prefab = isOpen ? openPrefab : blockedPrefab;
                 var obj = Instantiate(prefab, transform, false);
-                obj.transform.SetLocalPositionAndRotation(Vector3.zero, Directions.DirectionToRotation(direction));
+                obj.transform.SetLocalPositionAndRotation(Vector3.zero, direction.ToRotation());
             }
         }
     }

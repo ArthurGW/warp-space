@@ -30,7 +30,7 @@ namespace Layout
     /// <summary>
     /// Enum holding all 8 major compass directions, made from combinations of cardinal directions
     /// </summary>
-    public enum CompassDirections : ushort
+    public enum CompassDirection : ushort
     {
         North = CardinalDirection.North,
         NorthEast = CardinalDirection.North |  CardinalDirection.East,
@@ -41,15 +41,25 @@ namespace Layout
         West = CardinalDirection.West,
         NorthWest = CardinalDirection.West | CardinalDirection.North
     }
-
+    
     public static class Directions
     {
+        private static CompassDirection[] _diagonalDirections = {
+            CompassDirection.NorthEast, CompassDirection.SouthEast, CompassDirection.SouthWest, CompassDirection
+                .NorthWest
+        };
+
+        public static bool IsDiagonal(this CompassDirection direction)
+        {
+            return _diagonalDirections.Contains(direction);
+        }
+        
         /// <summary>
         /// Convert a direction into a rotation about the y-axis from North as 0 degrees
         /// </summary>
         /// <param name="direction">Direction of rotation</param>
         /// <returns>Rotation from North</returns>
-        public static Quaternion DirectionToRotation(CompassDirections direction)
+        public static Quaternion ToRotation(this CompassDirection direction)
         {
             if ((ushort)direction == 0)
             {
@@ -60,7 +70,7 @@ namespace Layout
             var flagDirection = (CardinalDirections)direction;
             var directions = Enum.GetValues(typeof(CardinalDirections)).Cast<CardinalDirections>()
                 .Where(d => flagDirection.HasFlag(d))
-                .Select(d => DirectionToRotation((CardinalDirection)d))
+                .Select(d => ((CardinalDirection)d).ToRotation())
                 .ToArray();
             return directions.Length switch
             {
@@ -70,7 +80,7 @@ namespace Layout
             };
         }
         
-        public static Quaternion DirectionToRotation(CardinalDirection direction)
+        public static Quaternion ToRotation(this CardinalDirection direction)
         {
             return direction switch
             {

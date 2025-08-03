@@ -6,9 +6,9 @@ using LevelGenerator.Extensions;
 using UnityEngine;
 using UnityEngine.Events;
 
+// Allows the record class below - see https://stackoverflow.com/a/64749403/8280782
 namespace System.Runtime.CompilerServices
 {
-    // Allows the record class below
     internal class IsExternalInit { }
 }
 
@@ -33,12 +33,12 @@ namespace Layout
         
         public override string ToString() => $"RoomData({Id}: {X},{Y},{Width},{Height},{IsCorridor})";
 
-        public ulong Id { get; init; }
-        public uint X { get; init; }
-        public uint Y { get; init; }
-        public uint Width { get; init; }
-        public uint Height { get; init; }
-        public bool IsCorridor { get; init; }
+        public ulong Id { get; }
+        public uint X { get; }
+        public uint Y { get; }
+        public uint Width { get; }
+        public uint Height { get; }
+        public bool IsCorridor { get; }
     }
     
     public readonly struct MapSquareData
@@ -55,16 +55,26 @@ namespace Layout
             return new MapSquareData(sq.X, sq.Y, sq.Type);
         }
         
+        public static explicit operator MapSquareData(RoomData rm)
+        {
+            if (!rm.IsCorridor)
+            {
+                throw new InvalidCastException("can only convert corridor rooms to MapSquareData");
+            }
+            
+            return new MapSquareData(rm.X, rm.Y, SquareType.Corridor);
+        }
+        
         public override string ToString() => $"MapSquareData({X},{Y},{Type})";
 
-        public uint X { get; init; }
-        public uint Y { get; init; }
-        public SquareType Type { get; init; }
+        public uint X { get; }
+        public uint Y { get; }
+        public SquareType Type { get; }
     }
     
     public record MapResult(List<MapSquareData> Squares, List<RoomData> Rooms, Dictionary<ulong, HashSet<ulong>> Adjacencies);
     
-    public class GameMap : MonoBehaviour
+    public class GameMapGenerator : MonoBehaviour
     {
         public UnityEvent<MapResult> onMapGenerated;
         
@@ -88,15 +98,11 @@ namespace Layout
         private List<MapSquareData> _squares;
         private List<RoomData> _rooms;
         private Dictionary<ulong, HashSet<ulong>> _adjacencies;
-        
-        // Flag for testing to notify when generation has finished
-        protected bool IsGenerated { private set; get; }
     
         #endregion
 
         private void Awake()
         {
-            IsGenerated = false;
             onMapGenerated ??= new UnityEvent<MapResult>();
             LoadProgram();
         }
@@ -107,17 +113,11 @@ namespace Layout
             {
                 if (_program == null)
                 {
-                    Debug.LogError("GameMap.Start finished early due to null program");
+                    Debug.LogError("GameMapGenerator.Start finished early due to null program");
                     return;  // Solving won't be possible
                 }
-            
-                // Run the slow level generation stage in a background thread
-                await Awaitable.BackgroundThreadAsync();
-                GenerateNewLevel();
-                await Awaitable.MainThreadAsync();
+                await GenerateNewLevel();
                 
-                onMapGenerated.Invoke(new MapResult(_squares, _rooms, _adjacencies));
-                IsGenerated = true;
             }
             catch (Exception e)
             {
@@ -142,7 +142,7 @@ namespace Layout
             }
         }
 
-        public void GenerateNewLevel()
+        public async Awaitable GenerateNewLevel()
         {
             _squares = new List<MapSquareData>();
             _rooms = new List<RoomData>();
@@ -150,24 +150,31 @@ namespace Layout
         
             if (_program == null)
             {
-                Debug.LogError("GameMap.GenerateNewLevel finished early due to null program");
+                Debug.LogError("GameMapGenerator.GenerateNewLevel finished early due to null program");
                 return;
             }
+            
+            // Run the slow level generation stage in a background thread
+            await Awaitable.BackgroundThreadAsync();
+            
+            var newSquares = new List<MapSquareData>();
+            var newRooms = new List<RoomData>();
+            var newAdjacencies = new Dictionary<ulong, HashSet<ulong>>();
         
             using var gen = new LevelGenerator.LevelGenerator(
                 maxNumLevels, width, height, minRooms, maxRooms, seed, _program, solverThreads
             );
-            _solution = gen.SolveSafe();
+            var newSolution = gen.SolveSafe();
             using var level = gen.BestLevel();
             if (level == null)
             {
-                Debug.LogError("GameMap.GenerateNewLevel finished early due to null level");
+                Debug.LogError("GameMapGenerator.GenerateNewLevel finished early due to null level");
                 return;
             }
 
             // Retrieve all the data into local copies, so the unmanaged data can be destroyed safely
             using var squares = level.MapSquares();
-            _squares = squares.GetEnumerable().Select(
+            newSquares = squares.GetEnumerable().Select(
                 sq =>
                 {
                     var data = (MapSquareData)sq;
@@ -177,7 +184,7 @@ namespace Layout
             ).ToList();
 
             using var rooms = level.Rooms();
-            _rooms = rooms.GetEnumerable().Select(
+            newRooms = rooms.GetEnumerable().Select(
                 rm =>
                 {
                     var data = (RoomData)rm;
@@ -189,14 +196,22 @@ namespace Layout
             using var adjacencies = level.Adjacencies();
             foreach (var adjacency in adjacencies)
             {
-                if (!_adjacencies.TryGetValue(adjacency.FirstId, out var adjacentTo))
+                if (!newAdjacencies.TryGetValue(adjacency.FirstId, out var adjacentTo))
                 {
                     adjacentTo = new HashSet<ulong>();
-                    _adjacencies.Add(adjacency.FirstId, adjacentTo);
+                    newAdjacencies.Add(adjacency.FirstId, adjacentTo);
                 }
                 adjacentTo.Add(adjacency.SecondId);
                 adjacency.Dispose();
             }
+            
+            await Awaitable.MainThreadAsync();
+            _squares  = newSquares;
+            _rooms = newRooms;
+            _adjacencies = newAdjacencies;
+            _solution = newSolution;
+            
+            onMapGenerated.Invoke(new MapResult(_squares, _rooms, _adjacencies));
         }
 
         public void PrintArrays()

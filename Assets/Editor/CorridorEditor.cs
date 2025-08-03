@@ -1,11 +1,12 @@
 ﻿using Layout;
+using MapObjects;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 namespace Editor
 {
-    [CustomEditor(typeof(Corridor))]
+    [CustomEditor(typeof(CorridorController))]
     public class CorridorEditor : UnityEditor.Editor
     {
         public override VisualElement CreateInspectorGUI()
@@ -20,7 +21,7 @@ namespace Editor
 
         private void UpdateEntrances()
         {
-            ((Corridor)target).UpdateEntrances();
+            ((CorridorController)target).UpdateEntrances();
         } 
     }
 }
