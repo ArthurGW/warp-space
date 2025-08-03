@@ -21,7 +21,9 @@ namespace Editor
         private void GenerateNewLevel()
         {
             var level = (GameMap)target;
+            level.LoadProgram();
             level.GenerateNewLevel();
+            level.PrintArrays();
         }
     }
 }

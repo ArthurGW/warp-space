@@ -9,7 +9,7 @@ namespace Tests.PlayMode.GameMapTests
     /// </summary>
     public class GameMapToTest : GameMap, IMonoBehaviourTest
     {
-        public bool IsTestFinished => isGenerated;
+        public bool IsTestFinished => IsGenerated;
 
         private void OnEnable()
         {

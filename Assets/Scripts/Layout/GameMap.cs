@@ -4,11 +4,70 @@ using System.Linq;
 using LevelGenerator;
 using LevelGenerator.Extensions;
 using UnityEngine;
+using UnityEngine.Events;
+
+namespace System.Runtime.CompilerServices
+{
+    // Allows the record class below
+    internal class IsExternalInit { }
+}
 
 namespace Layout
 {
+    public readonly struct RoomData
+    {
+        private RoomData(ulong id, uint x, uint y, uint width, uint height, bool isCorridor)
+        {
+            Id = id;
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+            IsCorridor = isCorridor;
+        }
+
+        public static explicit operator RoomData(Room rm)
+        {
+            return new RoomData(rm.RoomId, rm.X, rm.Y, rm.W, rm.H, rm.IsCorridor);
+        }
+        
+        public override string ToString() => $"RoomData({Id}: {X},{Y},{Width},{Height},{IsCorridor})";
+
+        public ulong Id { get; init; }
+        public uint X { get; init; }
+        public uint Y { get; init; }
+        public uint Width { get; init; }
+        public uint Height { get; init; }
+        public bool IsCorridor { get; init; }
+    }
+    
+    public readonly struct MapSquareData
+    {
+        private MapSquareData(uint x, uint y, SquareType squareType)
+        {
+            X = x;
+            Y = y;
+            Type = squareType;
+        }
+
+        public static explicit operator MapSquareData(MapSquare sq)
+        {
+            return new MapSquareData(sq.X, sq.Y, sq.Type);
+        }
+        
+        public override string ToString() => $"MapSquareData({X},{Y},{Type})";
+
+        public uint X { get; init; }
+        public uint Y { get; init; }
+        public SquareType Type { get; init; }
+    }
+    
+    public record MapResult(List<MapSquareData> Squares, List<RoomData> Rooms, Dictionary<ulong, HashSet<ulong>> Adjacencies);
+    
     public class GameMap : MonoBehaviour
     {
+        public UnityEvent<MapResult> onMapGenerated;
+        
         #region Level Generator Params
 
         public uint width;
@@ -23,21 +82,52 @@ namespace Layout
         [Tooltip("seed=0 means use a random seed rather than a fixed value")]
         public uint seed = 0;
 
-    private string _program;
+        private string _program;
         private string _solution;
     
-        private List<MapSquare> _squares;
-        private List<Room> _rooms;
+        private List<MapSquareData> _squares;
+        private List<RoomData> _rooms;
         private Dictionary<ulong, HashSet<ulong>> _adjacencies;
         
-        // Flag for testing to notify when generation has finised
-        protected bool isGenerated { private set; get; }
+        // Flag for testing to notify when generation has finished
+        protected bool IsGenerated { private set; get; }
     
         #endregion
 
         private void Awake()
         {
-            isGenerated = false;
+            IsGenerated = false;
+            onMapGenerated ??= new UnityEvent<MapResult>();
+            LoadProgram();
+        }
+
+        private async void Start()
+        {
+            try
+            {
+                if (_program == null)
+                {
+                    Debug.LogError("GameMap.Start finished early due to null program");
+                    return;  // Solving won't be possible
+                }
+            
+                // Run the slow level generation stage in a background thread
+                await Awaitable.BackgroundThreadAsync();
+                GenerateNewLevel();
+                await Awaitable.MainThreadAsync();
+                
+                onMapGenerated.Invoke(new MapResult(_squares, _rooms, _adjacencies));
+                IsGenerated = true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
+
+        public void LoadProgram()
+        {
+            _program = null;
             try
             {
                 var prog = Resources.Load<TextAsset>("programs/ship") as TextAsset;
@@ -52,58 +142,15 @@ namespace Layout
             }
         }
 
-    private async void Start()
-        {
-            try
-            {
-                if (_program == null)
-                {
-                    Debug.LogError("GameMap.Start finished early due to null program");
-                    return;  // Solving won't be possible
-                }
-            
-                // Run the slow level generation stage in a background thread
-                await Awaitable.BackgroundThreadAsync();
-                GenerateNewLevel();
-                await Awaitable.MainThreadAsync();
-                isGenerated = true;
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-            }
-        }
-
-        private void OnDestroy()
-        {
-            ClearArrays();
-        }
-
-        private void ClearArrays()
-        {
-            if (_squares != null)
-            {
-                _squares.ForEach(x => x.Dispose());
-                _squares = null;        
-            }
-            if (_rooms != null)
-            {
-                _rooms.ForEach(x => x.Dispose());
-                _rooms = null;
-            }
-            // No need to dispose of the adjacencies, they are primitive values here
-            _adjacencies = null;
-        }
-
         public void GenerateNewLevel()
         {
-            ClearArrays();  // Clear arrays and ensure contents are disposed of
-            _squares = new List<MapSquare>();
-            _rooms = new List<Room>();
+            _squares = new List<MapSquareData>();
+            _rooms = new List<RoomData>();
             _adjacencies = new Dictionary<ulong, HashSet<ulong>>();
         
             if (_program == null)
             {
+                Debug.LogError("GameMap.GenerateNewLevel finished early due to null program");
                 return;
             }
         
@@ -112,13 +159,32 @@ namespace Layout
             );
             _solution = gen.SolveSafe();
             using var level = gen.BestLevel();
+            if (level == null)
+            {
+                Debug.LogError("GameMap.GenerateNewLevel finished early due to null level");
+                return;
+            }
 
-            // Retrieve all the data into local copies, so the generator can be destroyed safely
+            // Retrieve all the data into local copies, so the unmanaged data can be destroyed safely
             using var squares = level.MapSquares();
-            _squares = squares.GetEnumerable().ToList();
+            _squares = squares.GetEnumerable().Select(
+                sq =>
+                {
+                    var data = (MapSquareData)sq;
+                    sq.Dispose();
+                    return data;
+                }
+            ).ToList();
 
             using var rooms = level.Rooms();
-            _rooms = rooms.GetEnumerable().ToList();
+            _rooms = rooms.GetEnumerable().Select(
+                rm =>
+                {
+                    var data = (RoomData)rm;
+                    rm.Dispose();
+                    return data;
+                }
+            ).ToList();
         
             using var adjacencies = level.Adjacencies();
             foreach (var adjacency in adjacencies)
@@ -133,13 +199,13 @@ namespace Layout
             }
         }
 
-        private void PrintArrays()
+        public void PrintArrays()
         {
-            _squares.ForEach(sq => Debug.Log(sq.AsString()));
-            _rooms.ForEach(rm => Debug.Log(rm.AsString()));
+            _squares.ForEach(sq => Debug.Log(sq));
+            _rooms.ForEach(rm => Debug.Log(rm));
             foreach (var adj in _adjacencies)
             {
-                Debug.Log($"Adjacency({adj.Key}: {String.Join(',', adj.Value)})");
+                Debug.Log($"AdjacencyData({adj.Key}: {string.Join(',', adj.Value)})");
             }
         }
 
