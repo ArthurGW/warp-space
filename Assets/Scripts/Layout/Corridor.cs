@@ -7,7 +7,17 @@ namespace Layout
     {
         public CardinalDirections selected;
         
-        void Awake()
+        private void Awake()
+        {
+            UpdateEntrances();
+        }
+
+        private void Start()
+        {
+            UpdateEntrances();
+        }
+
+        private void Reset()
         {
             UpdateEntrances();
         }
