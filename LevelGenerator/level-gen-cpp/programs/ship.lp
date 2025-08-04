@@ -4,7 +4,7 @@
 grid(1..width, 1..height).
 
 % Outer space - two triangular regions around the nose of the ship
-in_space(X, Y) :- grid(X, Y), X <= height / 2, Y <= height / 2 - X + 2.
+in_space(X, Y) :- grid(X, Y), X <= height / 2, Y < height / 2 - X + 2.
 in_space(X, Y) :- grid(X, Y), X <= height / 2, Y > height / 2 + X - 1.
 
 % Also, all edges of the map, squares that are on the grid and border non-grid positions
@@ -12,9 +12,6 @@ in_space(X, Y) :- grid(X, Y), not grid(X,Y-1; X,Y+1; X-1,Y; X+1,Y).
 
 % The ship's hull - all squares that border outer space, and are not space themselves
 hull(X, Y) :- grid(X, Y), not in_space(X, Y), in_space(X,Y-1; X,Y+1; X-1,Y; X+1,Y).
-
-% Also, fill in the single internal square at the nose, otherwise it would always have to be a corridor
-hull(X, Y) :- grid(X, Y), hull(X-1, Y), hull(X, Y-1), hull(X, Y+1).
 
 % Finally, all remaining squares are internal ship squares
 ship(X, Y) :- grid(X, Y), not in_space(X, Y), not hull(X, Y).
@@ -40,15 +37,11 @@ room_square(X, Y, X, Y, 1, 1) :- room(X, Y, 1, 1).
 
 %* Reachability determination *%
 
-% Arbitrarily pick a room to start from - minimum row in Y, minimum X within that row
-%min_room_Y(YY) :- YY = #min { Y : room(_, Y, _, _); Y : corridor(X, Y) }.
-%min_room_X(XX) :- XX = #min { X : room(X, Y, _, _), min_room_Y(Y); X : corridor(X, Y), min_room_Y(Y)  }.
-%min_room(X, Y) :- min_room_X(X), min_room_Y(Y).
+% Arbitrarily pick a room to start from
 1 { initial_room(X, Y, W, H) : room(X, Y, W, H) } 1.
 
 % Now trace reachability from there - start with the arbitrary room as reachable
 reachable(room(X, Y, W, H)) :- initial_room(X, Y, W, H).
-%reachable(room(X, Y, W, H)) :- min_room(X, Y), room(X, Y, W, H).
 
 % A room is reachable if it is adjacent to another reachable room
 reachable(room(X1, Y1, W1, H1)) :- room(X1, Y1, W1, H1), reachable(room(X2, Y2, W2, H2)), adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)).
@@ -67,8 +60,8 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 
 %* Constraints *%
 
-% height must be an odd number, so there is a central point for the nose of the ship
-:- height \ 2 = 0.
+% height must be an even number (i.e. height modulo 2 == 1 is not allowed), so there is a central nose point
+:- height \ 2 = 1.
 
 % No ship square can be part of more than one room
 :- 2 { room_square(X, Y, _, _, _, _)  }, ship(X, Y).
@@ -79,10 +72,10 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 % Every room must be reachable
 :- room(X1, Y1, W1, H1), not reachable(room(X1, Y1, W1, H1)).
 
-% Every (ship) row and column must have some part of a room in it (-4/-5 to account for space and hull around ship)
+% Every (ship) row and column must have some part of a room in it (-4 to account for space and hull around ship)
 % This reads as "count the number of X values that are both in a room and in a ship square, and reject if there are not
 % enough of them (and the same for Y values)
-:- #count { 1,X : room_square(X, _, _, _, _, _), ship(X, _) } < width - 5.
+:- #count { 1,X : room_square(X, _, _, _, _, _), ship(X, _) } < width - 4.
 :- #count { 1,Y : room_square(_, Y, _, _, _, _), ship(_, Y) } < height - 4.
 
 % No more than 3/4 of the (ship) map is filled (roughly, not accounting for nose section)
@@ -103,9 +96,6 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 #show hull/2.
 #show room_square/6.
 #show corridor/2.
-%#show min_room_X/1.
-%#show min_room_Y/1.
-%#show min_room/2.
 %#show initial_room/4.
 %#show reachable/1.
 #show room/4.

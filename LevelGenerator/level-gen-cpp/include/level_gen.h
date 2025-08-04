@@ -21,14 +21,17 @@
 #include <utility>
 #include <vector>
 
-enum class CS_FLAGS SquareType
+/// Types of map squares
+/// These numbers are in precedence order, i.e. where a position has more than one type, the higher-numbered type takes
+/// priority
+enum class CS_FLAGS SquareType : uint8_t
 {
     Unknown = 1 << 0,
     Space = 1 << 1,
-    Hull = 1 << 2,
-    Ship = 1 << 3,
-    Corridor = 1 << 4,
-    Room = 1 << 5,
+    Ship = 1 << 2,
+    Hull = 1 << 3,
+    Room = 1 << 4,
+    Corridor = 1 << 5,
 };
 
 struct LEVEL_GEN_API Room {
@@ -112,7 +115,7 @@ class LEVEL_GEN_API Level {
         // Note - to avoid exposing clingo in the header here, we use a vector of clingo's numeric symbol representation,
         // rather than a more specific type
 
-        CS_IGNORE Level(int64_t cost, const std::vector<uint64_t>& data);
+        CS_IGNORE Level(unsigned width, unsigned height, int64_t cost, const std::vector<uint64_t>& data);
         CS_IGNORE Level(Level && other) noexcept;
         CS_IGNORE Level& operator=(Level && other) = delete;
         CS_IGNORE Level(const Level& other) = delete;
@@ -121,6 +124,8 @@ class LEVEL_GEN_API Level {
         virtual ~Level();
 
         int get_cost() const;
+        unsigned get_width() const;
+        unsigned get_height() const;
 
         LevelPartIter<MapSquare> map_squares() const;
 

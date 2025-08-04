@@ -3,11 +3,11 @@ import subprocess
 from collections import defaultdict
 from time import time
 
-num_models = 0
-width = 10
-height = 7
+num_models = 4
+width = 8
+height = 8
 seed = 1234
-min_rooms = 2
+min_rooms = 1
 max_rooms = 6
 
 args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"

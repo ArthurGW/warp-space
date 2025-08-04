@@ -120,7 +120,7 @@ class LevelGenerator::LevelGenImpl
                 std::vector<clingo_symbol_t> transformed_symbols(model_symbols.size(), (clingo_symbol_t) 0);
                 std::transform(model_symbols.cbegin(), model_symbols.cend(), transformed_symbols.begin(),
                                [](const auto& sym) { return sym.to_c(); });
-                levels.emplace_back(total_cost, transformed_symbols);
+                levels.emplace_back(width, height, total_cost, transformed_symbols);
                 out << "Model: ";
                 for (auto& atom : m.symbols())
                 {
