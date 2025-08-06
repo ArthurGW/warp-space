@@ -5,6 +5,7 @@ namespace MapObjects
 {
     public class CorridorController : MonoBehaviour
     {
+        [EnumButtons]
         public CardinalDirections openDirections;
         
         private void Awake()

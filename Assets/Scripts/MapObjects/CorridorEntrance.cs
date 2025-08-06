@@ -6,7 +6,9 @@ namespace MapObjects
     public class CorridorEntrance : MonoBehaviour
     {
         public CardinalDirection direction;
-        private bool _isOpen;
+        
+        [SerializeField, HideInInspector]
+        private bool isOpen;
         
         [SerializeField]
         private GameObject openPrefab;
@@ -14,12 +16,12 @@ namespace MapObjects
         [SerializeField]
         private GameObject blockedPrefab;
         
-        public void SetOpen(bool isOpen)
+        public void SetOpen(bool newOpen)
         {
-            if (_isOpen != isOpen || transform.childCount == 0)
+            if (newOpen != isOpen || transform.childCount == 0)
             {
-                Utils.DestroyAllChildren(transform);
-                _isOpen = isOpen;
+                ObjectUtils.DestroyAllChildren(transform);
+                isOpen = newOpen;
                 var prefab = isOpen ? openPrefab : blockedPrefab;
                 var obj = Instantiate(prefab, transform, false);
                 obj.transform.SetLocalPositionAndRotation(Vector3.zero, direction.ToRotation());

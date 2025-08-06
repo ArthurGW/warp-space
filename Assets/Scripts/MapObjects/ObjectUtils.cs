@@ -1,14 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MapObjects
 {
-    public static class SquareSize
-    {
-        public static readonly float X = 10f;
-        public static readonly float Y = 10f;
-    }
-    
-    public static class Utils
+    public static class ObjectUtils
     {
         public static void DestroyAllChildren(Transform parent)
         {

@@ -1,59 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Layout;
 using LevelGenerator;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using static Layout.LayoutUtils;
 
 namespace MapObjects
 {
     /// <summary>
     /// Class to convert an abstract generated map into a collection of managed GameObjects
     /// </summary>
+    [RequireComponent(typeof(HullFactory))]
     public class GameMapController : MonoBehaviour
     {
         [SerializeField]
         private GameObject corridorPrefab;
         
         [SerializeField]
-        private GameObject hullPrefab;
-        
-        [SerializeField]
         private GameObject shipSquarePrefab;
         
         [SerializeField]
         private GameObject roomPrefab;
+        
+        private HullFactory _hullFactory;
 
-        private static Vector3 SquareToPosition(MapSquareData square)
+        private void Awake()
         {
-            // Note - we are choosing -x in map coordinates as +x in *abstract* map coordinates
-            // This is so that +y == +z, and moves "down" the viewport based on our camera angle
-            return new Vector3(-SquareSize.X * square.X, 0f, SquareSize.Y * square.Y);
+            _hullFactory = GetComponent<HullFactory>();
         }
 
-        private static Tuple<uint, uint> SquareToGrid(MapSquareData square)
+        public void OnMapGenerationFailed()
         {
-            return new Tuple<uint, uint>(square.X, square.Y);
+            Debug.Log("GameMapController.OnMapGenerationFailed");
+            ObjectUtils.DestroyAllChildren(transform);
+            Debug.Log("GameMapController.OnMapGenerationFailed Done");
         }
 
         public void OnMapGenerated(MapResult result)
         {
-            Utils.DestroyAllChildren(transform);
+            _hullFactory ??= GetComponent<HullFactory>();
+            
+            Debug.Log("GameMapController.OnMapGenerated");
+            ObjectUtils.DestroyAllChildren(transform);
             var roomById = result.Rooms.ToDictionary(rm => rm.Id);
-            var usedLocations = new HashSet<Tuple<uint, uint>>();
+            Debug.Log("GameMapController.OnMapGenerated Room Dict");
+            var usedLocations = new HashSet<(uint, uint)>();
 
-            foreach (var square in result.Squares.Where(sq => sq.Type == SquareType.Hull))
-            {
-                var obj = Instantiate(hullPrefab, transform, false);
-                obj.transform.SetLocalPositionAndRotation(SquareToPosition(square), Quaternion.identity);
-                usedLocations.Add(SquareToGrid(square));
-                var i = Random.Range(0, roomById.Count);
-                var hullController = obj.GetComponent<HullController>();
-                hullController.direction = CompassDirection.SouthEast;
-                hullController.UpdateStructure();
-            }
-
+            _hullFactory.ConstructHull(result.Squares, result.Width, result.Height);
+            
+            Debug.Log("GameMapController.OnMapGenerated Parsing Corridors");
             foreach (var rm in result.Rooms.Where(rm => rm.IsCorridor))
             {
                 var obj = Instantiate(corridorPrefab, transform, false);
@@ -65,6 +62,7 @@ namespace MapObjects
                 corridorController.UpdateEntrances();
             }
             
+            Debug.Log("GameMapController.OnMapGenerated Parsing ship squares");
             // Now process ship squares, where we haven't already put other content, to avoid z-fighting
             foreach (var square in result.Squares
                          .Where(sq => sq.Type == SquareType.Ship && !usedLocations.Contains(SquareToGrid(sq)))
@@ -73,6 +71,7 @@ namespace MapObjects
                 var obj = Instantiate(shipSquarePrefab, transform, false);
                 obj.transform.SetLocalPositionAndRotation(SquareToPosition(square), Quaternion.identity);
             }
+            Debug.Log("GameMapController.OnMapGenerated Done");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Layout;
+using NUnit.Framework;
 using UnityEngine.TestTools;
 
 namespace Tests.PlayMode.GameMapTests
@@ -9,21 +10,22 @@ namespace Tests.PlayMode.GameMapTests
     /// </summary>
     public class GameMapGeneratorToTest : GameMapGenerator, IMonoBehaviourTest
     {
-        private bool _isGenerated = false;
+        private bool _isGenerated;
         
         public bool IsTestFinished => _isGenerated;
 
         private void OnEnable()
         {
             onMapGenerated.AddListener(OnGenerated);
+            onMapGenerationFailed.AddListener(OnFailed);
             
             // Set valid values, this happens before the parent class' Start method starts level generation
             width = 10;
-            height = 7;
-            minRooms = 2;
+            height = 8;
+            minRooms = 1;
             maxRooms = 6;
             maxNumLevels = 2;
-            solverThreads = 1;
+            solverThreads = 2;
             seed = 1234;
         }
 
@@ -31,12 +33,17 @@ namespace Tests.PlayMode.GameMapTests
         {
             _isGenerated = true;
         }
+
+        private static void OnFailed()
+        {
+            Assert.Fail("Failed to generate map");
+        }
     }
     
     public class TestGameMapGenerator
     {
         [UnityTest]
-        public IEnumerator GameMapGeneratesLevel()
+        public IEnumerator GameMapGeneratesMap()
         {
             yield return new MonoBehaviourTest<GameMapGeneratorToTest>();
         }
