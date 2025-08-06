@@ -12,12 +12,9 @@ namespace MapObjects
     /// <summary>
     /// Class to convert an abstract generated map into a collection of managed GameObjects
     /// </summary>
-    [RequireComponent(typeof(HullFactory))]
+    [RequireComponent(typeof(HullFactory), typeof(CorridorFactory))]
     public class GameMapController : MonoBehaviour
     {
-        [SerializeField]
-        private GameObject corridorPrefab;
-        
         [SerializeField]
         private GameObject shipSquarePrefab;
         
@@ -25,10 +22,14 @@ namespace MapObjects
         private GameObject roomPrefab;
         
         private HullFactory _hullFactory;
+        private CorridorFactory _corridorFactory;
+        private RoomFactory _roomFactory;
 
         private void Awake()
         {
             _hullFactory = GetComponent<HullFactory>();
+            _corridorFactory = GetComponent<CorridorFactory>();
+            _roomFactory = GetComponent<RoomFactory>();
         }
 
         public void OnMapGenerationFailed()
@@ -41,35 +42,39 @@ namespace MapObjects
         public void OnMapGenerated(MapResult result)
         {
             _hullFactory ??= GetComponent<HullFactory>();
+            _corridorFactory ??= GetComponent<CorridorFactory>();
+            _roomFactory ??= GetComponent<RoomFactory>();
             
             Debug.Log("GameMapController.OnMapGenerated");
             ObjectUtils.DestroyAllChildren(transform);
-            var roomById = result.Rooms.ToDictionary(rm => rm.Id);
+            var roomsById = result.Rooms.ToDictionary(rm => rm.Id);
             Debug.Log("GameMapController.OnMapGenerated Room Dict");
-            var usedLocations = new HashSet<(uint, uint)>();
+            // var usedLocations = new HashSet<(uint, uint)>();
 
-            _hullFactory.ConstructHull(result.Squares, result.Width, result.Height);
+            _hullFactory.ConstructHull(result.Squares,
+                result.Width,
+                result.Height);
             
             Debug.Log("GameMapController.OnMapGenerated Parsing Corridors");
-            foreach (var rm in result.Rooms.Where(rm => rm.IsCorridor))
-            {
-                var obj = Instantiate(corridorPrefab, transform, false);
-                var asSquare = (MapSquareData)rm;
-                obj.transform.SetLocalPositionAndRotation(SquareToPosition(asSquare), Quaternion.identity);
-                usedLocations.Add(SquareToGrid(asSquare));
-                var corridorController = obj.GetComponent<CorridorController>();
-                corridorController.openDirections = CardinalDirections.North | CardinalDirections.East | CardinalDirections.South;
-                corridorController.UpdateEntrances();
-            }
             
+            _corridorFactory.ConstructCorridors(result.Rooms.Where(rm => rm.IsCorridor),
+                roomsById,
+                result.Adjacencies);
+            _roomFactory.ConstructRooms(result.Rooms.Where(rm => !rm.IsCorridor),
+                roomsById,
+                result.Adjacencies);
             Debug.Log("GameMapController.OnMapGenerated Parsing ship squares");
-            // Now process ship squares, where we haven't already put other content, to avoid z-fighting
+            // Finally, process ship squares to fill in the gaps
+            // We could work out the gaps here, but we have Ship squares so we may as well use them
             foreach (var square in result.Squares
-                         .Where(sq => sq.Type == SquareType.Ship && !usedLocations.Contains(SquareToGrid(sq)))
+                         .Where(sq => sq.Type == SquareType.Ship)
                      )
             {
-                var obj = Instantiate(shipSquarePrefab, transform, false);
-                obj.transform.SetLocalPositionAndRotation(SquareToPosition(square), Quaternion.identity);
+                var obj = Instantiate(shipSquarePrefab,
+                    transform,
+                    false);
+                obj.transform.SetLocalPositionAndRotation(SquareToPosition(square),
+                    Quaternion.identity);
             }
             Debug.Log("GameMapController.OnMapGenerated Done");
         }

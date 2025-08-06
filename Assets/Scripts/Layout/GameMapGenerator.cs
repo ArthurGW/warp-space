@@ -55,16 +55,8 @@ namespace Layout
             return new MapSquareData(sq.X, sq.Y, sq.Type);
         }
         
-        public static explicit operator MapSquareData(RoomData rm)
-        {
-            if (!rm.IsCorridor)
-            {
-                throw new InvalidCastException("can only convert corridor rooms to MapSquareData");
-            }
-            
-            return new MapSquareData(rm.X, rm.Y, SquareType.Corridor);
-        }
-        
+        public static explicit operator MapSquareData(RoomData rm) 
+            => new MapSquareData(rm.X, rm.Y, rm.IsCorridor ? SquareType.Corridor : SquareType.Room);
         public override string ToString() => $"MapSquareData({X},{Y},{Type})";
 
         public uint X { get; }

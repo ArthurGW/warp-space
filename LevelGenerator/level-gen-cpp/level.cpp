@@ -120,7 +120,7 @@ class Level::LevelImpl
                 const auto key = square_pos_to_serial_index(sqx, sqy, width);
                 const auto pair = square_lookup.emplace(key, type);
                 // If key already existed, insert if new type has higher precedence
-                if (!pair.second && (uint8_t)pair.first->first < (uint8_t)type)
+                if (!pair.second && (uint8_t)pair.first->second < (uint8_t)type)
                 {
                     square_lookup[key] = type;
                 }

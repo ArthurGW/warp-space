@@ -130,6 +130,8 @@ GameObject:
   - component: {fileID: 97023961}
   - component: {fileID: 97023960}
   - component: {fileID: 97023962}
+  - component: {fileID: 97023964}
+  - component: {fileID: 97023963}
   m_Layer: 0
   m_Name: GameMapController
   m_TagString: Untagged
@@ -149,7 +151,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8267a374029472daab3721934050c89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  corridorPrefab: {fileID: 8995690838197578871, guid: a05d8afc090cb284e8912570b8fa9a47, type: 3}
   shipSquarePrefab: {fileID: 8995690838197578871, guid: 47932e84a26c31f4da607fe0cd189e8c, type: 3}
   roomPrefab: {fileID: 8995690838197578871, guid: 4eff8b3f75854554da6dabc13f7110b3, type: 3}
 --- !u!4 &97023961
@@ -186,6 +187,32 @@ MonoBehaviour:
   - {fileID: 1660734069740102835, guid: c7f21419d0681264b8f100ba71280931, type: 3}
   - {fileID: 5054919071042720383, guid: 2a32c1be30351a643bb8284018ecd8d4, type: 3}
   - {fileID: 6388566707491564087, guid: 6a4596bb9dc4bdb44b4f559d91827e3e, type: 3}
+--- !u!114 &97023963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 97023959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6026524a705f49a5afdd72ce9ba13b97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomPrefab: {fileID: 973170945115902952, guid: c61db1edf2cb6e94ba917cdb341abe57, type: 3}
+--- !u!114 &97023964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 97023959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a6d419ec88492585b08a4b5690993d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  corridorPrefab: {fileID: 4627973333298245822, guid: a05d8afc090cb284e8912570b8fa9a47, type: 3}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,8 +249,8 @@ Camera:
   m_GameObject: {fileID: 330585543}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -272,8 +299,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.19597803, y: 0.7976531, z: -0.45566326, w: -0.34309357}
-  m_LocalPosition: {x: -22.151386, y: 27.212505, z: 10.404831}
+  m_LocalRotation: {x: 0.4479616, y: 0.19455145, z: -0.1005741, w: 0.8668132}
+  m_LocalPosition: {x: 36.22418, y: 40.45868, z: -71.84766}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

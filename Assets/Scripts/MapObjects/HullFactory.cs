@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Layout;
 using LevelGenerator;
@@ -16,7 +15,6 @@ namespace MapObjects
         public void ConstructHull(List<MapSquareData> squares, uint mapWidth, uint mapHeight)
         {
             Debug.Log("HullFactory.ConstructHull");
-            ObjectUtils.DestroyAllChildren(transform);
             
             var mapPositions = squares.ToDictionary(sq => (sq.X, sq.Y), sq => sq.Type);
             foreach (var hullPos in mapPositions.Where(kv => kv.Value == SquareType.Hull))
