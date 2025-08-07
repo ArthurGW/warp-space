@@ -18,24 +18,23 @@ namespace MapObjects
         private GameObject doorPrefab;
         
         private RoomData _roomData;
-        private HashSet<(ulong RoomId, uint InternalX, uint InternalY, CardinalDirection direction)> _doors;
 
-        public void SetData(RoomData data, HashSet<(ulong RoomId, uint InternalX, uint InternalY, CardinalDirection direction)> doors)
+        public void SetData(RoomData data, ILookup<ulong, Door> doorsByRoomId)
         {
             _roomData = data;
-            _doors = doors;
-            foreach (var x in Enumerable.Range(0, (int)data.Width))
+            foreach (var x in Enumerable.Range(1, (int)data.Width))
             {
-                foreach (var y in Enumerable.Range(0, (int)data.Height))
+                foreach (var y in Enumerable.Range(1, (int)data.Height))
                 {
-                    InstantiateSquare(((uint)x, (uint)y));
+                    InstantiateSquare(((uint)x, (uint)y), doorsByRoomId);
                 }
             }
         }
 
-        private void InstantiateSquare((uint X, uint Y) pos)
+        private void InstantiateSquare((uint X, uint Y) pos, ILookup<ulong, Door> doorsByRoomId)
         {
-            var localPosition = GridToPosition(pos);
+            // Don't offset the 1,1 square (locally)
+            var localPosition = GridToPosition((pos.X - 1, pos.Y - 1));
             
             // Floor
             var floor = Instantiate(floorPrefab, transform, false);
@@ -43,13 +42,13 @@ namespace MapObjects
             
             // Walls and doors
             var walls = new List<CardinalDirection>();
-            if (pos.X == 0U) walls.Add(CardinalDirection.West);
-            if (pos.Y == 0U) walls.Add(CardinalDirection.North);
-            if (pos.X == _roomData.Width - 1)  walls.Add(CardinalDirection.East);
-            if (pos.Y == _roomData.Height - 1)  walls.Add(CardinalDirection.South);
+            if (pos.X == 1U) walls.Add(CardinalDirection.West);
+            if (pos.Y == 1U) walls.Add(CardinalDirection.North);
+            if (pos.X == _roomData.Width)  walls.Add(CardinalDirection.East);
+            if (pos.Y == _roomData.Height)  walls.Add(CardinalDirection.South);
             foreach (var wallDir in walls)
             {
-                var prefab = _doors.Contains((_roomData.Id, pos.X, pos.Y, wallDir)) ? doorPrefab : wallPrefab;
+                var prefab = doorsByRoomId[_roomData.Id].Contains(new Door(pos.X, pos.Y, wallDir)) ? doorPrefab : wallPrefab;
                 var wall = Instantiate(prefab, transform, false);
                 wall.transform.SetLocalPositionAndRotation(localPosition, wallDir.ToRotation());
             }

@@ -11,40 +11,27 @@ namespace MapObjects
         [SerializeField]
         private CorridorController corridorPrefab;
         
-        public void ConstructCorridors(IEnumerable<RoomData> corridors, Dictionary<ulong, RoomData> roomsById, Dictionary<ulong, HashSet<ulong>> adjacencies)
+        public void ConstructCorridors(IEnumerable<RoomData> corridors, ILookup<ulong, Door> doorsByRoomId)
         {
             Debug.Log("CorridorFactory.ConstructCorridors");
             foreach (var corridor in corridors)
             {
                 var obj = Instantiate(corridorPrefab.gameObject, transform, false);
                 var asSquare = (MapSquareData)corridor;
-                obj.transform.localPosition = SquareToPosition(asSquare);
+                obj.transform.localPosition = asSquare.ToPosition();
                 var corridorController = obj.GetComponent<CorridorController>();
-                corridorController.openDirections = GetOpenings(corridor, roomsById, adjacencies);
+                corridorController.openDirections = GetOpenings(corridor, doorsByRoomId);
                 corridorController.UpdateEntrances();
             }
             
             Debug.Log("CorridorFactory.ConstructCorridors Done");
         }
 
-        private static CardinalDirections GetOpenings(RoomData corridor, Dictionary<ulong, RoomData> roomsById,
-            Dictionary<ulong, HashSet<ulong>> adjacencies)
+        private static CardinalDirections GetOpenings(RoomData corridor, ILookup<ulong, Door> doorsByRoomId)
         {
-            return adjacencies[corridor.Id]
-                .Select(adj => roomsById[adj])
-                .Select(room =>
-                {
-                    if (room.X == corridor.X + 1)
-                    {
-                        return CardinalDirections.East;
-                    }
-                    if (room.X + room.Width == corridor.X)
-                    {
-                        return CardinalDirections.West;
-                    }
-                    return room.Y == corridor.Y + 1 ? CardinalDirections.South : CardinalDirections.North;
-                })
-                .Aggregate((CardinalDirections)0, (total, add) => total | add);
+            return doorsByRoomId[corridor.Id]
+                .Select(door => door.Direction)
+                .Aggregate((CardinalDirections)0, (total, add) => total | (CardinalDirections)add);
         }
     }
 }

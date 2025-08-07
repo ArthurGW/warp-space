@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Layout.LayoutUtils;
 using LevelGenerator;
 using LevelGenerator.Extensions;
 using UnityEngine;
 using UnityEngine.Events;
 
-// Allows the record class below - see https://stackoverflow.com/a/64749403/8280782
+// Allows using record classes - see https://stackoverflow.com/a/64749403/8280782
 namespace System.Runtime.CompilerServices
 {
     internal class IsExternalInit { }
@@ -32,6 +33,8 @@ namespace Layout
         }
         
         public override string ToString() => $"RoomData({Id}: {X},{Y},{Width},{Height},{IsCorridor})";
+        
+        public Vector3 ToPosition() => GridToPosition((X, Y));
 
         public ulong Id { get; }
         public uint X { get; }
@@ -56,8 +59,11 @@ namespace Layout
         }
         
         public static explicit operator MapSquareData(RoomData rm) 
-            => new MapSquareData(rm.X, rm.Y, rm.IsCorridor ? SquareType.Corridor : SquareType.Room);
+            => new(rm.X, rm.Y, rm.IsCorridor ? SquareType.Corridor : SquareType.Room);
+        
         public override string ToString() => $"MapSquareData({X},{Y},{Type})";
+        
+        public Vector3 ToPosition() => GridToPosition((X, Y));
 
         public uint X { get; }
         public uint Y { get; }

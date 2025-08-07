@@ -23,8 +23,6 @@ namespace Layout
             (0, 1),
             (1, 1)
         };
-
-        public static Vector3 SquareToPosition(MapSquareData square) => GridToPosition((square.X, square.Y));
         
         public static Vector3 GridToPosition((uint X, uint Y) pos)
         {
