@@ -30,6 +30,11 @@ namespace Layout
             // This is so that +x in map coordinates is +x in grid coordinates
             return new Vector3(SquareSize.X * pos.X, 0f, -SquareSize.Y * pos.Y);
         }
+        
+        public static Vector3 GridToSize((uint X, uint Y) size)
+        {
+            return new Vector3(SquareSize.X * size.X, 0f, SquareSize.Y * size.Y);
+        }
 
         public static (uint X, uint Y) Offset(this (uint X, uint Y) pos, (int offX, int offY) offset) =>
             pos.Offset(offset.offX, offset.offY);

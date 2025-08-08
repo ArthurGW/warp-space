@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 42eaf2c5dbb13dc498f15df5a5b05fda
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 10992
+  packageName: Galactic Green Skybox
+  packageVersion: 1.1
+  assetPath: Assets/GalacticGreen/Material/GalacticGreenMaterial.mat
+  uploadId: 28873

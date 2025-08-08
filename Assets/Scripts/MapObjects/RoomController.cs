@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace MapObjects
 {
+    [RequireComponent(typeof(BoxCollider))]
     public class RoomController : MonoBehaviour
     {
         [SerializeField]
@@ -18,6 +19,13 @@ namespace MapObjects
         private GameObject doorPrefab;
         
         private RoomData _roomData;
+        private BoxCollider _entryDetector;
+        private Light[]  _lights;
+
+        private void Awake()
+        {
+            _entryDetector = GetComponent<BoxCollider>();
+        }
 
         public void SetData(RoomData data, ILookup<ulong, Door> doorsByRoomId)
         {
@@ -28,6 +36,24 @@ namespace MapObjects
                 {
                     InstantiateSquare(((uint)x, (uint)y), doorsByRoomId);
                 }
+            }
+            
+            var roomSize = GridToSize((_roomData.Width, _roomData.Height));
+            roomSize.y = 5f;
+            _entryDetector.size = roomSize;
+            var roomCenter = GridToPosition(((_roomData.Width - 1), (_roomData.Height - 1))) / 2f;
+            roomCenter.y = 2.5f;
+            _entryDetector.center = roomCenter;
+            
+            // Turn off the lights - the entry detector will turn them back on
+            _lights = GetComponentsInChildren<Light>();
+            var roomTop = new Vector3(roomCenter.x, 5f, roomCenter.z);
+            var lightRange = _entryDetector.size.magnitude;
+            foreach (var child in _lights)
+            {
+                child.enabled = false;
+                child.transform.localPosition = roomTop;
+                child.range = lightRange;
             }
         }
 
@@ -51,6 +77,19 @@ namespace MapObjects
                 var prefab = doorsByRoomId[_roomData.Id].Contains(new Door(pos.X, pos.Y, wallDir)) ? doorPrefab : wallPrefab;
                 var wall = Instantiate(prefab, transform, false);
                 wall.transform.SetLocalPositionAndRotation(localPosition, wallDir.ToRotation());
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!other.gameObject.CompareTag("Player")) return;
+            
+            // Player has entered room, turn on the lights
+            Destroy(_entryDetector);  // This is a one-time operation, no need to keep detecting
+            _entryDetector = null;
+            foreach (var child in _lights)
+            {
+                child.enabled = true;
             }
         }
     }
