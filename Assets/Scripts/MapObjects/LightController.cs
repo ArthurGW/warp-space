@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Layout;
 using static Layout.LayoutUtils;
@@ -15,6 +16,7 @@ namespace MapObjects
         private void Awake()
         {
             _entryDetector = GetComponent<BoxCollider>();
+            _lights = GetComponentsInChildren<Light>();
         }
 
         public void SetUpLights(RoomData? data)
@@ -46,12 +48,16 @@ namespace MapObjects
             if (!other.gameObject.CompareTag("Player")) return;
             
             // Player has entered room, turn on the lights
-            Destroy(_entryDetector);  // This is a one-time operation, no need to keep detecting
-            _entryDetector = null;
+            _entryDetector.enabled = false;  // This is a one-time operation, no need to keep detecting
             foreach (var child in _lights)
             {
                 child.enabled = true;
             }
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            OnTriggerEnter(other);
         }
     }
 }

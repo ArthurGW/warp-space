@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5234769035127615923
 Transform:
@@ -45,5 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 1
+  isOpen: 0
   openPrefab: {fileID: 3589278821131189538, guid: a3b3b77ee50f17449a81c8744ae3fc86, type: 3}
   blockedPrefab: {fileID: 3589278821131189538, guid: 42fdda1662f43ac4abadf4e5b1d876ac, type: 3}
