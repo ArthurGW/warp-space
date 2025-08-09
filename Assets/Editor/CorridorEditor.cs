@@ -21,7 +21,7 @@ namespace Editor
 
         private void UpdateEntrances()
         {
-            ((CorridorController)target).UpdateEntrances();
+            ((CorridorController)target).UpdateCorridor();
         } 
     }
 }

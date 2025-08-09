@@ -21,7 +21,7 @@ namespace MapObjects
                 obj.transform.localPosition = asSquare.ToPosition();
                 var corridorController = obj.GetComponent<CorridorController>();
                 corridorController.openDirections = GetOpenings(corridor, doorsByRoomId);
-                corridorController.UpdateEntrances();
+                corridorController.UpdateCorridor();
             }
             
             Debug.Log("CorridorFactory.ConstructCorridors Done");

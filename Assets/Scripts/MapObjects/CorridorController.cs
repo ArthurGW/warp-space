@@ -3,28 +3,24 @@ using UnityEngine;
 
 namespace MapObjects
 {
+    [RequireComponent(typeof(LightController))]
     public class CorridorController : MonoBehaviour
     {
         [EnumButtons]
         public CardinalDirections openDirections;
         
+        private LightController _lightController;
+        
         private void Awake()
         {
-            UpdateEntrances();
+            _lightController = GetComponent<LightController>();
+            UpdateCorridor();
         }
 
-        private void Start()
+        public void UpdateCorridor()
         {
-            UpdateEntrances();
-        }
-
-        private void Reset()
-        {
-            UpdateEntrances();
-        }
-
-        public void UpdateEntrances()
-        {
+            _lightController ??= GetComponent<LightController>();
+            _lightController.SetUpLights(null);
             foreach (var child in GetComponentsInChildren<CorridorEntrance>())
             {
                 child.SetOpen(openDirections.HasFlag((CardinalDirections)child.direction));
