@@ -115,7 +115,7 @@ namespace Layout
             try
             {
                 Debug.Log("GameMapGenerator Start");
-                await GenerateNewLevel();
+                // await GenerateNewLevel();
                 
             }
             catch (Exception e)

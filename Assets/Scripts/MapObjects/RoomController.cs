@@ -29,6 +29,8 @@ namespace MapObjects
 
         public void SetData(RoomData data, ILookup<ulong, Door> doorsByRoomId)
         {
+            _entryDetector ??= GetComponent<BoxCollider>();
+            
             _roomData = data;
             foreach (var x in Enumerable.Range(1, (int)data.Width))
             {
@@ -47,13 +49,9 @@ namespace MapObjects
             
             // Turn off the lights - the entry detector will turn them back on
             _lights = GetComponentsInChildren<Light>();
-            var roomTop = new Vector3(roomCenter.x, 5f, roomCenter.z);
-            var lightRange = _entryDetector.size.magnitude;
             foreach (var child in _lights)
             {
                 child.enabled = false;
-                child.transform.localPosition = roomTop;
-                child.range = lightRange;
             }
         }
 
