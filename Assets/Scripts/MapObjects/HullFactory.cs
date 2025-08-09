@@ -4,17 +4,19 @@ using Layout;
 using LevelGenerator;
 using UnityEngine;
 using static Layout.LayoutUtils;
+using static MapObjects.ObjectUtils;
 
 namespace MapObjects
 {
     public class HullFactory : MonoBehaviour
     {
-
         public List<HullPiece> hullPieces;
-        
+
         public void ConstructHull(List<MapSquareData> squares, uint mapWidth, uint mapHeight)
         {
             Debug.Log("HullFactory.ConstructHull");
+
+            DestroyAllChildren(transform);
             
             var mapPositions = squares.ToDictionary(sq => (sq.X, sq.Y), sq => sq.Type);
             var index = 0U;

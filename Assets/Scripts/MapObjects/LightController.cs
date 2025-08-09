@@ -24,7 +24,10 @@ namespace MapObjects
             if (data.HasValue)
             {
                 var roomData = data.Value;
-                _entryDetector ??= GetComponent<BoxCollider>();
+
+#if UNITY_EDITOR
+                _entryDetector = GetComponent<BoxCollider>();
+#endif
 
                 var roomSize = GridToSize((roomData.Width, roomData.Height));
                 roomSize.y = 5f; // Standard room height

@@ -2,7 +2,7 @@
 using System.Linq;
 using Layout;
 using UnityEngine;
-using static Layout.LayoutUtils;
+using static MapObjects.ObjectUtils;
 
 namespace MapObjects
 {
@@ -10,13 +10,17 @@ namespace MapObjects
     {
         [SerializeField]
         private CorridorController corridorPrefab;
+
+        [SerializeField] private Transform corridorContainer;
         
         public void ConstructCorridors(IEnumerable<RoomData> corridors, ILookup<ulong, Door> doorsByRoomId)
         {
             Debug.Log("CorridorFactory.ConstructCorridors");
+            DestroyAllChildren(corridorContainer);
+            
             foreach (var corridor in corridors)
             {
-                var obj = Instantiate(corridorPrefab.gameObject, transform, false);
+                var obj = Instantiate(corridorPrefab.gameObject, corridorContainer, false);
                 var asSquare = (MapSquareData)corridor;
                 obj.transform.localPosition = asSquare.ToPosition();
                 var corridorController = obj.GetComponent<CorridorController>();

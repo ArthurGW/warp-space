@@ -105,8 +105,8 @@ namespace Layout
         {
             Debug.Log("GameMapGenerator Awake");
             IsGenerating = false;
-            onMapGenerated ??= new UnityEvent<MapResult>();
-            onMapGenerationFailed ??= new UnityEvent();
+            onMapGenerated = new UnityEvent<MapResult>();
+            onMapGenerationFailed = new UnityEvent();
             LoadProgram();
         }
 

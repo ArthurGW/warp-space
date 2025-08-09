@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace MapObjects
@@ -18,11 +17,6 @@ namespace MapObjects
                 Object.Destroy(child);
 #endif
             }
-        }
-
-        public static void DestroyAllChildren(GameObject parent)
-        {
-            DestroyAllChildren(parent.transform);
         }
     }
 }

@@ -21,8 +21,8 @@ namespace Editor
 
         private void Awake()
         {
-            _onMapFailed ??= OnMapGenerationFailed;
-            _onMapGenerated ??= OnMapGenerated;
+            _onMapFailed = OnMapGenerationFailed;
+            _onMapGenerated = OnMapGenerated;
             
             var level = (GameMapGenerator)target;
             level.onMapGenerated.AddListener(_onMapGenerated);

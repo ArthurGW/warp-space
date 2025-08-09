@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Layout;
 using UnityEngine;
+using static MapObjects.ObjectUtils;
 
 namespace MapObjects
 {
     public readonly struct Door : IEquatable<Door>
     {
-        public readonly uint InternalX;
-        public readonly uint InternalY;
+        private readonly uint _internalX;
+        private readonly uint _internalY;
         public readonly CardinalDirection Direction;
 
         public Door(uint internalX, uint internalY, CardinalDirection direction)
         {
-            InternalX = internalX;
-            InternalY = internalY;
+            _internalX = internalX;
+            _internalY = internalY;
             Direction = direction;
         }
 
@@ -27,13 +28,13 @@ namespace MapObjects
         public bool Equals(Door other)
         {
             return Direction == other.Direction
-                   && InternalX == other.InternalX 
-                   && InternalY == other.InternalY;
+                   && _internalX == other._internalX 
+                   && _internalY == other._internalY;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(InternalX, InternalY, (byte)Direction);
+            return HashCode.Combine(_internalX, _internalY, (byte)Direction);
         }
 
         public static bool operator ==(Door left, Door right)
@@ -56,6 +57,8 @@ namespace MapObjects
         
         private CorridorFactory _corridorFactory;
 
+        [SerializeField] private Transform roomContainer;
+
         private ILookup<ulong, Door> _doorsByRoomId;
 
         private System.Random _doorRandom;
@@ -71,13 +74,17 @@ namespace MapObjects
         public void ConstructRooms(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById, Dictionary<ulong, HashSet<ulong>> adjacencies)
         {
             Debug.Log("RoomFactory.ConstructRooms");
+            DestroyAllChildren(roomContainer);
+            
             InitDoors(rooms, roomsById, adjacencies);
             
-            _corridorFactory ??= GetComponent<CorridorFactory>();
+#if UNITY_EDITOR
+            _corridorFactory = GetComponent<CorridorFactory>();
+#endif
             _corridorFactory.ConstructCorridors(rooms.Where(rm => rm.IsCorridor), _doorsByRoomId);
             foreach (var room in rooms.Where(rm => !rm.IsCorridor))
             {
-                var obj = Instantiate(roomPrefab.gameObject, transform, false);
+                var obj = Instantiate(roomPrefab.gameObject, roomContainer, false);
                 obj.transform.localPosition = room.ToPosition();
                 var roomController = obj.GetComponent<RoomController>();
                 roomController.SetData(room, _doorsByRoomId);
@@ -91,7 +98,10 @@ namespace MapObjects
         {
             var seen = new HashSet<(ulong firstId, ulong secondId)>();
             var doors = new List<(ulong roomId, Door door)>();
-            _doorRandom ??= new System.Random(doorSeed);  
+            
+#if UNITY_EDITOR
+            _doorRandom = new System.Random(doorSeed);
+#endif
 
             foreach (var room in rooms) 
             {
@@ -118,7 +128,7 @@ namespace MapObjects
                 var choices = Enumerable.Range((int)room.Y, (int)room.Height)
                     .Intersect(Enumerable.Range((int)adjRoom.Y, (int)adjRoom.Height))
                     .ToArray();
-                var doorPoint = (uint)_doorRandom.Next(choices.Min(), choices.Max());
+                var doorPoint = (uint)_doorRandom.Next(choices.Min(), choices.Max() + 1);
                 var directions = room.X < adjRoom.X 
                     ? (rm: CardinalDirection.East, adj: CardinalDirection.West) 
                     : (rm: CardinalDirection.West, adj: CardinalDirection.East);

@@ -19,7 +19,9 @@ namespace MapObjects
 
         public void UpdateCorridor()
         {
-            _lightController ??= GetComponent<LightController>();
+#if UNITY_EDITOR
+            _lightController = GetComponent<LightController>();
+#endif
             _lightController.SetUpLights(null);
             foreach (var child in GetComponentsInChildren<CorridorEntrance>())
             {

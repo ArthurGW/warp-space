@@ -39,7 +39,9 @@ namespace MapObjects
                 }
             }
             
-            _lightController ??= GetComponent<LightController>();
+#if UNITY_EDITOR
+            _lightController = GetComponent<LightController>();
+#endif
             _lightController.SetUpLights(data);
         }
 

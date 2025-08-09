@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+﻿using System.Linq;
 using Layout;
 using LevelGenerator;
 using UnityEngine;
-using static Layout.LayoutUtils;
 
 namespace MapObjects
 {
     /// <summary>
     /// Class to convert an abstract generated map into a collection of managed GameObjects
     /// </summary>
-    [RequireComponent(typeof(HullFactory), typeof(RoomFactory))]
     public class GameMapController : MonoBehaviour
     {
         [SerializeField]
@@ -21,10 +16,12 @@ namespace MapObjects
         private HullFactory _hullFactory;
         private RoomFactory _roomFactory;
 
+        [SerializeField] private Transform shipSquareContainer;
+
         private void Awake()
         {
-            _hullFactory = GetComponent<HullFactory>();
-            _roomFactory = GetComponent<RoomFactory>();
+            _hullFactory = GetComponentInChildren<HullFactory>();
+            _roomFactory = GetComponentInChildren<RoomFactory>();
         }
 
         public void OnMapGenerationFailed()
@@ -36,11 +33,12 @@ namespace MapObjects
 
         public void OnMapGenerated(MapResult result)
         {
-            _hullFactory ??= GetComponent<HullFactory>();
-            _roomFactory ??= GetComponent<RoomFactory>();
+#if UNITY_EDITOR
+            _hullFactory = GetComponentInChildren<HullFactory>();
+            _roomFactory = GetComponentInChildren<RoomFactory>();
+#endif
             
             Debug.Log("GameMapController.OnMapGenerated");
-            ObjectUtils.DestroyAllChildren(transform);
             var roomsById = result.Rooms.ToDictionary(rm => rm.Id);
             Debug.Log("GameMapController.OnMapGenerated Room Dict");
             // var usedLocations = new HashSet<(uint, uint)>();
@@ -62,11 +60,9 @@ namespace MapObjects
                      )
             {
                 var obj = Instantiate(shipSquarePrefab,
-                    transform,
+                    shipSquareContainer,
                     false);
-                obj.transform.SetLocalPositionAndRotation(
-                    square.ToPosition(),
-                    Quaternion.identity);
+                obj.transform.localPosition = square.ToPosition();
             }
             Debug.Log("GameMapController.OnMapGenerated Done");
         }
