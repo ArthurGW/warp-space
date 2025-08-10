@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Player
@@ -21,6 +20,7 @@ namespace Player
             if (!InputSystem.actions) return;
             _move = InputSystem.actions.FindAction("Player/Move");
             _look = InputSystem.actions.FindAction("Player/Look");
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void Update()

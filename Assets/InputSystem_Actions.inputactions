@@ -494,17 +494,6 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "84df3683-1ea3-4313-9a0a-e656b3a4856a",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Zoom",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
                     "name": "1D Axis",
                     "id": "ece0e6c9-a940-47b6-a0e2-cc5c1644e2b4",
                     "path": "1DAxis",
@@ -521,7 +510,7 @@
                     "path": "<Mouse>/scroll/up",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Zoom",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -532,7 +521,7 @@
                     "path": "<Mouse>/scroll/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Zoom",
                     "isComposite": false,
                     "isPartOfComposite": true
