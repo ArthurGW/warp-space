@@ -158,7 +158,7 @@ LevelGenerator {
                unsigned min_rooms,
                unsigned max_rooms,
                size_t seed = 0,  // Indicates "unset"
-               const char* program = nullptr,
+               bool load_prog_from_file = false,  // Load ASP program from file, for easier iteration
                unsigned num_threads = 1
         );
 

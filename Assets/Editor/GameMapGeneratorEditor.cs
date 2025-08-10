@@ -70,7 +70,6 @@ namespace Editor
         {
             await Awaitable.MainThreadAsync();
             var level = (GameMapGenerator)target;
-            level.LoadProgram();
             await level.GenerateNewLevel();
         }
     }

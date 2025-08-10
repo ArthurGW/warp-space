@@ -11,26 +11,12 @@ namespace Tests.EditMode.LevelGeneratorTests
 {
     public class TestLevelGenerator
     {
-        private string _program;
-
-        [UnitySetUp]
-        public IEnumerator SetUp()
-        {
-            var request = Resources.LoadAsync("programs/ship");
-            yield return request;
-            var program = request.asset as TextAsset;
-            if (program != null)
-            {
-                _program = program.text;
-            }
-        }
-        
         [Test]
         public void LevelGeneratorCanBeCreated()
         {
             // Act
             using var genUnderTest = new LevelGenerator.LevelGenerator(
-                1, 1, 2, 3, 4, 5, _program, 1
+                1, 1, 2, 3, 4, 5, false, 1
             );
             
             // Assert
@@ -42,7 +28,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             var genUnderTest = new LevelGenerator.LevelGenerator(
-                1, 1, 2, 3, 4, 5, _program, 1
+                1, 1, 2, 3, 4, 5, false, 1
             );
             
             // Act - checking that no exceptions happen during the native dtor
@@ -58,7 +44,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             using var genUnderTest = new LevelGenerator.LevelGenerator(
-                2, 10, 8, 1, 6, 1234, _program, 2
+                2, 10, 8, 1, 6, 1234, false, 2
             );
             
             // Act
@@ -75,7 +61,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             using var genUnderTest = new LevelGenerator.LevelGenerator(
-                3, 12, 12, 2, 8, 1234, _program, 1
+                3, 12, 12, 2, 8, 1234, false, 1
             );
             
             // Act
@@ -91,7 +77,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             using var gen = new LevelGenerator.LevelGenerator(
-                1, 8, 8, 1, 6, 1234, _program, 1
+                1, 8, 8, 1, 6, 1234, false, 1
             );
             // Act
             gen.Solve();
@@ -146,7 +132,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             using var gen = new LevelGenerator.LevelGenerator(
-                1, 8, 8, 1, 6, 1234, _program, 1
+                1, 8, 8, 1, 6, 1234, false, 1
             );
             
             // Act
@@ -167,7 +153,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             using var gen = new LevelGenerator.LevelGenerator(
-                1, 8, 8, 1, 6, 1234, _program, 1
+                1, 8, 8, 1, 6, 1234, false, 1
             );
             
             // Act

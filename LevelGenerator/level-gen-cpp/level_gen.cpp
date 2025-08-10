@@ -1,4 +1,5 @@
 #include "level_gen.h"
+#include "program.h"
 #include "clingo.hh"
 
 #include <memory>
@@ -7,11 +8,12 @@
 #include <numeric>
 #include <random>
 
+
 class LevelGenerator::LevelGenImpl
 {
     public:
         LevelGenImpl(unsigned max_num_levels, unsigned width, unsigned height, unsigned min_rooms, unsigned max_rooms,
-                size_t seed, const char* prog, unsigned num_threads)
+                size_t seed, bool load_prog_from_file, unsigned num_threads)
                  : width(width), height(height), min_rooms(min_rooms), max_rooms(max_rooms),
                  solver(std::make_unique<Clingo::Control>())
         {
@@ -30,9 +32,9 @@ class LevelGenerator::LevelGenImpl
             config["solver.seed"] = std::to_string(seed).c_str();
             config["solver.rand_freq"] = "1.0";  // Always choose randomly where possible
 
-            if (prog)
+            if (!load_prog_from_file && prog)
             {
-                program = prog;  // Copy to std::string for safe storage
+                program = prog;
             }
         }
 
@@ -156,8 +158,8 @@ class LevelGenerator::LevelGenImpl
 };
 
 LevelGenerator::LevelGenerator(unsigned max_num_levels, unsigned width, unsigned height, unsigned min_rooms,
-                               unsigned max_rooms, size_t seed, const char* program, unsigned num_threads) : impl(
-        std::make_unique<LevelGenImpl>(max_num_levels, width, height, min_rooms, max_rooms, seed, program, num_threads))
+                               unsigned max_rooms, size_t seed, bool load_prog_from_file, unsigned num_threads) : impl(
+        std::make_unique<LevelGenImpl>(max_num_levels, width, height, min_rooms, max_rooms, seed, load_prog_from_file, num_threads))
 {}
 
 LevelGenerator& LevelGenerator::operator=(LevelGenerator&& other) noexcept = default;
