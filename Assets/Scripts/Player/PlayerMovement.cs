@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 
 namespace Player
 {
+    [RequireComponent(typeof(CharacterController))]
     public class PlayerMovement : MonoBehaviour
     {
         private InputAction _move;
@@ -11,9 +12,12 @@ namespace Player
         
         public float movementSpeed;
         public float rotationSpeed;
+        
+        private CharacterController _controller;
 
         private void Awake()
         {
+            _controller = GetComponent<CharacterController>();
             if (!InputSystem.actions) return;
             _move = InputSystem.actions.FindAction("Player/Move");
             _look = InputSystem.actions.FindAction("Player/Look");
@@ -22,14 +26,11 @@ namespace Player
         private void Update()
         {
             var moveAmount = _move.ReadValue<Vector2>() * (Time.deltaTime * movementSpeed);
-            var lookAmount = _look.ReadValue<Vector2>() * (Time.deltaTime * rotationSpeed);;
-            
-            var moveInPlane = transform.forward * moveAmount.y + transform.right * moveAmount.x;
-            var lookInPlane = Quaternion.AngleAxis(lookAmount.x, Vector3.up);
-            transform.position += moveInPlane;
+            var lookAmount = _look.ReadValue<Vector2>().x * rotationSpeed * Time.deltaTime;
+            var lookInPlane = Quaternion.AngleAxis(lookAmount, Vector3.up);
             transform.rotation *= lookInPlane;
-            
-            // transform.up = Vector3.up;
+            var moveInPlane = transform.forward * moveAmount.y + transform.right * moveAmount.x;
+            _controller.Move(moveInPlane);
         }
     }
 }

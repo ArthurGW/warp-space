@@ -15,8 +15,7 @@ namespace MapObjects
         public void ConstructHull(List<MapSquareData> squares, uint mapWidth, uint mapHeight)
         {
             Debug.Log("HullFactory.ConstructHull");
-
-            DestroyAllChildren(transform);
+            DestroyHull();
             
             var mapPositions = squares.ToDictionary(sq => (sq.X, sq.Y), sq => sq.Type);
             var index = 0U;
@@ -45,6 +44,11 @@ namespace MapObjects
                 GridToPosition(pos),
                 rotation
             );
+        }
+
+        public void DestroyHull()
+        {
+            DestroyAllChildren(transform);
         }
     }
 }

@@ -16,7 +16,6 @@ namespace MapObjects
         public void ConstructCorridors(IEnumerable<RoomData> corridors, ILookup<ulong, Door> doorsByRoomId)
         {
             Debug.Log("CorridorFactory.ConstructCorridors");
-            DestroyAllChildren(corridorContainer);
             
             foreach (var corridor in corridors)
             {
@@ -29,6 +28,11 @@ namespace MapObjects
             }
             
             Debug.Log("CorridorFactory.ConstructCorridors Done");
+        }
+
+        public void DestroyCorridors()
+        {
+            DestroyAllChildren(corridorContainer);
         }
 
         private static CardinalDirections GetOpenings(RoomData corridor, ILookup<ulong, Door> doorsByRoomId)

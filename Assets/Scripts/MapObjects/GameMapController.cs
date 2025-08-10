@@ -2,6 +2,7 @@
 using Layout;
 using LevelGenerator;
 using UnityEngine;
+using static MapObjects.ObjectUtils;
 
 namespace MapObjects
 {
@@ -27,7 +28,13 @@ namespace MapObjects
         public void OnMapGenerationFailed()
         {
             Debug.Log("GameMapController.OnMapGenerationFailed");
-            ObjectUtils.DestroyAllChildren(transform);
+#if UNITY_EDITOR
+            _hullFactory = GetComponentInChildren<HullFactory>();
+            _roomFactory = GetComponentInChildren<RoomFactory>();
+#endif
+            _hullFactory.DestroyHull();
+            _roomFactory.DestroyRooms();
+            DestroyAllChildren(shipSquareContainer);
             Debug.Log("GameMapController.OnMapGenerationFailed Done");
         }
 
@@ -37,7 +44,7 @@ namespace MapObjects
             _hullFactory = GetComponentInChildren<HullFactory>();
             _roomFactory = GetComponentInChildren<RoomFactory>();
 #endif
-            
+            DestroyAllChildren(shipSquareContainer);
             Debug.Log("GameMapController.OnMapGenerated");
             var roomsById = result.Rooms.ToDictionary(rm => rm.Id);
             Debug.Log("GameMapController.OnMapGenerated Room Dict");

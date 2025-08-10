@@ -14,8 +14,9 @@ namespace Player
 
         public float offset = 50f;
         public float zoomSpeed = 4f;
-        public float lookAngle = 60f;
-        public float lookSpeed = 4f;
+        public float lookProportion = 0.5f;
+        private float _lookAngle = 0f;
+        public float lookSpeed = 0.1f;
 
         private void Awake()
         {
@@ -41,17 +42,16 @@ namespace Player
             
             if (_lookAction.ReadValueAsObject() is Vector2 look)
             {
-                lookAngle = Mathf.Clamp(lookAngle + look.y * lookSpeed * Time.deltaTime, 30, 80);
+                lookProportion = Mathf.Clamp(lookProportion - look.y * lookSpeed * Time.deltaTime, 0f, 1f);
+                _lookAngle = Mathf.LerpAngle(10, 80, lookProportion);
             }
             Follow();
         }
 
         private void Follow()
         {
-            // var offsetDir = _playerTransform.up * 4 - _playerTransform.forward;
-            // offsetDir = offsetDir.normalized;
-            var sin = MathF.Sin(lookAngle * MathF.PI/180);
-            var cos = MathF.Cos(lookAngle * MathF.PI/180);
+            var sin = MathF.Sin(_lookAngle * MathF.PI/180);
+            var cos = MathF.Cos(_lookAngle * MathF.PI/180);
             var vertical = _playerTransform.up * (offset * sin);
             var horizontal = -_playerTransform.forward * (offset * cos);
             _mainCameraTransform.position = _playerTransform.position + vertical + horizontal;

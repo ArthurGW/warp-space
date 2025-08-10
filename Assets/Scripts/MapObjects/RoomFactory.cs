@@ -70,11 +70,20 @@ namespace MapObjects
             _corridorFactory = GetComponent<CorridorFactory>();
             _doorRandom = new System.Random(doorSeed);
         }
+                
+        public void DestroyRooms()
+        {
+#if UNITY_EDITOR
+            _corridorFactory = GetComponent<CorridorFactory>();
+#endif
+            DestroyAllChildren(roomContainer);
+            _corridorFactory.DestroyCorridors();
+        }
 
         public void ConstructRooms(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById, Dictionary<ulong, HashSet<ulong>> adjacencies)
         {
             Debug.Log("RoomFactory.ConstructRooms");
-            DestroyAllChildren(roomContainer);
+            DestroyRooms();
             
             InitDoors(rooms, roomsById, adjacencies);
             
