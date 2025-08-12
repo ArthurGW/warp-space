@@ -3,9 +3,9 @@ import subprocess
 from collections import defaultdict
 from time import time
 
-num_models = 1
-width = 10
-height = 8
+num_models = 5
+width = 12
+height = 10
 seed = 1234
 min_rooms = 2
 max_rooms = 6
@@ -14,7 +14,7 @@ args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
         f" {num_models} -c width={width} -c height={height}"
         f" -c min_rooms={min_rooms} -c max_rooms={max_rooms}"
         f" -t 4 --rand-freq=1.0 --seed={seed}"
-        r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\ship3.lp")
+        r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\ship.lp")
 
 start = time()
 ret = subprocess.run(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -29,30 +29,10 @@ if ('SATISFIABLE' not in data and 'OPTIMUM FOUND' not in data) or 'UNSATISFIABLE
 
 print(data)
 
-def yield_ints(pattern, inp):
-    for mch in pattern.findall(inp):
-        if isinstance(mch, tuple):
-            yield tuple(map(int, mch))
-        else:
-            yield int(mch),
-
-
-print([opt[0] for opt in yield_ints(re.compile(r'Optimization: (\d+)'), data)])
-
-data = data[data.rfind(f'Answer: '):]
-print(re.findall(r'initial_room\(\d+,\d+,\d+,\d+\)', data))
-
-hull_square = re.compile(r'hull\((\d+),(\d+)\)')
-in_space = re.compile(r'in_space\((\d+),(\d+)\)')
-ship_square = re.compile(r'ship\((\d+),(\d+)\)')
-room = re.compile(r'room\(\d+,\d+,\d+,\d+\)')
-corridor_square = re.compile(r'corridor\((\d+),(\d+)\)')
-room_square = re.compile(r'room_square\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)')
-reachable = re.compile(r'reachable\(room\((\d+),(\d+),(\d+),(\d+)\)\)')
-adjacent = re.compile(r'adjacent\(room\((\d+),(\d+),(\d+),(\d+)\),room\((\d+),(\d+),(\d+),(\d+)\)\)')
-
 rid = 1
+bid = 1
 cid = 1
+breaches = {}
 rooms = {}
 corridors = {}
 ship = [['     ' for __ in range(width)] for _ in range(height)]
@@ -69,8 +49,36 @@ def assign(x, y, v):
 def room_name(r):
     if r in corridors:
         return f'C{corridors[r]}'
+    elif r in breaches:
+        return f'B{breaches[r]}'
     else:
         return f'R{rooms[r]}'
+
+
+def yield_ints(pattern, inp):
+    for mch in pattern.findall(inp):
+        if isinstance(mch, tuple):
+            yield tuple(map(int, mch))
+        else:
+            yield int(mch),
+
+
+print([opt[0] for opt in yield_ints(re.compile(r'Optimization: (-?\d+\s*)*'), data)])
+
+data = data[data.rfind(f'Answer: '):]
+
+hull_square = re.compile(r'hull\((\d+),(\d+)\)')
+in_space = re.compile(r'in_space\((\d+),(\d+)\)')
+ship_square = re.compile(r'ship\((\d+),(\d+)\)')
+breach_square = re.compile(r'breach_square\((\d+),(\d+)\)')
+breach = re.compile(r'alien_breach\((\d+,\d+,\d+,\d+),room\((\d+),(\d+),(\d+),(\d+)\)\)')
+room = re.compile(r'room\(\d+,\d+,\d+,\d+\)')
+start_room = re.compile(r'start_room\(room\((\d+),(\d+),(\d+),(\d+)\)\)')
+finish_room = re.compile(r'finish_room\(room\((\d+),(\d+),(\d+),(\d+)\)\)')
+corridor_square = re.compile(r'corridor\((\d+),(\d+)\)')
+room_square = re.compile(r'room_square\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)')
+reachable = re.compile(r'reachable\(room\((\d+),(\d+),(\d+),(\d+)\)\)')
+adjacent = re.compile(r'adjacent\(room\((\d+),(\d+),(\d+),(\d+)\),room\((\d+),(\d+),(\d+),(\d+)\)\)')
 
 
 for x, y in yield_ints(hull_square, data):
@@ -81,6 +89,19 @@ for mch in yield_ints(reachable, data):
 
 for mch in room.findall(data):
     all_r.add(mch)
+
+for mch in breach.findall(data):
+    x, y, w, h = map(int, mch[0].split(','))
+    rm = tuple(map(int, mch[1:]))
+    breaches[(x, y, w, h)] = bid
+    bid += 1
+
+    adjacency[(x, y, w, h)].append(rm)
+    adjacency[rm].append((x, y, w, h))
+
+    for sx in range(x, x + w):
+        for sy in range(y, y + h):
+            assign(sx, sy, f' B{breaches[(x, y, w, h)] : <2} ')
 
 for mch in yield_ints(adjacent, data):
     adjacency[mch[:4]].append(mch[4:])
@@ -110,4 +131,8 @@ for row in ship:
 for a, r in adjacency.items():
     print(f'{a}: {r}')
 
-print(len(reachable_r), len(all_r))
+for rm in yield_ints(start_room, data):  # Should be only one
+    print(f'Start Room: {room_name(rm)}')
+
+for rm in yield_ints(finish_room, data):  # Should be only one
+    print(f'Finish Room: {room_name(rm)}')
