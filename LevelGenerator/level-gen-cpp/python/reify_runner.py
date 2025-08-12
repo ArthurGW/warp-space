@@ -1,4 +1,4 @@
-import re
+import re, os
 import subprocess
 from collections import defaultdict
 from time import time
@@ -10,24 +10,37 @@ seed = 1234
 min_rooms = 2
 max_rooms = 6
 
-args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
-        f" {num_models} -c width={width} -c height={height}"
-        f" -c min_rooms={min_rooms} -c max_rooms={max_rooms}"
-        f" -t 4 --rand-freq=1.0 --seed={seed}"
-        r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\ship3.lp")
+os.chdir(r"C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs")
 
 start = time()
-ret = subprocess.run(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-end = time()
 
+args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
+        f" -c width={width} -c height={height}"
+        f" -c min_rooms={min_rooms} -c max_rooms={max_rooms}"
+        " --pre --rewrite-minimize"
+        r" ship2.lp")
+
+ret = subprocess.run(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+args1 = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
+        " -o reify --reify-sccs")
+ret1 = subprocess.run(args1, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=ret.stdout)
+
+args2 = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe -o intermediate"
+        " - meta.lp metaD.lp metaC.lp")
+ret2 = subprocess.run(args2, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=ret1.stdout)
+
+args3 = (fr"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe {num_models} --mode=clasp --rand-freq=1.0 --seed={seed}")
+ret3 = subprocess.run(args3, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=ret2.stdout)
+
+end = time()
 print(f'Solving took {end - start}s')
 
-data = ret.stdout
-if ('SATISFIABLE' not in data and 'OPTIMUM FOUND' not in data) or 'UNSATISFIABLE' in data:
+data = ret3.stdout
+if ('SATISFIABLE' not in data and 'OPTIMUM FOUND' not in data) or 'UNSATISFIABLE' in data or 'error' in data.lower():
     raise ChildProcessError(
         f'failed to generate level:{f'\n{ret.stderr}' if ret.stderr else ''}{f'\n{data}' if data else ''}')
 
-print(data)
 
 def yield_ints(pattern, inp):
     for mch in pattern.findall(inp):
