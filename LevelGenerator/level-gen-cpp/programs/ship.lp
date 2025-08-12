@@ -1,7 +1,5 @@
 %* Specification for the ship, i.e. the overall level shape *%
 
-#const num_breaches = 2.
-
 % All available squares
 grid(1..width, 1..height).
 
@@ -21,7 +19,7 @@ ship(X, Y) :- grid(X, Y), not in_space(X, Y), not hull(X, Y).
 %* Rooms within the ship *%
 
 % Rooms have sizes between 2x2 and 4x4, and must have all four corners within the ship
-%  The program is free to choose any number of rooms between min_rooms and max_rooms
+% The program is free to choose any number of rooms between min_rooms and max_rooms
 min_rooms {
     room(XX, YY, W, H)
         : W=2..4, H=2..4,

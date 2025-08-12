@@ -27,12 +27,15 @@ add_subdirectory("${CLINGO_SOURCE_DIR}" "./clingo")
 
 # Embed the ASP program in the DLL as a string
 file(READ "programs/ship.lp" SHIP_PROGRAM)
+string(REGEX REPLACE "%\\*[^%]*\\*%\n*" "" SHIP_PROGRAM "${SHIP_PROGRAM}")  # Remove comment blocks
+string(REGEX REPLACE "%[^\n]*\n+" "" SHIP_PROGRAM "${SHIP_PROGRAM}")  # Remove comment lines
 string(REPLACE "\\" "\\\\" SHIP_PROGRAM "${SHIP_PROGRAM}")  # Escape slashes
 string(REPLACE "\r\n" "\n" SHIP_PROGRAM "${SHIP_PROGRAM}")  # Standardise newlines
+string(REGEX REPLACE "\n\n+" "\n" SHIP_PROGRAM "${SHIP_PROGRAM}")  # Remove duplicate newlines
 string(REPLACE "\n" "\\n\\\n" SHIP_PROGRAM "${SHIP_PROGRAM}")  # Add line continuation characters to lines
 configure_file("include/program.h.in" "include/program.h" ESCAPE_QUOTES @ONLY)
 
-add_library(level-gen-cpp SHARED level_gen.cpp level.cpp ${CMAKE_CURRENT_BINARY_DIR}/include/program.h)
+add_library(level-gen-cpp SHARED level_gen.cpp level.cpp ${CMAKE_CURRENT_BINARY_DIR}/include/program.h "programs/ship.lp")
 set_property(TARGET level-gen-cpp PROPERTY OUTPUT_NAME LevelGenCpp)
 target_include_directories(level-gen-cpp PUBLIC include)
 target_include_directories(level-gen-cpp PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include)

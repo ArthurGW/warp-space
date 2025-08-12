@@ -13,8 +13,8 @@ class LevelGenerator::LevelGenImpl
 {
     public:
         LevelGenImpl(unsigned max_num_levels, unsigned width, unsigned height, unsigned min_rooms, unsigned max_rooms,
-                size_t seed, bool load_prog_from_file, unsigned num_threads)
-                 : width(width), height(height), min_rooms(min_rooms), max_rooms(max_rooms),
+                unsigned num_breaches, size_t seed, bool load_prog_from_file, unsigned num_threads)
+                 : width(width), height(height), min_rooms(min_rooms), max_rooms(max_rooms), num_breaches(num_breaches),
                  solver(std::make_unique<Clingo::Control>())
         {
             auto config = solver->configuration();
@@ -47,6 +47,7 @@ class LevelGenerator::LevelGenImpl
         const unsigned height;
         const unsigned min_rooms;
         const unsigned max_rooms;
+        const unsigned num_breaches;
         std::string program;
 
         const char* solve()
@@ -107,6 +108,10 @@ class LevelGenerator::LevelGenImpl
                     << "#const max_rooms = "
                     << Clingo::Number(static_cast<int>(max_rooms))
                     << "."
+                    << std::endl
+                    << "#const num_breaches = "
+                    << Clingo::Number(static_cast<int>(num_breaches))
+                    << "."
                     << std::endl;
             solver->add("base", {}, inputs.str().c_str());
 
@@ -158,8 +163,8 @@ class LevelGenerator::LevelGenImpl
 };
 
 LevelGenerator::LevelGenerator(unsigned max_num_levels, unsigned width, unsigned height, unsigned min_rooms,
-                               unsigned max_rooms, size_t seed, bool load_prog_from_file, unsigned num_threads) : impl(
-        std::make_unique<LevelGenImpl>(max_num_levels, width, height, min_rooms, max_rooms, seed, load_prog_from_file, num_threads))
+                               unsigned max_rooms, unsigned num_breaches, size_t seed, bool load_prog_from_file, unsigned num_threads) : impl(
+        std::make_unique<LevelGenImpl>(max_num_levels, width, height, min_rooms, max_rooms, num_breaches, seed, load_prog_from_file, num_threads))
 {}
 
 LevelGenerator& LevelGenerator::operator=(LevelGenerator&& other) noexcept = default;

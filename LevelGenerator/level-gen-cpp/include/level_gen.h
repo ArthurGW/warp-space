@@ -32,6 +32,16 @@ enum class CS_FLAGS SquareType : uint8_t
     Hull = 1 << 3,
     Room = 1 << 4,
     Corridor = 1 << 5,
+    AlienBreach = 1 << 6,
+};
+
+/// Types of rooms
+enum class CS_FLAGS RoomType : uint8_t
+{
+    Unknown = 1 << 0,
+    Corridor = 1 << 1,
+    AlienBreach = 1 << 2,
+    Room = 1 << 3,
 };
 
 struct LEVEL_GEN_API Room {
@@ -40,7 +50,7 @@ struct LEVEL_GEN_API Room {
         unsigned w;
         unsigned h;
 
-        bool is_corridor;
+        RoomType type;
         size_t room_id = 0;
 
         friend bool operator==(const Room& first, const Room& second);
@@ -137,6 +147,8 @@ class LEVEL_GEN_API Level {
 
         size_t get_num_corridors() const;
 
+        size_t get_num_breaches() const;
+
         size_t get_num_rooms() const;
 
         size_t get_num_adjacencies() const;
@@ -157,8 +169,9 @@ LevelGenerator {
                unsigned height,
                unsigned min_rooms,
                unsigned max_rooms,
+               unsigned num_breaches,
                size_t seed = 0,  // Indicates "unset"
-               bool load_prog_from_file = false,  // Load ASP program from file, for easier iteration
+               bool load_prog_from_file = false,  // Load ASP program from file at runtime, for easier iteration during dev
                unsigned num_threads = 1
         );
 
