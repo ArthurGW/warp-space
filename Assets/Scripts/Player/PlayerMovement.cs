@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Player
@@ -16,19 +17,22 @@ namespace Player
 
         private void Awake()
         {
-            _controller = GetComponent<CharacterController>();
-            if (!InputSystem.actions) return;
+            if (!InputSystem.actions) throw new Exception();
             _move = InputSystem.actions.FindAction("Player/Move");
             _look = InputSystem.actions.FindAction("Player/Look");
+            _controller = GetComponent<CharacterController>();
             Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void Update()
         {
-            var moveAmount = _move.ReadValue<Vector2>() * (Time.deltaTime * movementSpeed);
+            // Handle x-axis of look as player rotation
             var lookAmount = _look.ReadValue<Vector2>().x * rotationSpeed * Time.deltaTime;
             var lookInPlane = Quaternion.AngleAxis(lookAmount, Vector3.up);
             transform.rotation *= lookInPlane;
+            
+            // Move player
+            var moveAmount = _move.ReadValue<Vector2>() * (Time.deltaTime * movementSpeed);
             var moveInPlane = transform.forward * moveAmount.y + transform.right * moveAmount.x;
             _controller.Move(moveInPlane);
         }
