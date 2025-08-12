@@ -35,7 +35,7 @@ room_square(X..(X + W - 1), Y..(Y + H - 1), X, Y, W, H) :- room(X, Y, W, H), W >
 room(X, Y, 1, 1) :- corridor(X, Y).
 room_square(X, Y, X, Y, 1, 1) :- room(X, Y, 1, 1).
 
-% Choose a start and a finish room
+% Choose a start and a finish room that are not corridors or breaches
 1 { start_room(room(X, Y, W, H)) : room(X, Y, W, H), W > 1, H > 1 } 1.
 1 { finish_room(room(X, Y, W, H)) : room(X, Y, W, H), W > 1, H > 1 } 1.
 
@@ -95,19 +95,13 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 
 %* Level solution *%
 
-% Path from start to other rooms
+% Path from start to other rooms - at least min_rooms long to finish
 room_count(room(X, Y, W, H), 1) :- start_room(room(X, Y, W, H)).
 room_count(room(X1, Y1, W1, H1), N+1) :- room(X1, Y1, W1, H1), not corridor(X1, Y1),
     N = #min { N2,X2,Y2: room_count(room(X2, Y2, W2, H2), N2), adjacent(room(X2, Y2, W2, H2), room(X1, Y1, W1, H1)) }.
 room_count(room(X1, Y1, W1, H1), N) :- room(X1, Y1, W1, H1), corridor(X1, Y1),
     N = #min { N2,X2,Y2: room_count(room(X2, Y2, W2, H2), N2), adjacent(room(X2, Y2, W2, H2), room(X1, Y1, W1, H1)) }.
-
-%% Rooms (including corridors) and their connections define the level's design
-%__level_design(room(X,Y,W,H)) :- room(X,Y,W,H).
-%__level_design(adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2))) :- adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)).
-%
-%% The path from start room to finish room must be at least min_rooms long.
-%__concept :- room_count(room(X, Y, W, H), N), finish_room(room(X, Y, W, H)), N >= min_rooms.
+:- room_count(room(X1, Y1, W1, H1), N), finish_room(room(X1, Y1, W1, H1)), N < min_rooms.
 
 %* Output predicates *%
 

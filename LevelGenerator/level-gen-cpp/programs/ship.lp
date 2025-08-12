@@ -1,5 +1,7 @@
 %* Specification for the ship, i.e. the overall level shape *%
 
+#const num_breaches = 2.
+
 % All available squares
 grid(1..width, 1..height).
 
@@ -35,13 +37,28 @@ room_square(X..(X + W - 1), Y..(Y + H - 1), X, Y, W, H) :- room(X, Y, W, H), W >
 room(X, Y, 1, 1) :- corridor(X, Y).
 room_square(X, Y, X, Y, 1, 1) :- room(X, Y, 1, 1).
 
+% Alien breaches - room(s) with size 1x2 or 2x1 that start in space and penetrate the hull
+% These are rooms for reachability purposes only, since the aliens need to be able to reach the player.
+num_breaches {
+    % Vertical, from the top
+    alien_breach(X, Y1, 1, 2) : in_space(X, Y1), hull(X, Y2), ship(X, Y3), Y2 - Y1 = 1, Y3 - Y2 = 1;
+    % Vertical, from the bottom
+    alien_breach(X, Y3, 1, 2) : in_space(X, Y1), hull(X, Y2), ship(X, Y3), Y1 - Y2 = 1, Y2 - Y3 = 1;
+    % Horizontal, from the left
+    alien_breach(X1, Y, 2, 1) : in_space(X1, Y), hull(X2, Y), ship(X3, Y), X2 - X1 = 1, X3 - X2 = 1;
+    % Horizontal, from the right
+    alien_breach(X3, Y, 2, 1) : in_space(X1, Y), hull(X2, Y), ship(X3, Y), X1 - X2 = 1, X2 - X3 = 1;
+    } num_breaches.
+room(X, Y, W, H) :- alien_breach(X, Y, W, H).
+
+% Choose start and finish rooms that are not corridors or breaches
+1 { start_room(room(X, Y, W, H)) : room(X, Y, W, H), W > 1, H > 1 } 1.
+1 { finish_room(room(X, Y, W, H)) : room(X, Y, W, H), W > 1, H > 1 } 1.
+
 %* Reachability determination *%
 
-% Arbitrarily pick a room to start from
-1 { initial_room(X, Y, W, H) : room(X, Y, W, H) } 1.
-
-% Now trace reachability from there - start with the arbitrary room as reachable
-reachable(room(X, Y, W, H)) :- initial_room(X, Y, W, H).
+% Trace reachability from start room, which is always reachable
+reachable(room(X, Y, W, H)) :- start_room(room(X, Y, W, H)).
 
 % A room is reachable if it is adjacent to another reachable room
 reachable(room(X1, Y1, W1, H1)) :- room(X1, Y1, W1, H1), reachable(room(X2, Y2, W2, H2)), adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)).
@@ -53,7 +70,7 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- adjacent(room(X2, Y2, W2
 next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- room(X1, Y1, W1, H1), room(X2, Y2, W2, H2), X2 = X1 + W1, Y2 > Y1 - H2, Y2 < Y1 + H1.
 next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- room(X1, Y1, W1, H1), room(X2, Y2, W2, H2), Y2 = Y1 + H1, X2 > X1 - W2, X2 < X1 + W1.
 
-% Choose an arbitrary set of next_to *rooms* to connect, i.e. make adjacent, but keep corridors connected always
+% Choose an arbitrary set of next_to *rooms* to connect, i.e. make adjacent - corridors are always connected to adjacent corridors
 % Since adjacent is commutative, these connections go both ways
 0 { adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) } 1 :- next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)).
 adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)), W1 = W2, W2 = 1.
@@ -96,7 +113,9 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 #show hull/2.
 #show room_square/6.
 #show corridor/2.
-%#show initial_room/4.
 %#show reachable/1.
 #show room/4.
+#show alien_breach/4.
 #show adjacent/2.
+#show start_room/1.
+#show finish_room/1.
