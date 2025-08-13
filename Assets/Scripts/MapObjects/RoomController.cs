@@ -50,7 +50,7 @@ namespace MapObjects
         private void InstantiateSquare((uint X, uint Y) pos, ILookup<ulong, Door> doorsByRoomId)
         {
             // Don't offset the 1,1 square (locally)
-            var localPosition = GridToPosition((pos.X - 1, pos.Y - 1));
+            var localPosition = GridToPosition((pos.X, pos.Y));
             
             // Floor
             var floor = Instantiate(floorPrefab, transform, false);

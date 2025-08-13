@@ -13,7 +13,7 @@ namespace MapObjects
     {
         One = 1,
         Three = 3,
-		Five = 5
+		Five = 5,
     }
 
     public enum MatchSquareType : byte
@@ -21,7 +21,8 @@ namespace MapObjects
         Unknown = 0,
         Space = 1,  // In space
         Hull = 2,  // Part of the hull
-        Internal = 3  // Inside the ship
+        Internal = 3,  // Inside the ship
+        AlienBreach = 4,  // Part of a breach
     }
     
     /// <summary>
@@ -47,6 +48,9 @@ namespace MapObjects
         
         [SerializeField]
         private Vector2Int[] internalSquaresToMatch = { };
+        
+        [SerializeField]
+        private Vector2Int[] breachSquaresToMatch = { };
 
         private ILookup<(int, int), MatchSquareType> _matchMap;
         private ILookup<(int, int), MatchSquareType> _flippedMatchMap;
@@ -57,13 +61,16 @@ namespace MapObjects
 
             var hullSquares = hullSquaresToMatch
                 .ToLookup(sq => (sq.x, sq.y), sq => MatchSquareType.Hull);
-            var internalSquares = internalSquaresToMatch
-                .ToLookup(sq => (sq.x, sq.y), sq => MatchSquareType.Internal);
             var spaceSquares = spaceSquaresToMatch
                 .ToLookup(sq => (sq.x, sq.y), sq => MatchSquareType.Space);
+            var internalSquares = internalSquaresToMatch
+                .ToLookup(sq => (sq.x, sq.y), sq => MatchSquareType.Internal);
+            var breachSquares = breachSquaresToMatch
+                .ToLookup(sq => (sq.x, sq.y), sq => MatchSquareType.AlienBreach);
             _matchMap = hullSquares
                 .Union(internalSquares)
                 .Union(spaceSquares)
+                .Union(breachSquares)
                 .ToLookup(grp => grp.Key, grp => grp.ElementAt(0));
             
             if (!flippable)
@@ -75,7 +82,7 @@ namespace MapObjects
 
         private void OnValidate()
         {
-            _matchMap = null;
+            _matchMap = null;  // Clear, to regenerate later in InitMatchData
             _flippedMatchMap = null;
         }
 
@@ -100,7 +107,7 @@ namespace MapObjects
                 return (gameObject, result.Value.ToRotation(), false);
             }
 
-            if (_flippedMatchMap == null) return (null, null, true);
+            if (_flippedMatchMap == null) return (null, null, false);
             
             result = CheckMatchMap(mapPos, map, _flippedMatchMap);
             if (result.HasValue)
@@ -108,7 +115,7 @@ namespace MapObjects
                 return (gameObject, result.Value.ToRotation(), true);
             }
 
-            return (null, null, true);
+            return (null, null, false);
         }
         
         private CardinalDirection? CheckMatchMap(
@@ -157,6 +164,7 @@ namespace MapObjects
         {
             SquareType.Hull => MatchSquareType.Hull,
             SquareType.Space => MatchSquareType.Space,
+            SquareType.AlienBreach => MatchSquareType.AlienBreach,
             SquareType.Corridor or SquareType.Room or SquareType.Ship => MatchSquareType.Internal,
             SquareType.Unknown => MatchSquareType.Unknown,
             _ => throw new ArgumentException()

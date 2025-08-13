@@ -56,8 +56,6 @@ namespace Editor
         private void OnMapGenerated(MapResult _)
         {
             _generateButton?.SetEnabled(true);
-            var level = (GameMapGenerator)target;
-            level.PrintArrays();
         }
 
 

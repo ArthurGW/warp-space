@@ -28,7 +28,8 @@ namespace Layout
         {
             // Note - we are choosing -z in map coordinates as +y in grid coordinates
             // This is so that +x in map coordinates is +x in grid coordinates
-            return new Vector3(SquareSize.X * pos.X, 0f, -SquareSize.Y * pos.Y);
+            // Also note grid positions are 1-indexed, but we start the grid at (0,0) in world space
+            return new Vector3(SquareSize.X * (pos.X - 1), 0f, -SquareSize.Y * (pos.Y - 1));
         }
         
         public static Vector3 GridToSize((uint X, uint Y) size)

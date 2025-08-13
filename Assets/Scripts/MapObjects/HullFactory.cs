@@ -21,7 +21,7 @@ namespace MapObjects
             var index = 0U;  // For naming
             
             // For each hull location, try and match it against each available hull piece prefab
-            foreach (var hullPos in mapPositions.Where(kv => kv.Value == SquareType.Hull))
+            foreach (var hullPos in mapPositions.Where(kv => kv.Value is SquareType.Hull or SquareType.AlienBreach))
             {
                 foreach (var piece in hullPieces)
                 {
