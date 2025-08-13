@@ -156,9 +156,9 @@ class Level::LevelImpl
                 {
                     // Convert the breach to a room with a special room type, connected to the breached room bidirectionally
                     const auto x = static_cast<unsigned>(args[0].number());
-                    const auto y = static_cast<unsigned>(args[0].number());
-                    const auto w = static_cast<unsigned>(args[0].number());
-                    const auto h = static_cast<unsigned>(args[0].number());
+                    const auto y = static_cast<unsigned>(args[1].number());
+                    const auto w = static_cast<unsigned>(args[2].number());
+                    const auto h = static_cast<unsigned>(args[3].number());
                     const auto breached_room_sym = args[4];
                     if (!(breached_room_sym.match("room", 4)))
                     {

@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators_all.hpp>
+#include <functional>
 #include "level_gen.h"
 
 namespace
@@ -14,6 +15,23 @@ namespace
             // Check retrieval
             auto current = iter.current();
             sum += 1UL;
+        }
+        return sum;
+    }
+
+    template<class T>
+    size_t count_parts(LevelPartIter<T> iter, std::function<bool(const T&)> filter)
+    {
+        iter.reset();
+        auto sum = 0UL;
+        while (iter.move_next())
+        {
+            // Check retrieval
+            auto current = iter.current();
+            if (filter(current))
+            {
+                sum += 1UL;
+            }
         }
         return sum;
     }
@@ -76,6 +94,30 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 REQUIRE(count_parts(level->map_squares()) == 72UL);
                 REQUIRE(count_parts(level->rooms()) == 7UL);
                 REQUIRE(count_parts(level->adjacencies()) == 12UL);
+            }
+
+            THEN("the best level has breaches")
+            {
+                LevelGenerator gen{
+                        1, 9, 8, 1, 6, 2, 1234, true
+                };
+                REQUIRE_NOTHROW(gen.solve());
+
+                const auto* level = gen.best_level();
+                auto room_iter = level->rooms();
+                REQUIRE(count_parts<Room>(
+                        room_iter,
+                    [](const auto& rm) { return rm.type == RoomType::AlienBreach; }
+                ) == 2UL);
+                
+                room_iter.reset();
+                for (auto i = 0; i < room_iter.count() - 1; ++i) room_iter.move_next();
+                const auto first_breach = room_iter.current();
+                room_iter.move_next();
+                const auto second_breach = room_iter.current();
+
+                REQUIRE(first_breach == Room{6, 1, 1, 2, RoomType::AlienBreach});
+                REQUIRE(second_breach == Room{8, 4, 2, 1, RoomType::AlienBreach});
             }
         }
     }GIVEN("A level generator with other params")

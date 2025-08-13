@@ -53,7 +53,7 @@ struct LEVEL_GEN_API Room {
         RoomType type;
         size_t room_id = 0;
 
-        friend bool operator==(const Room& first, const Room& second);
+        friend bool LEVEL_GEN_API operator==(const Room& first, const Room& second);
 };
 
 struct LEVEL_GEN_API Adjacency {
