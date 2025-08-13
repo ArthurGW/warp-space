@@ -18,7 +18,7 @@ args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
         f" -c width={width} -c height={height}"
         f" -c min_rooms={min_rooms} -c max_rooms={max_rooms}"
         " --pre --rewrite-minimize"
-        r" ship2.lp")
+        r" ship_with_level_concepts.lp")
 
 ret = subprocess.run(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
