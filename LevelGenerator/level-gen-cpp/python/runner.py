@@ -5,7 +5,7 @@ from time import time
 
 num_models = 1
 width = 9
-height = 8
+height = 10
 seed = 1234
 min_rooms = 1
 max_rooms = 6

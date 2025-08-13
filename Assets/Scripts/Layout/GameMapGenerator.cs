@@ -17,22 +17,22 @@ namespace Layout
 {
     public readonly struct RoomData
     {
-        private RoomData(ulong id, uint x, uint y, uint width, uint height, bool isCorridor)
+        private RoomData(ulong id, uint x, uint y, uint width, uint height, RoomType roomType)
         {
             Id = id;
             X = x;
             Y = y;
             Width = width;
             Height = height;
-            IsCorridor = isCorridor;
+            Type = roomType;
         }
 
         public static explicit operator RoomData(Room rm)
         {
-            return new RoomData(rm.RoomId, rm.X, rm.Y, rm.W, rm.H, rm.IsCorridor);
+            return new RoomData(rm.RoomId, rm.X, rm.Y, rm.W, rm.H, rm.Type);
         }
         
-        public override string ToString() => $"RoomData({Id}: {X},{Y},{Width},{Height},{IsCorridor})";
+        public override string ToString() => $"RoomData({Id}: {X},{Y},{Width},{Height},{Type})";
         
         public Vector3 ToPosition() => GridToPosition((X, Y));
 
@@ -41,7 +41,7 @@ namespace Layout
         public uint Y { get; }
         public uint Width { get; }
         public uint Height { get; }
-        public bool IsCorridor { get; }
+        public RoomType Type { get; }
     }
     
     public readonly struct MapSquareData
@@ -59,7 +59,12 @@ namespace Layout
         }
         
         public static explicit operator MapSquareData(RoomData rm) 
-            => new(rm.X, rm.Y, rm.IsCorridor ? SquareType.Corridor : SquareType.Room);
+            => new(rm.X, rm.Y, rm.Type switch
+            {
+                RoomType.Corridor => SquareType.Corridor,
+                RoomType.AlienBreach => SquareType.AlienBreach,
+                _ => SquareType.Room
+            });
         
         public override string ToString() => $"MapSquareData({X},{Y},{Type})";
         
@@ -83,6 +88,7 @@ namespace Layout
         public uint height = 8;
         public uint minRooms = 2;
         public uint maxRooms = 6;
+        public uint numBreaches = 1;
         public uint maxNumLevels = 1;
     
         [Range(1, 16)]
@@ -129,7 +135,7 @@ namespace Layout
             // Run the slow level generation stage in a background thread
             await Awaitable.BackgroundThreadAsync();
             using var gen = new LevelGenerator.LevelGenerator(
-                maxNumLevels, width, height, minRooms, maxRooms, seed, false, solverThreads
+                maxNumLevels, width, height, minRooms, maxRooms, numBreaches, seed, false, solverThreads
             );
             gen.SolveSafe();
             using var level = gen.BestLevel();

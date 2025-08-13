@@ -12,13 +12,13 @@ namespace MapObjects
     {
         public List<HullPiece> hullPieces;
 
-        public void ConstructHull(List<MapSquareData> squares, uint mapWidth, uint mapHeight)
+        public void ConstructHull(List<MapSquareData> squares)
         {
             Debug.Log("HullFactory.ConstructHull");
             DestroyHull();
             
             var mapPositions = squares.ToDictionary(sq => (sq.X, sq.Y), sq => sq.Type);
-            var index = 0U;
+            var index = 0U;  // For naming
             
             // For each hull location, try and match it against each available hull piece prefab
             foreach (var hullPos in mapPositions.Where(kv => kv.Value == SquareType.Hull))

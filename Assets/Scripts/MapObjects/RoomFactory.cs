@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Layout;
+using LevelGenerator;
 using UnityEngine;
 using static MapObjects.ObjectUtils;
 
@@ -90,14 +91,17 @@ namespace MapObjects
 #if UNITY_EDITOR
             _corridorFactory = GetComponent<CorridorFactory>();
 #endif
-            _corridorFactory.ConstructCorridors(rooms.Where(rm => rm.IsCorridor), _doorsByRoomId);
-            foreach (var room in rooms.Where(rm => !rm.IsCorridor))
+            _corridorFactory.ConstructCorridors(rooms.Where(rm => rm.Type == RoomType.Corridor), _doorsByRoomId);
+            foreach (var room in rooms.Where(rm => rm.Type == RoomType.Room))
             {
-                var obj = Instantiate(roomPrefab.gameObject, roomContainer, false);
-                obj.transform.localPosition = room.ToPosition();
-                var roomController = obj.GetComponent<RoomController>();
+                var roomController = Instantiate(roomPrefab, roomContainer, false);
                 roomController.SetData(room, _doorsByRoomId);
             }
+            foreach (var room in rooms.Where(rm => rm.Type == RoomType.AlienBreach))
+            {
+                Debug.Log(room);
+            }
+
             
             Debug.Log("RoomFactory.ConstructRooms Done");
         }

@@ -31,6 +31,8 @@ namespace MapObjects
         public void SetData(RoomData data, ILookup<ulong, Door> doorsByRoomId)
         {
             _roomData = data;
+            transform.localPosition = data.ToPosition();
+            
             foreach (var x in Enumerable.Range(1, (int)data.Width))
             {
                 foreach (var y in Enumerable.Range(1, (int)data.Height))

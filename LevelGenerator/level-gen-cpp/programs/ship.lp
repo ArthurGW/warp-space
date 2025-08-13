@@ -41,31 +41,31 @@ room(X, Y, 1, 1) :- corridor(X, Y).
 These are placed next to an existing non-corridor room, to ensure they are reachable. They are also placed only on
 straight hull edges, for ease of placement in 3D. The breached room is also recorded, for connecting up later. *%
 num_breaches {
-    % Vertical, from the top - so it has an opening
+    % Vertical, from the top
     alien_breach(X, Y1, 1, 2, room(RX, RY, RW, RH))
         : in_space(X, Y1),
           hull(X, Y2),
           room_square(X, Y3, RX, RY, RW, RH), Y2 - Y1 = 1, Y3 - Y2 = 1, not corridor(X, Y3),
-          ship(X+1, Y3), ship(X-1, Y3);
+          ship(X+2, Y3), ship(X+1, Y3), ship(X-1, Y3), ship(X-2, Y3);
     % Vertical, from the bottom
     alien_breach(X, Y2, 1, 2, room(RX, RY, RW, RH))
         : in_space(X, Y1),
           hull(X, Y2),
           room_square(X, Y3, RX, RY, RW, RH), Y1 - Y2 = 1, Y2 - Y3 = 1, not corridor(X, Y3),
-          ship(X+1, Y3), ship(X-1, Y3);
+          ship(X+2, Y3), ship(X+1, Y3), ship(X-1, Y3), ship(X-2, Y3);
     % Horizontal, from the left
     alien_breach(X1, Y, 2, 1, room(RX, RY, RW, RH))
         : in_space(X1, Y),
           hull(X2, Y),
           room_square(X3, Y, RX, RY, RW, RH), X2 - X1 = 1, X3 - X2 = 1,
           not corridor(X3, Y),
-          ship(X3, Y+1), ship(X3, Y-1);
+          ship(X3, Y+2), ship(X3, Y+1), ship(X3, Y-1), ship(X3, Y-2);
     % Horizontal, from the right
     alien_breach(X2, Y, 2, 1, room(RX, RY, RW, RH))
         : in_space(X1, Y),
           hull(X2, Y),
           room_square(X3, Y, RX, RY, RW, RH), X1 - X2 = 1, X2 - X3 = 1, not corridor(X3, Y),
-          ship(X3, Y+1), ship(X3, Y-1)
+          ship(X3, Y+2), ship(X3, Y+1), ship(X3, Y-1), ship(X3, Y-2)
 } num_breaches.
 breach_square(X, Y; X+1, Y) :- alien_breach(X, Y, 2, 1, _).
 breach_square(X, Y; X, Y+1) :- alien_breach(X, Y, 1, 2, _).

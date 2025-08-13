@@ -28,6 +28,12 @@ namespace MapObjects
         public void OnMapGenerationFailed()
         {
             Debug.Log("GameMapController.OnMapGenerationFailed");
+            DestroyMap();
+            Debug.Log("GameMapController.OnMapGenerationFailed Done");
+        }
+
+        private void DestroyMap()
+        {
 #if UNITY_EDITOR
             _hullFactory = GetComponentInChildren<HullFactory>();
             _roomFactory = GetComponentInChildren<RoomFactory>();
@@ -35,30 +41,30 @@ namespace MapObjects
             _hullFactory.DestroyHull();
             _roomFactory.DestroyRooms();
             DestroyAllChildren(shipSquareContainer);
-            Debug.Log("GameMapController.OnMapGenerationFailed Done");
         }
 
         public void OnMapGenerated(MapResult result)
         {
-#if UNITY_EDITOR
-            _hullFactory = GetComponentInChildren<HullFactory>();
-            _roomFactory = GetComponentInChildren<RoomFactory>();
-#endif
-            DestroyAllChildren(shipSquareContainer);
+            DestroyMap();
+
+            foreach (var room in result.Rooms.Where(rm => rm.Type == RoomType.AlienBreach))
+            {
+                Debug.Log(room);
+            }
+            
             Debug.Log("GameMapController.OnMapGenerated");
             var roomsById = result.Rooms.ToDictionary(rm => rm.Id);
             Debug.Log("GameMapController.OnMapGenerated Room Dict");
             // var usedLocations = new HashSet<(uint, uint)>();
 
-            _hullFactory.ConstructHull(result.Squares,
-                result.Width,
-                result.Height);
+            _hullFactory.ConstructHull(result.Squares);
             
-            Debug.Log("GameMapController.OnMapGenerated Parsing Corridors");
+            Debug.Log("GameMapController.OnMapGenerated Parsing Rooms");
             
             _roomFactory.ConstructRooms(result.Rooms,
                 roomsById,
                 result.Adjacencies);
+
             Debug.Log("GameMapController.OnMapGenerated Parsing ship squares");
             // Finally, process ship squares to fill in the gaps
             // We could work out the gaps here, but we have Ship squares so we may as well use them

@@ -70,7 +70,7 @@ namespace LevelGenerator.Extensions
 
         public static string AsString(this Room room)
         {
-            return $"Room({room.RoomId}: {room.X},{room.Y},{room.W},{room.H},{room.IsCorridor})";
+            return $"Room({room.RoomId}: {room.X},{room.Y},{room.W},{room.H},{room.Type})";
         }
         
         public static string AsString(this Adjacency adjacency)
