@@ -93,7 +93,7 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
             THEN("the best level has appropriate numbers of symbols")
             {
                 LevelGenerator gen{
-                        2, width, height, min_rooms, max_rooms, num_breaches, seed, false, 2
+                        1, width, height, min_rooms, max_rooms, num_breaches, seed, false
                 };
                 REQUIRE_NOTHROW(gen.solve());
 
