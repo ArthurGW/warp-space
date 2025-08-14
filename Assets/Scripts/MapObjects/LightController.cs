@@ -32,8 +32,9 @@ namespace MapObjects
                 var roomSize = GridToSize((roomData.Width, roomData.Height));
                 roomSize.y = 5f; // Standard room height
                 _entryDetector.size = roomSize;
-                var roomCenter = GridToPosition(((roomData.Width - 1), (roomData.Height - 1))) / 2f;
+                var roomCenter = GridToSize(((roomData.Width - 1), (roomData.Height - 1))) / 2f;
                 roomCenter.y = 2.5f;
+                roomCenter.z *= -1f;
                 _entryDetector.center = roomCenter;
                 _entryDetector.isTrigger = true;
             }

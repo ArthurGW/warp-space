@@ -10,14 +10,16 @@ namespace MapObjects
 {
     public readonly struct Door : IEquatable<Door>
     {
-        private readonly uint _internalX;
-        private readonly uint _internalY;
+        public readonly uint InternalX;
+        public readonly uint InternalY;
+        public readonly RoomType ConnectsTo;
         public readonly CardinalDirection Direction;
 
-        public Door(uint internalX, uint internalY, CardinalDirection direction)
+        public Door(uint internalX, uint internalY, RoomType connectsTo, CardinalDirection direction)
         {
-            _internalX = internalX;
-            _internalY = internalY;
+            InternalX = internalX;
+            InternalY = internalY;
+            ConnectsTo = connectsTo;
             Direction = direction;
         }
 
@@ -29,13 +31,14 @@ namespace MapObjects
         public bool Equals(Door other)
         {
             return Direction == other.Direction
-                   && _internalX == other._internalX 
-                   && _internalY == other._internalY;
+                   && InternalX == other.InternalX 
+                   && InternalY == other.InternalY
+                   && ConnectsTo == other.ConnectsTo;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(_internalX, _internalY, (byte)Direction);
+            return HashCode.Combine(InternalX, InternalY, (byte)ConnectsTo, (byte)Direction);
         }
 
         public static bool operator ==(Door left, Door right)
@@ -149,8 +152,8 @@ namespace MapObjects
                     ? (rm: room.Width, adj: 1U) 
                     : (rm: 1U, adj: adjRoom.Width);
                 return (
-                    new Door(xPos.rm, doorPoint - room.Y + 1, directions.rm),
-                    new Door(xPos.adj, doorPoint - adjRoom.Y + 1, directions.adj)
+                    new Door(xPos.rm, doorPoint - room.Y + 1, adjRoom.Type, directions.rm),
+                    new Door(xPos.adj, doorPoint - adjRoom.Y + 1, room.Type, directions.adj)
                 );
             }
             {
@@ -166,8 +169,8 @@ namespace MapObjects
                     ? (rm: room.Height, adj: 1U)
                     : (rm: 1U, adj: adjRoom.Height);
                 return (
-                    new Door(doorPoint - room.X + 1, yPos.rm, directions.rm),
-                    new Door(doorPoint - adjRoom.X + 1, yPos.adj, directions.adj)
+                    new Door(doorPoint - room.X + 1, yPos.rm, adjRoom.Type, directions.rm),
+                    new Door(doorPoint - adjRoom.X + 1, yPos.adj, room.Type, directions.adj)
                 );
             }
         }

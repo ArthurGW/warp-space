@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   floorPrefab: {fileID: 8995690838197578871, guid: 4eff8b3f75854554da6dabc13f7110b3, type: 3}
   wallPrefab: {fileID: 2898971482414942155, guid: f2ddf4512e3b28c46999828bf71f6c4e, type: 3}
+  breachWallPrefab: {fileID: 6496038116330785265, guid: aefb0c96fbb1cdf4e8e5e22514249599, type: 3}
   doorPrefab: {fileID: 6496038116330785265, guid: 6426d4478eae18540b5697197810a14d, type: 3}
 --- !u!65 &2467162381597821543
 BoxCollider:

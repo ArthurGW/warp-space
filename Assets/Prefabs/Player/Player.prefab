@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 314408822632366054}
   - component: {fileID: 6321314156292828262}
   - component: {fileID: 5999761038440318049}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Nose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 6382989403719395503}
   - component: {fileID: 3232041715268048319}
   - component: {fileID: 6324115869484797399}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 8795605536782610401}
   - component: {fileID: 3429609477443433817}
   - component: {fileID: 7320978350517236144}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}

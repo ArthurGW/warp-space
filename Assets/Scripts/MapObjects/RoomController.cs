@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Layout;
+using LevelGenerator;
 using static Layout.LayoutUtils;
 using UnityEngine;
-using static MapObjects.ObjectUtils;
 
 namespace MapObjects
 {
@@ -15,6 +16,9 @@ namespace MapObjects
         
         [SerializeField]
         private GameObject wallPrefab;
+        
+        [SerializeField]
+        private GameObject breachWallPrefab;
         
         [SerializeField]
         private GameObject doorPrefab;
@@ -60,11 +64,26 @@ namespace MapObjects
             var walls = new List<CardinalDirection>();
             if (pos.X == 1U) walls.Add(CardinalDirection.West);
             if (pos.Y == 1U) walls.Add(CardinalDirection.North);
-            if (pos.X == _roomData.Width)  walls.Add(CardinalDirection.East);
-            if (pos.Y == _roomData.Height)  walls.Add(CardinalDirection.South);
+            if (pos.X == _roomData.Width) walls.Add(CardinalDirection.East);
+            if (pos.Y == _roomData.Height) walls.Add(CardinalDirection.South);
             foreach (var wallDir in walls)
             {
-                var prefab = doorsByRoomId[_roomData.Id].Contains(new Door(pos.X, pos.Y, wallDir)) ? doorPrefab : wallPrefab;
+                var doors = doorsByRoomId[_roomData.Id].Where(d => d.InternalX == pos.X && d.InternalY == pos.Y && d.Direction == wallDir).ToArray();
+                GameObject prefab;
+                if (doors.Length == 0)
+                {
+                    prefab = wallPrefab;
+                }
+                else
+                {
+                    prefab = doors.First().ConnectsTo switch
+                    {
+                        RoomType.Room or RoomType.Corridor => doorPrefab,
+                        RoomType.AlienBreach => breachWallPrefab,
+                        _ => throw new ArgumentException()
+                    };
+                }
+
                 var wall = Instantiate(prefab, transform, false);
                 wall.transform.SetLocalPositionAndRotation(localPosition, wallDir.ToRotation());
             }
