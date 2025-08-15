@@ -149,6 +149,10 @@ class LEVEL_GEN_API Level {
 
         size_t get_num_breaches() const;
 
+        size_t get_start_room() const;
+
+        size_t get_finish_room() const;
+
         size_t get_num_rooms() const;
 
         size_t get_num_adjacencies() const;

@@ -109,7 +109,8 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                         room_iter,
                     [](const auto& rm) { return rm.type == RoomType::AlienBreach; }
                 ) == 2UL);
-                
+
+                // Breaches are always added to the end of the room list, so get them from there to compare
                 room_iter.reset();
                 for (auto i = 0; i < room_iter.count() - 1; ++i) room_iter.move_next();
                 const auto first_breach = room_iter.current();
@@ -118,6 +119,19 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
 
                 REQUIRE(first_breach == Room{8, 5, 2, 1, RoomType::AlienBreach});
                 REQUIRE(second_breach == Room{8, 6, 2, 1, RoomType::AlienBreach});
+            }
+
+            THEN("the best level has a start room and a finish room")
+            {
+                LevelGenerator gen{
+                        1, 9, 10, 1, 6, 2, 1234, true
+                };
+                REQUIRE_NOTHROW(gen.solve());
+
+                const auto* level = gen.best_level();
+                REQUIRE(level->get_num_rooms() == 10UL);
+                REQUIRE(level->get_start_room() == 2UL);
+                REQUIRE(level->get_finish_room() == 1UL);
             }
         }
     }GIVEN("A level generator with other params")

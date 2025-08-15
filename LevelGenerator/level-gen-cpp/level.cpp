@@ -24,10 +24,25 @@ namespace
         return ret;
     }
 
-    inline auto find_room(const std::vector<Room>& rooms, Clingo::Symbol room_sym)
+    inline size_t find_room(const std::vector<Room>& rooms, Clingo::Symbol room_sym)
     {
-        auto args = unsigned_args(room_sym);
-        return std::find(rooms.cbegin(), rooms.cend(), Room{args[0], args[1], args[2], args[3], args[3] == 1U ? RoomType::Corridor : RoomType::Room});
+        if (!room_sym.match("room", 4))
+        {
+            return 0;  // 0 means invalid
+        }
+
+        const auto args = unsigned_args(room_sym);
+        const auto room = std::find(
+            rooms.cbegin(),
+            rooms.cend(),
+            Room{args[0], args[1], args[2], args[3], args[3] == 1U ? RoomType::Corridor : RoomType::Room}
+        );
+
+        if (room == rooms.cend())
+        {
+            return 0;
+        }
+        return room->room_id;
     }
 
     /// Converts a one-indexed (x, y) coordinate to a zero-indexed serial grid index, in row-major style
@@ -84,6 +99,7 @@ class Level::LevelImpl
                         ++corridors;
                     }
 
+                    // Create rooms, with IDs starting from 1
                     room_vec.push_back({x, y, rw, rh, is_corridor ? RoomType::Corridor : RoomType::Room, room_vec.size() + 1});
                     continue;
                 }
@@ -130,27 +146,29 @@ class Level::LevelImpl
                 }
             }
 
-            // Second pass to get adjacencies amd breaches referring to already-created rooms
+            // Second pass to get adjacencies, breaches, and start/finish points, referring to already-created rooms
             for (const auto& sym_val : data)
             {
                 const Clingo::Symbol sym{sym_val};
                 const auto args = sym.arguments();
                 if (sym.match("adjacent", 2))
                 {
-                    const auto first = args[0];
-                    const auto second = args[1];
-                    if (!(first.match("room", 4) && second.match("room", 4)))
-                    {
-                        continue;
-                    }
-                    const auto first_it = find_room(room_vec, first);
-                    const auto second_it = find_room(room_vec, second);
-                    if (first_it == room_vec.cend() || second_it == room_vec.cend())
+                    const auto first = find_room(room_vec, args[0]);
+                    const auto second = find_room(room_vec, args[1]);
+                    if (first == 0 || second == 0)
                     {
                         continue;
                     }
 
-                    adjacency_vec.push_back({first_it->room_id, second_it->room_id});
+                    adjacency_vec.push_back({first, second});
+                }
+                else if (sym.match("start_room", 1))
+                {
+                    start_room_id = find_room(room_vec, args[0]);
+                }
+                else if (sym.match("finish_room", 1))
+                {
+                    finish_room_id = find_room(room_vec, args[0]);
                 }
                 else if (sym.match("alien_breach", 5))
                 {
@@ -165,16 +183,14 @@ class Level::LevelImpl
                         continue;
                     }
                     const auto breached_room = find_room(room_vec, breached_room_sym);
-                    if (breached_room == room_vec.cend())
+                    if (breached_room == 0)
                     {
                         continue;
                     }
-                    // Store the ID, since the iterator is about to be invalidated
-                    const auto breached_room_id = breached_room->room_id;
 
                     room_vec.push_back({x, y, w, h, RoomType::AlienBreach, room_vec.size() + 1});
-                    adjacency_vec.push_back({breached_room_id, room_vec.back().room_id});
-                    adjacency_vec.push_back({room_vec.back().room_id, breached_room_id});
+                    adjacency_vec.push_back({breached_room, room_vec.back().room_id});
+                    adjacency_vec.push_back({room_vec.back().room_id, breached_room});
                     ++breaches;
                 }
             }
@@ -218,6 +234,16 @@ class Level::LevelImpl
             return breaches;
         }
 
+        size_t start_room() const
+        {
+            return start_room_id;
+        }
+
+        size_t finish_room() const
+        {
+            return finish_room_id;
+        }
+
         size_t num_rooms() const
         {
             return room_vec.size();
@@ -250,6 +276,8 @@ class Level::LevelImpl
         std::vector<Adjacency> adjacency_vec;
         size_t corridors;
         size_t breaches;
+        size_t start_room_id;
+        size_t finish_room_id;
         const unsigned width;
         const unsigned height;
 
@@ -286,6 +314,17 @@ size_t Level::get_num_breaches() const
 {
     return impl->num_breaches();
 }
+
+size_t Level::get_start_room() const
+{
+    return impl->start_room();
+}
+
+size_t Level::get_finish_room() const
+{
+    return impl->finish_room();
+}
+
 
 size_t Level::get_num_rooms() const
 {
