@@ -134,7 +134,8 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 REQUIRE(level->get_finish_room() == 1UL);
             }
         }
-    }GIVEN("A level generator with other params")
+    }
+    GIVEN("A level generator with other params")
     {
         // A fuzz-like test to try some other params and make sanity checks
         WHEN("solve() is called")

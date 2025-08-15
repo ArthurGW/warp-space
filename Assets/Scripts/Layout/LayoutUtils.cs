@@ -8,6 +8,7 @@ namespace Layout
     {
         public const float X = 10f;
         public const float Y = 10f;
+        public const float Height = 5f;
     }
 
     public static class LayoutUtils
@@ -34,7 +35,7 @@ namespace Layout
         
         public static Vector3 GridToSize((uint X, uint Y) size)
         {
-            return new Vector3(SquareSize.X * size.X, 0f, SquareSize.Y * size.Y);
+            return new Vector3(SquareSize.X * size.X, SquareSize.Height, SquareSize.Y * size.Y);
         }
 
         public static (uint X, uint Y) Offset(this (uint X, uint Y) pos, (int offX, int offY) offset) =>

@@ -13,11 +13,17 @@ namespace MapObjects
     {
         [SerializeField]
         private GameObject shipSquarePrefab;
-        
-        private HullFactory _hullFactory;
-        private RoomFactory _roomFactory;
 
         [SerializeField] private Transform shipSquareContainer;
+
+        [SerializeField]
+        private CharacterController playerPrefab;
+        
+        [SerializeField]
+        private WarpController warpControlPrefab;
+
+        private HullFactory _hullFactory;
+        private RoomFactory _roomFactory;
 
         private void Awake()
         {
@@ -27,9 +33,7 @@ namespace MapObjects
 
         public void OnMapGenerationFailed()
         {
-            Debug.Log("GameMapController.OnMapGenerationFailed");
             DestroyMap();
-            Debug.Log("GameMapController.OnMapGenerationFailed Done");
         }
 
         private void DestroyMap()
@@ -52,20 +56,51 @@ namespace MapObjects
                 Debug.Log(room);
             }
             
-            Debug.Log("GameMapController.OnMapGenerated");
             var roomsById = result.Rooms.ToDictionary(rm => rm.Id);
-            Debug.Log("GameMapController.OnMapGenerated Room Dict");
-            // var usedLocations = new HashSet<(uint, uint)>();
 
             _hullFactory.ConstructHull(result.Squares);
             
-            Debug.Log("GameMapController.OnMapGenerated Parsing Rooms");
-            
-            _roomFactory.ConstructRooms(result.Rooms,
-                roomsById,
+            // Generate rooms and corridors
+            _roomFactory.ConstructRooms(result.Rooms, roomsById,
                 result.Adjacencies);
+            
+            // Set up the start and finish rooms
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+#if UNITY_EDITOR 
+                DestroyImmediate(player);
+#else
+                Destroy(player);
+#endif
+            }
+            var warp = GameObject.FindGameObjectWithTag("WarpControl");
+            if (warp != null)
+            {
+#if UNITY_EDITOR 
+                DestroyImmediate(warp);
+#else
+                Destroy(warp);
+#endif
+            }
 
-            Debug.Log("GameMapController.OnMapGenerated Parsing ship squares");
+            if (!roomsById.TryGetValue(result.StartRoomId, out var startRoom))
+            {
+                startRoom = result.Rooms.First(rm => rm.Type == RoomType.Room);
+            }
+            if (!roomsById.TryGetValue(result.FinishRoomId, out var finishRoom))
+            {
+                finishRoom = result.Rooms.Last(rm => rm.Type == RoomType.Room);
+            }
+            
+            // Player goes in the start room
+            var playerPos = startRoom.ToWorldCenter();
+            playerPos.y = playerPrefab.height / 2;
+            Instantiate(playerPrefab, playerPos, Quaternion.identity);
+            
+            // Warp control goes in the finish room
+            Instantiate(warpControlPrefab, finishRoom.ToWorldCenter() , Quaternion.identity);
+
             // Finally, process ship squares to fill in the gaps
             // We could work out the gaps here, but we have Ship squares so we may as well use them
             foreach (var square in result.Squares

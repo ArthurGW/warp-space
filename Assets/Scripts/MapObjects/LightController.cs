@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Layout;
+﻿using Layout;
 using static Layout.LayoutUtils;
 using UnityEngine;
 
@@ -21,22 +18,17 @@ namespace MapObjects
 
         public void SetUpLights(RoomData? data)
         {
+#if UNITY_EDITOR
+            _entryDetector = GetComponent<BoxCollider>();
+            _lights = GetComponentsInChildren<Light>();
+#endif
+            _entryDetector.isTrigger = true;
+            
             if (data.HasValue)
             {
                 var roomData = data.Value;
-
-#if UNITY_EDITOR
-                _entryDetector = GetComponent<BoxCollider>();
-#endif
-
-                var roomSize = GridToSize((roomData.Width, roomData.Height));
-                roomSize.y = 5f; // Standard room height
-                _entryDetector.size = roomSize;
-                var roomCenter = GridToSize(((roomData.Width - 1), (roomData.Height - 1))) / 2f;
-                roomCenter.y = 2.5f;
-                roomCenter.z *= -1f;
-                _entryDetector.center = roomCenter;
-                _entryDetector.isTrigger = true;
+                _entryDetector.size = roomData.ToSize();
+                _entryDetector.center = roomData.ToLocalCenter();
             }
             
             // Turn off the lights - the entry detector will turn them back on
@@ -57,11 +49,6 @@ namespace MapObjects
             {
                 child.enabled = true;
             }
-        }
-
-        private void OnTriggerStay(Collider other)
-        {
-            OnTriggerEnter(other);
         }
     }
 }

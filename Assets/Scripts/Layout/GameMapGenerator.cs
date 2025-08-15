@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Layout.LayoutUtils;
-using LevelGenerator;
 using LevelGenerator.Extensions;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,67 +13,7 @@ namespace System.Runtime.CompilerServices
 
 namespace Layout
 {
-    public readonly struct RoomData
-    {
-        private RoomData(ulong id, uint x, uint y, uint width, uint height, RoomType roomType)
-        {
-            Id = id;
-            X = x;
-            Y = y;
-            Width = width;
-            Height = height;
-            Type = roomType;
-        }
-
-        public static explicit operator RoomData(Room rm)
-        {
-            return new RoomData(rm.RoomId, rm.X, rm.Y, rm.W, rm.H, rm.Type);
-        }
-        
-        public override string ToString() => $"RoomData({Id}: {X},{Y},{Width},{Height},{Type})";
-        
-        public Vector3 ToPosition() => GridToPosition((X, Y));
-
-        public ulong Id { get; }
-        public uint X { get; }
-        public uint Y { get; }
-        public uint Width { get; }
-        public uint Height { get; }
-        public RoomType Type { get; }
-    }
-    
-    public readonly struct MapSquareData
-    {
-        private MapSquareData(uint x, uint y, SquareType squareType)
-        {
-            X = x;
-            Y = y;
-            Type = squareType;
-        }
-
-        public static explicit operator MapSquareData(MapSquare sq)
-        {
-            return new MapSquareData(sq.X, sq.Y, sq.Type);
-        }
-        
-        public static explicit operator MapSquareData(RoomData rm) 
-            => new(rm.X, rm.Y, rm.Type switch
-            {
-                RoomType.Corridor => SquareType.Corridor,
-                RoomType.AlienBreach => SquareType.AlienBreach,
-                _ => SquareType.Room
-            });
-        
-        public override string ToString() => $"MapSquareData({X},{Y},{Type})";
-        
-        public Vector3 ToPosition() => GridToPosition((X, Y));
-
-        public uint X { get; }
-        public uint Y { get; }
-        public SquareType Type { get; }
-    }
-    
-    public record MapResult(List<MapSquareData> Squares, List<RoomData> Rooms, Dictionary<ulong, HashSet<ulong>> Adjacencies, uint Width, uint Height);
+    public record MapResult(List<MapSquareData> Squares, List<RoomData> Rooms, Dictionary<ulong, HashSet<ulong>> Adjacencies, ulong StartRoomId, ulong FinishRoomId);
     
     public class GameMapGenerator : MonoBehaviour
     {
@@ -147,6 +85,9 @@ namespace Layout
                 return;
             }
 
+            var startRoomId = level.StartRoom;
+            var finishRoomId = level.FinishRoom;
+
             // Retrieve all the data into local copies, so the unmanaged data can be destroyed safely
             using var squares = level.MapSquares();
             var newSquares = squares.GetEnumerable().Select(
@@ -187,7 +128,7 @@ namespace Layout
             _adjacencies = newAdjacencies;
             
             IsGenerating = false;
-            onMapGenerated.Invoke(new MapResult(_squares, _rooms, _adjacencies, width, height));
+            onMapGenerated.Invoke(new MapResult(_squares, _rooms, _adjacencies, startRoomId, finishRoomId));
         }
 
         public void PrintArrays()
