@@ -26,6 +26,8 @@ namespace Player
 
         private void Update()
         {
+            if (!MovementEnabled) return;
+            
             // Handle x-axis of look as player rotation
             var lookAmount = _look.ReadValue<Vector2>().x * rotationSpeed * Time.deltaTime;
             var lookInPlane = Quaternion.AngleAxis(lookAmount, Vector3.up);
@@ -36,5 +38,7 @@ namespace Player
             var moveInPlane = transform.forward * moveAmount.y + transform.right * moveAmount.x;
             _controller.Move(moveInPlane);
         }
+
+        public bool MovementEnabled { get; set; }
     }
 }

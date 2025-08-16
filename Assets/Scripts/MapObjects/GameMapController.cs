@@ -1,8 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Layout;
 using LevelGenerator;
+using Player;
 using UnityEngine;
+using UnityEngine.Events;
 using static MapObjects.ObjectUtils;
+using Object = UnityEngine.Object;
 
 namespace MapObjects
 {
@@ -11,24 +15,30 @@ namespace MapObjects
     /// </summary>
     public class GameMapController : MonoBehaviour
     {
-        [SerializeField]
-        private GameObject shipSquarePrefab;
+        public UnityEvent mapComplete;
+        
+        [SerializeField] private GameObject shipSquarePrefab;
 
         [SerializeField] private Transform shipSquareContainer;
 
-        [SerializeField]
-        private CharacterController playerPrefab;
-        
-        [SerializeField]
-        private WarpController warpControlPrefab;
+        [SerializeField] private WarpController warpControlPrefab;
 
+        private PlayerMovement _playerController;
         private HullFactory _hullFactory;
         private RoomFactory _roomFactory;
 
         private void Awake()
         {
+            mapComplete ??= new UnityEvent();
             _hullFactory = GetComponentInChildren<HullFactory>();
             _roomFactory = GetComponentInChildren<RoomFactory>();
+            _playerController = FindFirstObjectByType<PlayerMovement>(FindObjectsInactive.Include);
+            MovementEnabled = false;
+        }
+
+        private void Start()
+        {
+            GetComponentInChildren<WarpController>()?.onWarp?.AddListener(OnWarp);
         }
 
         public void OnMapGenerationFailed()
@@ -36,7 +46,7 @@ namespace MapObjects
             DestroyMap();
         }
 
-        private void DestroyMap()
+        public void DestroyMap()
         {
 #if UNITY_EDITOR
             _hullFactory = GetComponentInChildren<HullFactory>();
@@ -45,74 +55,69 @@ namespace MapObjects
             _hullFactory.DestroyHull();
             _roomFactory.DestroyRooms();
             DestroyAllChildren(shipSquareContainer);
+            
+            var warp = GameObject.FindGameObjectWithTag("WarpControl");
+            if (warp != null)
+            {
+                warp.GetComponent<WarpController>()?.onWarp.RemoveAllListeners();
+                DestroyGameObject(warp);
+            }
         }
+
+        public bool MovementEnabled
+        {
+            get => _playerController.MovementEnabled;
+            set => _playerController.MovementEnabled = value;
+        }
+        
 
         public void OnMapGenerated(MapResult result)
         {
             DestroyMap();
 
-            foreach (var room in result.Rooms.Where(rm => rm.Type == RoomType.AlienBreach))
-            {
-                Debug.Log(room);
-            }
-            
             var roomsById = result.Rooms.ToDictionary(rm => rm.Id);
 
+            // Create hull
             _hullFactory.ConstructHull(result.Squares);
-            
+
             // Generate rooms and corridors
             _roomFactory.ConstructRooms(result.Rooms, roomsById,
                 result.Adjacencies);
-            
-            // Set up the start and finish rooms
-            var player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-            {
-#if UNITY_EDITOR 
-                DestroyImmediate(player);
-#else
-                Destroy(player);
-#endif
-            }
-            var warp = GameObject.FindGameObjectWithTag("WarpControl");
-            if (warp != null)
-            {
-#if UNITY_EDITOR 
-                DestroyImmediate(warp);
-#else
-                Destroy(warp);
-#endif
-            }
 
+            // Set up the start and finish rooms
             if (!roomsById.TryGetValue(result.StartRoomId, out var startRoom))
             {
                 startRoom = result.Rooms.First(rm => rm.Type == RoomType.Room);
             }
+
             if (!roomsById.TryGetValue(result.FinishRoomId, out var finishRoom))
             {
                 finishRoom = result.Rooms.Last(rm => rm.Type == RoomType.Room);
             }
-            
+
             // Player goes in the start room
             var playerPos = startRoom.ToWorldCenter();
-            playerPos.y = playerPrefab.height / 2;
-            Instantiate(playerPrefab, playerPos, Quaternion.identity);
-            
+            playerPos.y = _playerController.GetComponent<CharacterController>().height / 2;
+            _playerController.transform.position = playerPos;
+            _playerController.transform.rotation = Quaternion.identity;
+
             // Warp control goes in the finish room
-            Instantiate(warpControlPrefab, finishRoom.ToWorldCenter() , Quaternion.identity);
+            var warpControl = Instantiate(warpControlPrefab, transform);
+            warpControl.transform.localPosition = finishRoom.ToWorldCenter();
+            warpControl.onWarp.AddListener(OnWarp);
 
             // Finally, process ship squares to fill in the gaps
             // We could work out the gaps here, but we have Ship squares so we may as well use them
-            foreach (var square in result.Squares
-                         .Where(sq => sq.Type == SquareType.Ship)
-                     )
+            foreach (var square in result.Squares.Where(sq => sq.Type == SquareType.Ship))
             {
-                var obj = Instantiate(shipSquarePrefab,
-                    shipSquareContainer,
-                    false);
+                var obj = Instantiate(shipSquarePrefab, shipSquareContainer, false);
                 obj.transform.localPosition = square.ToPosition();
             }
-            Debug.Log("GameMapController.OnMapGenerated Done");
+        }
+
+        private void OnWarp()
+        {
+            mapComplete?.Invoke();
         }
     }
 }

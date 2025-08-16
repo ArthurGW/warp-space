@@ -46,20 +46,8 @@ namespace Layout
         private void Awake()
         {
             IsGenerating = false;
-            onMapGenerated = new UnityEvent<MapResult>();
-            onMapGenerationFailed = new UnityEvent();
-        }
-
-        private async void Start()
-        {
-            try
-            {
-                await GenerateNewLevel();
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-            }
+            onMapGenerated ??= new UnityEvent<MapResult>();
+            onMapGenerationFailed ??= new UnityEvent();
         }
 
         public async Awaitable GenerateNewLevel()

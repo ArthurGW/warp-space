@@ -21523,7 +21523,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &5037082731361557314
 Transform:
@@ -22943,7 +22943,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -48601,6 +48601,9 @@ MonoBehaviour:
   firstMaterial: {fileID: 2100000, guid: 2ec2ead6d17196f4991f34cf32bc5407, type: 2}
   secondMaterial: {fileID: 2100000, guid: e8ab4700b4805884fb895d0855aaf64a, type: 2}
   pulseAmount: 0
+  onWarp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!111 &5960281621364819102
 Animation:
   m_ObjectHideFlags: 0

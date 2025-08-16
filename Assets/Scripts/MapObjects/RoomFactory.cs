@@ -86,7 +86,6 @@ namespace MapObjects
 
         public void ConstructRooms(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById, Dictionary<ulong, HashSet<ulong>> adjacencies)
         {
-            Debug.Log("RoomFactory.ConstructRooms");
             DestroyRooms();
             
             InitDoors(rooms, roomsById, adjacencies);
@@ -100,13 +99,8 @@ namespace MapObjects
                 var roomController = Instantiate(roomPrefab, roomContainer, false);
                 roomController.SetData(room, _doorsByRoomId);
             }
-            foreach (var room in rooms.Where(rm => rm.Type == RoomType.AlienBreach))
-            {
-                Debug.Log(room);
-            }
 
             
-            Debug.Log("RoomFactory.ConstructRooms Done");
         }
         
         private void InitDoors(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById, 

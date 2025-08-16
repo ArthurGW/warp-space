@@ -6,6 +6,7 @@ TagManager:
   tags:
   - WarpControl
   - WarpBlue
+  - SceneChange
   layers:
   - Default
   - TransparentFX

@@ -9,14 +9,18 @@ namespace MapObjects
         {
             for (var i = parent.childCount - 1; i >= 0; --i)
             {
-                var child = parent.GetChild(i).gameObject;
-                child.SetActive(false);
-#if UNITY_EDITOR
-                Object.DestroyImmediate(child);
-#else
-                Object.Destroy(child);
-#endif
+                DestroyGameObject(parent.GetChild(i).gameObject);
             }
+        }
+
+        public static void DestroyGameObject(GameObject obj)
+        {
+            obj.SetActive(false);
+#if UNITY_EDITOR
+            Object.DestroyImmediate(obj);
+#else
+                Object.Destroy(obj);
+#endif
         }
     }
 }

@@ -15,8 +15,6 @@ namespace MapObjects
         
         public void ConstructCorridors(IEnumerable<RoomData> corridors, ILookup<ulong, Door> doorsByRoomId)
         {
-            Debug.Log("CorridorFactory.ConstructCorridors");
-            
             foreach (var corridor in corridors)
             {
                 var obj = Instantiate(corridorPrefab.gameObject, corridorContainer, false);
@@ -26,8 +24,6 @@ namespace MapObjects
                 corridorController.openDirections = GetOpenings(corridor, doorsByRoomId);
                 corridorController.UpdateCorridor();
             }
-            
-            Debug.Log("CorridorFactory.ConstructCorridors Done");
         }
 
         public void DestroyCorridors()

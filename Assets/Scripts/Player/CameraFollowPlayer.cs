@@ -23,16 +23,10 @@ namespace Player
             if (!InputSystem.actions) return;
             _zoomAction = InputSystem.actions.FindAction("Player/Zoom");
             _lookAction = InputSystem.actions.FindAction("Player/Look");
-        }
-
-        private void Start()
-        {
+            _playerTransform = FindFirstObjectByType<CharacterController>(FindObjectsInactive.Include).transform;
             _mainCameraTransform = Camera.main?.transform;
-            _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-            
-            Follow();
         }
-
+        
         private void Update()
         {
             if (_zoomAction.ReadValueAsObject() is float amount)
@@ -45,11 +39,14 @@ namespace Player
                 lookProportion = Mathf.Clamp(lookProportion - look.y * lookSpeed * Time.deltaTime, 0f, 1f);
                 _lookAngle = Mathf.LerpAngle(10, 80, lookProportion);
             }
+            
             Follow();
         }
 
         private void Follow()
         {
+            if (!_playerTransform || !_playerTransform.gameObject.activeInHierarchy) return;
+            
             var sin = MathF.Sin(_lookAngle * MathF.PI/180);
             var cos = MathF.Cos(_lookAngle * MathF.PI/180);
             var vertical = _playerTransform.up * (offset * sin);

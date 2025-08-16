@@ -14,7 +14,6 @@ namespace MapObjects
 
         public void ConstructHull(List<MapSquareData> squares)
         {
-            Debug.Log("HullFactory.ConstructHull");
             DestroyHull();
             
             var mapPositions = squares.ToDictionary(sq => (sq.X, sq.Y), sq => sq.Type);
@@ -31,7 +30,6 @@ namespace MapObjects
                     break;
                 }
             }
-            Debug.Log("HullFactory.ConstructHull Done");
         }
 
         private void InstantiateHullPiece((uint X, uint Y) pos, GameObject prefab, Quaternion rotation, bool flipped, uint index)
