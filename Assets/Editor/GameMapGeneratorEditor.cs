@@ -1,33 +1,22 @@
-﻿using System.Threading.Tasks;
+﻿using System;
 using Layout;
+using MapObjects;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UIElements;
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
 namespace Editor
 {
     [CustomEditor(typeof(GameMapGenerator))]
     public class GameMapGeneratorEditor : UnityEditor.Editor
     {
-        private UnityAction<MapResult> _onMapGenerated;
-        private UnityAction _onMapFailed;
-        
-        private bool IsGenerating => ((GameMapGenerator)target).IsGenerating;
-
         private Button _generateButton;
 
-        private void Awake()
-        {
-            _onMapFailed = OnMapGenerationFailed;
-            _onMapGenerated = OnMapGenerated;
-            
-            var level = (GameMapGenerator)target;
-            level.onMapGenerated.AddListener(_onMapGenerated);
-            level.onMapGenerationFailed.AddListener(_onMapFailed);
-        }
-
+        private bool _isGenerating;
+        
         public override VisualElement CreateInspectorGUI()
         {
             var customInspector = new VisualElement();
@@ -36,38 +25,33 @@ namespace Editor
             {
                 text = "Generate New Level"
             };
-            _generateButton.SetEnabled(!IsGenerating);
+            _generateButton.SetEnabled(!_isGenerating);
             customInspector.Add(_generateButton);
             return customInspector;
         }
 
-        private void StartGenerating()
+        private async void StartGenerating()
         {
-            if (IsGenerating)
+            try
             {
-                return;
+                if (_isGenerating)
+                {
+                    return;
+                }
+
+                _isGenerating = true;
+                _generateButton?.SetEnabled(false);
+                var level = (GameMapGenerator)target;
+                var result = await level.GenerateNewLevel();
+                FindAnyObjectByType<GameMapController>().OnMapGenerated(result);
+                _generateButton?.SetEnabled(true);
             }
-
-            _generateButton?.SetEnabled(false);
-            Task.Run(GenerateNewLevel);
-        }
-        
-        private void OnMapGenerated(MapResult _)
-        {
-            _generateButton?.SetEnabled(true);
-        }
-
-
-        private void OnMapGenerationFailed()
-        {
-            _generateButton?.SetEnabled(true);
-        }
-        
-        private async Awaitable GenerateNewLevel()
-        {
-            await Awaitable.MainThreadAsync();
-            var level = (GameMapGenerator)target;
-            await level.GenerateNewLevel();
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                FindAnyObjectByType<GameMapController>().OnMapGenerationFailed();
+                _generateButton?.SetEnabled(true);
+            }
         }
     }
 }

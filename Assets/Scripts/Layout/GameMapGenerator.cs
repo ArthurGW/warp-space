@@ -5,19 +5,10 @@ using LevelGenerator.Extensions;
 using UnityEngine;
 using UnityEngine.Events;
 
-// Allows using record classes - see https://stackoverflow.com/a/64749403/8280782
-namespace System.Runtime.CompilerServices
-{
-    internal class IsExternalInit { }
-}
-
 namespace Layout
 {
     public class GameMapGenerator : MonoBehaviour
     {
-        public UnityEvent<MapResult> onMapGenerated;
-        public UnityEvent onMapGenerationFailed;
-
         #region Level Generator Params
 
         public uint width = 10;
@@ -33,21 +24,9 @@ namespace Layout
         public uint seed = 0;
 
         #endregion
-
-        public bool IsGenerating { get; private set; }
-
-        private void Awake()
-        {
-            IsGenerating = false;
-            onMapGenerated ??= new UnityEvent<MapResult>();
-            onMapGenerationFailed ??= new UnityEvent();
-        }
-
+        
         public async Awaitable<MapResult> GenerateNewLevel()
         {
-            await Awaitable.MainThreadAsync();
-            IsGenerating = true;
-
             // Run the slow level generation stage in a background thread
             await Awaitable.BackgroundThreadAsync();
             using var gen = new LevelGenerator.LevelGenerator(
@@ -58,8 +37,6 @@ namespace Layout
             if (level == null)
             {
                 await Awaitable.MainThreadAsync();
-                IsGenerating = false;
-                onMapGenerationFailed.Invoke();
                 return null;
             }
 
@@ -98,12 +75,8 @@ namespace Layout
                 adjacentTo.Add(adjacency.SecondId);
                 adjacency.Dispose();
             }
-
-            await Awaitable.MainThreadAsync();
-
-            IsGenerating = false;
+            
             var mapResult = new MapResult(newSquares, newRooms, newAdjacencies, startRoomId, finishRoomId);
-            onMapGenerated.Invoke(mapResult);
             return mapResult;
         }
     }

@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// Allows using record classes - see https://stackoverflow.com/a/64749403/8280782
+namespace System.Runtime.CompilerServices
+{
+    internal class IsExternalInit { }
+}
+
 namespace Layout
 {
     public record MapResult(List<MapSquareData> Squares, List<RoomData> Rooms, Dictionary<ulong, HashSet<ulong>> Adjacencies, ulong StartRoomId, ulong FinishRoomId);

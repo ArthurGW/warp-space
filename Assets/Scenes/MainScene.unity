@@ -950,44 +950,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b85840acd4f64d168028a60fce39e0c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onMapGenerated:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 97023960}
-        m_TargetAssemblyTypeName: MapObjects.GameMapController, Assembly-CSharp
-        m_MethodName: OnMapGenerated
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
-  onMapGenerationFailed:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 97023960}
-        m_TargetAssemblyTypeName: MapObjects.GameMapController, Assembly-CSharp
-        m_MethodName: OnMapGenerationFailed
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
   width: 20
   height: 14
   minRooms: 3
   maxRooms: 10
   numBreaches: 1
-  maxNumLevels: 15
+  maxNumLevels: 20
   solverThreads: 1
-  seed: 999999
+  seed: 1000898
 --- !u!4 &1326403173
 Transform:
   m_ObjectHideFlags: 0
@@ -1086,15 +1056,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6382989403719395503, guid: 4493149db13f2514b868b2959cde56c8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 6382989403719395503, guid: 4493149db13f2514b868b2959cde56c8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6382989403719395503, guid: 4493149db13f2514b868b2959cde56c8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -65
       objectReference: {fileID: 0}
     - target: {fileID: 6382989403719395503, guid: 4493149db13f2514b868b2959cde56c8, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1178,7 +1148,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomPrefab: {fileID: 973170945115902952, guid: c61db1edf2cb6e94ba917cdb341abe57, type: 3}
   roomContainer: {fileID: 882628244}
-  doorSeed: 11
 --- !u!114 &1889547365
 MonoBehaviour:
   m_ObjectHideFlags: 0

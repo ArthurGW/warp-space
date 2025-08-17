@@ -1,12 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Layout;
 using LevelGenerator;
-using Player;
 using UnityEngine;
 using UnityEngine.Events;
 using static MapObjects.ObjectUtils;
-using Object = UnityEngine.Object;
 
 namespace MapObjects
 {
@@ -23,7 +20,7 @@ namespace MapObjects
 
         [SerializeField] private WarpController warpControlPrefab;
 
-        private PlayerMovement _playerController;
+        private CharacterController _playerController;
         private HullFactory _hullFactory;
         private RoomFactory _roomFactory;
 
@@ -32,7 +29,8 @@ namespace MapObjects
             mapComplete ??= new UnityEvent();
             _hullFactory = GetComponentInChildren<HullFactory>();
             _roomFactory = GetComponentInChildren<RoomFactory>();
-            _playerController = FindFirstObjectByType<PlayerMovement>(FindObjectsInactive.Include);
+            _playerController = FindObjectsByType<CharacterController>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .First(controller => controller.CompareTag("Player"));
         }
 
         private void Start()
@@ -50,6 +48,7 @@ namespace MapObjects
 #if UNITY_EDITOR
             _hullFactory = GetComponentInChildren<HullFactory>();
             _roomFactory = GetComponentInChildren<RoomFactory>();
+            
 #endif
             _hullFactory.DestroyHull();
             _roomFactory.DestroyRooms();
@@ -65,6 +64,11 @@ namespace MapObjects
 
         public void OnMapGenerated(MapResult result)
         {
+#if UNITY_EDITOR
+            _playerController = FindObjectsByType<CharacterController>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .First(controller => controller.CompareTag("Player"));
+#endif
+            
             DestroyMap();
 
             var roomsById = result.Rooms.ToDictionary(rm => rm.Id);
@@ -89,7 +93,7 @@ namespace MapObjects
 
             // Player goes in the start room
             var playerPos = startRoom.ToWorldCenter();
-            playerPos.y = _playerController.GetComponent<CharacterController>().height / 2;
+            playerPos.y = _playerController.height / 2;
             _playerController.transform.position = playerPos;
             _playerController.transform.rotation = Quaternion.identity;
 

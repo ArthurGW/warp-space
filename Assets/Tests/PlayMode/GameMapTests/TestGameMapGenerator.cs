@@ -18,11 +18,10 @@ namespace Tests.PlayMode.GameMapTests
 
         private async void OnEnable()
         {
+            _isGenerated = false;
+            MapResult level = null;
             try
             {
-                onMapGenerated.AddListener(OnGenerated);
-                onMapGenerationFailed.AddListener(OnFailed);
-            
                 width = 10;
                 height = 8;
                 minRooms = 1;
@@ -31,23 +30,14 @@ namespace Tests.PlayMode.GameMapTests
                 solverThreads = 2;
                 seed = 1234;
 
-                await GenerateNewLevel();
+                level = await GenerateNewLevel();
             }
             catch (Exception e)
             {
-                OnFailed();
+                Debug.LogException(e);
             }
-            
-        }
-
-        private void OnGenerated(MapResult _)
-        {
             _isGenerated = true;
-        }
-
-        private static void OnFailed()
-        {
-            Assert.Fail("Failed to generate map");
+            if (level == null) Assert.Fail("Failed to generate map");
         }
     }
     
