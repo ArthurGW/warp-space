@@ -5,6 +5,7 @@ using Layout;
 using LevelGenerator;
 using UnityEngine;
 using static MapObjects.ObjectUtils;
+using Random = UnityEngine.Random;
 
 namespace MapObjects
 {
@@ -65,14 +66,9 @@ namespace MapObjects
 
         private ILookup<ulong, Door> _doorsByRoomId;
 
-        private System.Random _doorRandom;
-
-        public int doorSeed = 11;
-
         private void Awake()
         {
             _corridorFactory = GetComponent<CorridorFactory>();
-            _doorRandom = new System.Random(doorSeed);
         }
                 
         public void DestroyRooms()
@@ -108,10 +104,6 @@ namespace MapObjects
         {
             var seen = new HashSet<(ulong firstId, ulong secondId)>();
             var doors = new List<(ulong roomId, Door door)>();
-            
-#if UNITY_EDITOR
-            _doorRandom = new System.Random(doorSeed);
-#endif
 
             foreach (var room in rooms) 
             {
@@ -129,7 +121,7 @@ namespace MapObjects
             _doorsByRoomId = doors.ToLookup(entry => entry.roomId,  entry => entry.door);
         }
 
-        private (Door roomDoor, Door adjRoomDoor) MakeDoor(RoomData room, RoomData adjRoom)
+        private static (Door roomDoor, Door adjRoomDoor) MakeDoor(RoomData room, RoomData adjRoom)
         {
             // Find the contacting edge, of which there can only be one as rooms are rectangular
             if (adjRoom.X == room.X + room.Width || adjRoom.X + adjRoom.Width == room.X)
@@ -138,7 +130,7 @@ namespace MapObjects
                 var choices = Enumerable.Range((int)room.Y, (int)room.Height)
                     .Intersect(Enumerable.Range((int)adjRoom.Y, (int)adjRoom.Height))
                     .ToArray();
-                var doorPoint = (uint)_doorRandom.Next(choices.Min(), choices.Max() + 1);
+                var doorPoint = (uint)Random.Range(choices.Min(), choices.Max() + 1);
                 var directions = room.X < adjRoom.X 
                     ? (rm: CardinalDirection.East, adj: CardinalDirection.West) 
                     : (rm: CardinalDirection.West, adj: CardinalDirection.East);
@@ -155,7 +147,7 @@ namespace MapObjects
                 var choices = Enumerable.Range((int)room.X, (int)room.Width)
                     .Intersect(Enumerable.Range((int)adjRoom.X, (int)adjRoom.Width))
                     .ToArray();
-                var doorPoint = (uint)_doorRandom.Next(choices.Min(), choices.Max());
+                var doorPoint = (uint)Random.Range(choices.Min(), choices.Max() + 1);
                 var directions = room.Y < adjRoom.Y
                     ? (rm: CardinalDirection.South, adj: CardinalDirection.North)
                     : (rm: CardinalDirection.North, adj: CardinalDirection.South);

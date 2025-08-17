@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Layout;
 using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace Tests.PlayMode.GameMapTests
@@ -14,19 +16,28 @@ namespace Tests.PlayMode.GameMapTests
         
         public bool IsTestFinished => _isGenerated;
 
-        private void OnEnable()
+        private async void OnEnable()
         {
-            onMapGenerated.AddListener(OnGenerated);
-            onMapGenerationFailed.AddListener(OnFailed);
+            try
+            {
+                onMapGenerated.AddListener(OnGenerated);
+                onMapGenerationFailed.AddListener(OnFailed);
             
-            // Set valid values, this happens before the parent class' Start method starts level generation
-            width = 10;
-            height = 8;
-            minRooms = 1;
-            maxRooms = 6;
-            maxNumLevels = 2;
-            solverThreads = 2;
-            seed = 1234;
+                width = 10;
+                height = 8;
+                minRooms = 1;
+                maxRooms = 6;
+                maxNumLevels = 2;
+                solverThreads = 2;
+                seed = 1234;
+
+                await GenerateNewLevel();
+            }
+            catch (Exception e)
+            {
+                OnFailed();
+            }
+            
         }
 
         private void OnGenerated(MapResult _)

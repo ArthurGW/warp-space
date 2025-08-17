@@ -16,11 +16,10 @@ namespace MapObjects
         public static void DestroyGameObject(GameObject obj)
         {
             obj.SetActive(false);
-#if UNITY_EDITOR
-            Object.DestroyImmediate(obj);
-#else
+            if (Application.isPlaying)
                 Object.Destroy(obj);
-#endif
+            else                
+                Object.DestroyImmediate(obj);
         }
     }
 }

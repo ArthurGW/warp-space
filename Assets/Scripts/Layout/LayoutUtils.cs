@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace Layout
 {
+    public record MapResult(List<MapSquareData> Squares, List<RoomData> Rooms, Dictionary<ulong, HashSet<ulong>> Adjacencies, ulong StartRoomId, ulong FinishRoomId);
+    
     public static class SquareSize
     {
         public const float X = 10f;
@@ -13,6 +16,18 @@ namespace Layout
 
     public static class LayoutUtils
     {
+        public static void PrintResult(this MapResult result)
+        {
+            result.Squares.ForEach(sq => Debug.Log(sq));
+            result.Rooms.ForEach(rm => Debug.Log(rm));
+            foreach (var adj in result.Adjacencies)
+            {
+                Debug.Log($"AdjacencyData({adj.Key}: {string.Join(',', adj.Value)})");
+            }
+            Debug.Log($"Start Room: {result.StartRoomId}");
+            Debug.Log($"Finish Room: {result.FinishRoomId}");
+        }
+        
         private static readonly (int offX, int offY)[] Adjacent =
         {
             (-1, -1),

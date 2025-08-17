@@ -33,7 +33,6 @@ namespace MapObjects
             _hullFactory = GetComponentInChildren<HullFactory>();
             _roomFactory = GetComponentInChildren<RoomFactory>();
             _playerController = FindFirstObjectByType<PlayerMovement>(FindObjectsInactive.Include);
-            MovementEnabled = false;
         }
 
         private void Start()
@@ -63,13 +62,6 @@ namespace MapObjects
                 DestroyGameObject(warp);
             }
         }
-
-        public bool MovementEnabled
-        {
-            get => _playerController.MovementEnabled;
-            set => _playerController.MovementEnabled = value;
-        }
-        
 
         public void OnMapGenerated(MapResult result)
         {
