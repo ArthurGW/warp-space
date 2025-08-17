@@ -1598,12 +1598,8 @@ MonoBehaviour:
   matchWindowWidth: 3
   matchWindowHeight: 3
   flippable: 0
-  hullSquaresToMatch:
-  - {x: -1, y: 0}
-  - {x: 1, y: 0}
-  spaceSquaresToMatch:
-  - {x: -1, y: 1}
-  - {x: 1, y: 1}
+  hullSquaresToMatch: []
+  spaceSquaresToMatch: []
   internalSquaresToMatch:
   - {x: -1, y: -1}
   - {x: 0, y: -1}

@@ -953,9 +953,9 @@ MonoBehaviour:
   width: 20
   height: 14
   minRooms: 3
-  maxRooms: 10
+  maxRooms: 8
   numBreaches: 1
-  maxNumLevels: 20
+  maxNumLevels: 10
   solverThreads: 1
   seed: 1000898
 --- !u!4 &1326403173
@@ -1005,6 +1005,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seed: 999999
   resetSeedOnPlay: 1
+  breachIncreaseRate: 0.5
   fadeAnimator: {fileID: 13342500}
   needsFadeOut: 0
 --- !u!4 &1391809390

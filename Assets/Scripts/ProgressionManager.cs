@@ -25,6 +25,9 @@ public class ProgressionManager : MonoBehaviour
     private GameMapController _mapController;
 
     private ConcurrentQueue<MapResult> _results;
+
+    private float _breaches = 1f;
+    public float breachIncreaseRate = 0.5f;
     
     [SerializeField]
     private Animator fadeAnimator;
@@ -94,10 +97,16 @@ public class ProgressionManager : MonoBehaviour
     {
         while (_results.Count < 10)
         {
-            _mapGenerator.seed += _levelSeed;
-            _levelSeed += 100;
+            // Vary the levels - new seed each time, random width and height, increasing breaches
+            _mapGenerator.seed = _levelSeed++;
+            _mapGenerator.width = (uint)Random.Range(16, 24);
+            _mapGenerator.height = (uint)Random.Range(6, 9) * 2;
+            _mapGenerator.numBreaches = (uint)Mathf.FloorToInt(_breaches);
+            
             var result = await _mapGenerator.GenerateNewLevel();
             _results.Enqueue(result);
+
+            _breaches += breachIncreaseRate;
         }
     }
 
@@ -119,7 +128,13 @@ public class ProgressionManager : MonoBehaviour
             
             var level = await WaitForLevel();
             StartGenerating();  // Not awaiting this, just letting it run
-            _mapController.OnMapGenerated(level);
+            if (level != null)
+                _mapController.OnMapGenerated(level);
+            else
+            {
+                Debug.LogError("failed to generate map");
+                _mapController.OnMapGenerationFailed();
+            }
             
             await WaitForFade("FadeIn");
 
