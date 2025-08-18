@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using Layout;
 using MapObjects;
+using TMPro;
 using static MapObjects.ObjectUtils;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -13,7 +15,7 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(PauseController))]
 public class ProgressionManager : MonoBehaviour
 {
-    public static ProgressionManager instance;
+    private static ProgressionManager _instance;
 
     public uint seed = 0;
 
@@ -28,22 +30,25 @@ public class ProgressionManager : MonoBehaviour
 
     private float _breaches = 1f;
     public float breachIncreaseRate = 0.5f;
+    public uint maxBreaches = 5u;
     
     [SerializeField]
     private Animator fadeAnimator;
 
     public bool needsFadeOut = false;
 
+    [SerializeField] private TextMeshProUGUI updateText;
+
     private void Awake()
     {
         // If instance already exists, ensure we don't create a duplicate
-        if (instance != null)
+        if (_instance != null)
         {
             DestroyGameObject(gameObject);
             return;
         }
         
-        instance = this;
+        _instance = this;
         
         _mapGenerator = FindAnyObjectByType<GameMapGenerator>();
         _mapController = FindAnyObjectByType<GameMapController>();
@@ -78,8 +83,10 @@ public class ProgressionManager : MonoBehaviour
         while (true)
         {
             var state = fadeAnimator.GetCurrentAnimatorStateInfo(0);
-            if (!state.IsName("SceneFadeIn") && !state.IsName("SceneFadeOut")) return;
-            await Awaitable.NextFrameAsync();
+            if (!state.IsTag("SceneFade")) return;
+            // Wait a few frames, which seems to make the animation smoother
+            for (var i = 0; i < 20; ++i)
+                await Awaitable.NextFrameAsync();
         }
     }
     
@@ -88,23 +95,34 @@ public class ProgressionManager : MonoBehaviour
         MapResult result;
         while (!_results.TryDequeue(out result))
         {
-            await Awaitable.NextFrameAsync();
+            for (var i = 0; i < 10; ++i)
+                await Awaitable.NextFrameAsync();
         }
         return result;
     }
 
     private async Awaitable StartGenerating()
     {
-        while (_results.Count < 10)
+        // Keep a few levels queued up
+        var toGenerate = 3 - _results.Count;
+        
+        // Generate sizes now as Random.Range can't be used in the background thread
+        var sizes = Enumerable.Range(0, toGenerate).Select(_ => (width: (uint)Random.Range(16, 24), height: (uint)Random.Range(6, 9) * 2)).ToArray();
+
+        await Awaitable.BackgroundThreadAsync();
+        foreach (var size in sizes)
         {
-            // Vary the levels - new seed each time, random width and height, increasing breaches
+            // Vary the levels - new seed each time, increasing breaches (up to a point)
             _mapGenerator.seed = _levelSeed++;
-            _mapGenerator.width = (uint)Random.Range(16, 24);
-            _mapGenerator.height = (uint)Random.Range(6, 9) * 2;
-            _mapGenerator.numBreaches = (uint)Mathf.FloorToInt(_breaches);
+            _mapGenerator.numBreaches = Math.Min((uint)Mathf.FloorToInt(_breaches), maxBreaches);
+            _mapGenerator.width = size.width;
+            _mapGenerator.height = size.height;
+            Debug.Log($"Generating: {_mapGenerator.width}, {_mapGenerator.height}, {_mapGenerator.numBreaches}, {_mapGenerator.seed}");
             
             var result = await _mapGenerator.GenerateNewLevel();
             _results.Enqueue(result);
+            
+            Debug.Log("Generated");
 
             _breaches += breachIncreaseRate;
         }
@@ -153,6 +171,7 @@ public class ProgressionManager : MonoBehaviour
 
     public void OnMapComplete()
     {
+        updateText.text = "Warping...";
         NextLevel();
     }
 }

@@ -36,7 +36,6 @@ namespace Layout
             using var level = gen.BestLevel();
             if (level == null)
             {
-                await Awaitable.MainThreadAsync();
                 return null;
             }
 
