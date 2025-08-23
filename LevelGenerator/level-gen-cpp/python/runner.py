@@ -3,18 +3,18 @@ import subprocess
 from collections import defaultdict
 from time import time
 
-num_models = 1
-width = 9
-height = 10
-seed = 1234
-min_rooms = 1
-max_rooms = 6
-num_breaches = 1
+num_models = 30
+width = 18
+height = 16
+seed = 446495664
+min_rooms = 3
+max_rooms = 8
+num_breaches = 3
 
 args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
         f" {num_models} -c width={width} -c height={height} -c num_breaches={num_breaches}"
         f" -c min_rooms={min_rooms} -c max_rooms={max_rooms}"
-        f" -t 1 --rand-freq=1.0 --seed={seed}"
+        f" -t 6 --rand-freq=1.0 --seed={seed}"
         r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\ship.lp")
 
 start = time()

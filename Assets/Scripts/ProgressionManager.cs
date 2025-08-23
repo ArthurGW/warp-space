@@ -59,7 +59,7 @@ public class ProgressionManager : MonoBehaviour
             seed = (uint)Random.Range(1, int.MaxValue / 2);
         }
 
-        Random.InitState((int)seed);  // All random generation runs off the global seed...
+        Random.InitState((int)seed);  // All Unity random generation runs off the global seed...
         _levelSeed = seed;  // ...but the level seed changes on each level generation
     }
 

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Layout;
 using LevelGenerator;
+using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.Events;
 using static MapObjects.ObjectUtils;
@@ -10,6 +11,7 @@ namespace MapObjects
     /// <summary>
     /// Class to convert an abstract generated map into a collection of managed GameObjects
     /// </summary>
+    [RequireComponent(typeof(NavMeshSurface))]
     public class GameMapController : MonoBehaviour
     {
         public UnityEvent mapComplete;
@@ -23,6 +25,7 @@ namespace MapObjects
         private CharacterController _playerController;
         private HullFactory _hullFactory;
         private RoomFactory _roomFactory;
+        private NavMeshSurface _navMeshSurface;
 
         private void Awake()
         {
@@ -31,6 +34,7 @@ namespace MapObjects
             _roomFactory = GetComponentInChildren<RoomFactory>();
             _playerController = FindObjectsByType<CharacterController>(FindObjectsInactive.Include, FindObjectsSortMode.None)
                 .First(controller => controller.CompareTag("Player"));
+            _navMeshSurface = GetComponent<NavMeshSurface>();
         }
 
         private void Start()
@@ -48,7 +52,7 @@ namespace MapObjects
 #if UNITY_EDITOR
             _hullFactory = GetComponentInChildren<HullFactory>();
             _roomFactory = GetComponentInChildren<RoomFactory>();
-            
+            _navMeshSurface = GetComponent<NavMeshSurface>();
 #endif
             _hullFactory.DestroyHull();
             _roomFactory.DestroyRooms();
@@ -60,6 +64,8 @@ namespace MapObjects
                 warp.GetComponent<WarpController>()?.onWarp.RemoveAllListeners();
                 DestroyGameObject(warp);
             }
+            
+            _navMeshSurface.RemoveData();
         }
 
         public void OnMapGenerated(MapResult result)
@@ -109,6 +115,9 @@ namespace MapObjects
                 var obj = Instantiate(shipSquarePrefab, shipSquareContainer, false);
                 obj.transform.localPosition = square.ToPosition();
             }
+            
+            // Rebuild the nav mesh with the new level geometry for enemies to navigate
+            _navMeshSurface.BuildNavMesh();
         }
 
         private void OnWarp()

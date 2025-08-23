@@ -29,13 +29,13 @@ min_rooms {
           ship(XX + W - 1, YY + H - 1)
 } max_rooms.
 
-% A room defines an area of room_squares, each of which records their location and the room they are part of
-room_square(X..(X + W - 1), Y..(Y + H - 1), X, Y, W, H) :- room(X, Y, W, H), W > 1, H > 1.
-room_square(X, Y, X, Y, 1, 1) :- room(X, Y, 1, 1).
-
 % Corridors - at least 3, equivalent to single width & height rooms
 3 { corridor(X, Y) : ship(X, Y) }.
 room(X, Y, 1, 1) :- corridor(X, Y).
+
+% A room defines an area of room_squares, each of which records their location and the room they are part of
+room_square(X..(X + W - 1), Y..(Y + H - 1), X, Y, W, H) :- room(X, Y, W, H), W > 1, H > 1.
+room_square(X, Y, X, Y, 1, 1) :- room(X, Y, 1, 1).
 
 %* Alien breaches - with size 1x2 or 2x1 that start in space and penetrate the hull.
 These are placed next to an existing non-corridor room, to ensure they are reachable. They are also placed only on
@@ -45,26 +45,33 @@ num_breaches {
     alien_breach(X, Y1, 1, 2, room(RX, RY, RW, RH))
         : in_space(X, Y1),
           hull(X, Y2),
-          room_square(X, Y3, RX, RY, RW, RH), Y2 - Y1 = 1, Y3 - Y2 = 1, not corridor(X, Y3),
+          room_square(X, Y3, RX, RY, RW, RH),
+          Y2 - Y1 = 1, Y3 - Y2 = 1,
+          not corridor(X, Y3),
           ship(X+2, Y3), ship(X+1, Y3), ship(X-1, Y3), ship(X-2, Y3);
     % Vertical, from the bottom
     alien_breach(X, Y2, 1, 2, room(RX, RY, RW, RH))
         : in_space(X, Y1),
           hull(X, Y2),
-          room_square(X, Y3, RX, RY, RW, RH), Y1 - Y2 = 1, Y2 - Y3 = 1, not corridor(X, Y3),
+          room_square(X, Y3, RX, RY, RW, RH),
+          Y1 - Y2 = 1, Y2 - Y3 = 1,
+          not corridor(X, Y3),
           ship(X+2, Y3), ship(X+1, Y3), ship(X-1, Y3), ship(X-2, Y3);
     % Horizontal, from the left
     alien_breach(X1, Y, 2, 1, room(RX, RY, RW, RH))
         : in_space(X1, Y),
           hull(X2, Y),
-          room_square(X3, Y, RX, RY, RW, RH), X2 - X1 = 1, X3 - X2 = 1,
+          room_square(X3, Y, RX, RY, RW, RH),
+          X2 - X1 = 1, X3 - X2 = 1,
           not corridor(X3, Y),
           ship(X3, Y+2), ship(X3, Y+1), ship(X3, Y-1), ship(X3, Y-2);
     % Horizontal, from the right
     alien_breach(X2, Y, 2, 1, room(RX, RY, RW, RH))
         : in_space(X1, Y),
           hull(X2, Y),
-          room_square(X3, Y, RX, RY, RW, RH), X1 - X2 = 1, X2 - X3 = 1, not corridor(X3, Y),
+          room_square(X3, Y, RX, RY, RW, RH),
+          X1 - X2 = 1, X2 - X3 = 1,
+          not corridor(X3, Y),
           ship(X3, Y+2), ship(X3, Y+1), ship(X3, Y-1), ship(X3, Y-2)
 } num_breaches.
 breach_square(X, Y; X+1, Y) :- alien_breach(X, Y, 2, 1, _).
@@ -105,6 +112,17 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 % No square made of 4 adjacent corridors can exist
 :- corridor(X, Y), corridor(X+1, Y), corridor(X, Y+1), corridor(X+1, Y+1).
 
+% No two breaches can be adjacent
+%:- alien_breach(X, Y, 1, 2, _), alien_breach(X + 1, Y, 1, 2, _; X - 1, Y, 1, 2, _).
+%:- alien_breach(X, Y, 1, 2, _), alien_breach(X + 1, Y, 1, 2, _).
+%:- alien_breach(X, Y, 1, 2, _), alien_breach(X - 1, Y, 1, 2, _).
+%:- alien_breach(X, Y, 2, 1, _), alien_breach(X, Y + 1, 2, 1, _; X, Y - 1, 2, 1, _).
+%:- alien_breach(X, Y, 2, 1, _), alien_breach(X, Y + 1, 2, 1, _).
+%:- alien_breach(X, Y, 2, 1, _), alien_breach(X, Y - 1, 2, 1, _).
+%:- 2 { alien_breach(BX, BY, _, _, room(X, Y, W, H)) }, room(X, Y, W, H).
+%:- |Y1-Y2| = 1, alien_breach(X, Y1, 2, 1, _), alien_breach(X, Y2, 2, 1, _).
+%:- |Y1-Y2| = 1, alien_breach(X, Y1, 2, 1, _), alien_breach(X, Y2, 2, 1, _).
+
 % Every room must be reachable
 :- room(X1, Y1, W1, H1), not reachable(room(X1, Y1, W1, H1)).
 
@@ -114,13 +132,13 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 :- #count { 1,X : room_square(X, _, _, _, _, _), ship(X, _) } < width - 4.
 :- #count { 1,Y : room_square(_, Y, _, _, _, _), ship(_, Y) } < height - 4.
 
-% No more than 3/4 of the (ship) map is filled (roughly, not accounting for nose section)
-:- ((width - 4) * (height - 4) * 3 / 4) < { room_square(X, Y, _, _, _, _) : ship(X, Y) }.
+% No more than 2/3 of the (ship) map is filled (roughly, not accounting for nose section)
+:- ((width - 4) * (height - 4) * 2 / 3) < { room_square(X, Y, _, _, _, _) : ship(X, Y) }.
 
 %* Preferences *%
 
 % Encourage alien breaches being separated from each other (if there are more than one)
-#maximize { (|X1-X2| + |Y1-Y2|)@2,X1,Y1,X2,Y2 : alien_breach(X1, Y1, _, _, _), alien_breach(X2, Y2, _, _, _) }.
+%#maximize { (|X1-X2| + |Y1-Y2|)@1,X1,Y1,X2,Y2 : alien_breach(X1, Y1, _, _, _), alien_breach(X2, Y2, _, _, _), X1 != X2, Y1 != Y2 }.
 
 % Encourage forming more corridors
 #maximize { 1@1,X,Y : corridor(X, Y) }.

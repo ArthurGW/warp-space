@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 6382989403719395503}
   - component: {fileID: 3232041715268048319}
   - component: {fileID: 6324115869484797399}
+  - component: {fileID: 5290552849399524086}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -133,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8d70f74e92842979b2fa1539102d89e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 30
+  movementSpeed: 20
   rotationSpeed: 15
 --- !u!143 &6324115869484797399
 CharacterController:
@@ -160,6 +161,14 @@ CharacterController:
   m_SkinWidth: 0.15
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0.1}
+--- !u!81 &5290552849399524086
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5287272316015571332}
+  m_Enabled: 1
 --- !u!1 &7922746958571770073
 GameObject:
   m_ObjectHideFlags: 0

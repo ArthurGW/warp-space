@@ -604,6 +604,7 @@ GameObject:
   - component: {fileID: 1151744000848424285}
   - component: {fileID: 1573498312434893668}
   - component: {fileID: 1089566946066558791}
+  - component: {fileID: 1669851258850992118}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -755,6 +756,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0000001, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1669851258850992118
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6389581080692877384}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &6496038116330785265
 GameObject:
   m_ObjectHideFlags: 0
@@ -764,7 +781,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 446728802873506798}
-  - component: {fileID: 2538925262478828670}
   m_Layer: 0
   m_Name: RoomDoorN
   m_TagString: Untagged
@@ -792,18 +808,6 @@ Transform:
   - {fileID: 8120999799457609690}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2538925262478828670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6496038116330785265}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b245b9725d95294487f2a5177ca3eab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7255222481916389184
 GameObject:
   m_ObjectHideFlags: 0
