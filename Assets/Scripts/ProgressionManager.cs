@@ -21,6 +21,8 @@ public class ProgressionManager : MonoBehaviour
     public uint seed = 0;
 
     private uint _levelSeed = 0;
+    public Vector3 currentStartPos;
+    public Vector3 currentFinishPos;
     
     public bool resetSeedOnPlay = true;
 
@@ -88,61 +90,60 @@ public class ProgressionManager : MonoBehaviour
         }
     }
 
-    private static async Awaitable WaitNFrames(uint n)
-    {
-        for (var i = 0u; i < n; ++i)
-            await Awaitable.NextFrameAsync();
-    }
-
     private async Awaitable WaitForFade(int trigger)
     {
-        // fadeAnimator.runtimeAnimatorController.animationClips[0].events[0].
         fadeAnimator.SetTrigger(trigger);
         await _fadeComplete.onComplete;
-        
-        // while (true)
-        // {
-        //     // Wait a few frames, which seems to make the animation smoother
-        //     await WaitNFrames(30);
-        //     
-        //     var state = fadeAnimator.GetCurrentAnimatorStateInfo(0);
-        //     
-        //     // State names are the same as the triggers causing them here
-        //     if (state.shortNameHash != trigger) return;
-        // }
     }
     
     private async Awaitable<MapResult> WaitForLevel()
     {
-        MapResult result;
-        while (!_results.TryDequeue(out result))
+        MapResult result = null;
+        while (!_results.TryDequeue(out result) && !_mapGenerator.CheckCancel())
         {
-            await WaitNFrames(10);
+            for (var i = 0u; i < 10u; ++i)
+                await Awaitable.NextFrameAsync();
         }
         return result;
     }
 
+    public void RestartGeneration()
+    {
+        _mapGenerator.ResetTokens();
+        StartGenerating();
+    }
+
     private async Awaitable StartGenerating()
     {
-        // Keep a few levels queued up for faster transitions
-        var toGenerate = 3 - _results.Count;
-        
-        // Vary the levels - random width and height, new seed each time, increasing breaches (up to a point)
-        // Generate params now as Random.Range can't be used in the background thread
-        var parameters = Enumerable.Range(0, toGenerate).Select(_ =>
+        while(!_mapGenerator.CheckCancel())
         {
-            var numBreaches = Math.Min((uint)Mathf.FloorToInt(_breaches), maxBreaches);
-            _breaches += breachIncreaseRate;
-            return (width: (uint)Random.Range(14, 18), height: (uint)Random.Range(6, 8) * 2, numBreaches, levelSeed: _levelSeed++);
-        }).ToArray();
+            // Keep a few levels queued up for faster transitions
+            var toGenerate = 3 - _results.Count;
 
-        await Awaitable.BackgroundThreadAsync();
-        foreach (var parameterSet in parameters)
-        {
-            Debug.Log($"Generating: {parameterSet}");
-            var result = await GameMapGenerator.GenerateNewLevel(10, parameterSet.width, parameterSet.height, 3, 8, parameterSet.numBreaches, parameterSet.levelSeed, 2);
-            _results.Enqueue(result);
-            Debug.Log($"Generated: {parameterSet}");
+            // Vary the levels - random width and height, new seed each time, increasing breaches (up to a point)
+            // Generate params now as Random.Range can't be used in the background thread
+            var parameters = Enumerable.Range(0, toGenerate).Select(_ =>
+            {
+                var numBreaches = Math.Min((uint)Mathf.FloorToInt(_breaches), maxBreaches);
+                _breaches += breachIncreaseRate;
+                return (width: (uint)Random.Range(14, 18), height: (uint)Random.Range(6, 8) * 2, numBreaches,
+                    levelSeed: _levelSeed++);
+            }).ToArray();
+
+            await Awaitable.BackgroundThreadAsync();
+            foreach (var parameterSet in parameters)
+            {
+                if (_mapGenerator.CheckCancel()) return;
+                Debug.Log($"Generating: {parameterSet}");
+                var result = await _mapGenerator.GenerateNewLevel(5, parameterSet.width, parameterSet.height, 3, 10,
+                    parameterSet.numBreaches, parameterSet.levelSeed, 2);
+                _results.Enqueue(result);
+                Debug.Log($"Generated {result.NumLevelsGenerated} levels with: {parameterSet}");
+            }
+            if (_mapGenerator.CheckCancel()) return;
+            await Awaitable.MainThreadAsync();
+            if (_mapGenerator.CheckCancel()) return;
+            await Awaitable.WaitForSecondsAsync(5);
         }
     }
 
@@ -155,20 +156,18 @@ public class ProgressionManager : MonoBehaviour
             if (needsFadeOut)
             {
                 await WaitForFade(_fadeOutHash);
+                needsFadeOut = false;
             }
 
-            needsFadeOut = false;
-            
-            // await WaitNFrames(60);
-            
             _mapController.DestroyMap();
 
-            // await WaitNFrames(60);
-            
             var level = await WaitForLevel();
-            StartGenerating();  // Not awaiting this, just letting it run
             if (level != null)
+            {
                 _mapController.OnMapGenerated(level);
+                currentStartPos = level.Rooms.Where(rm => rm.Id == level.StartRoomId).Select(rm => rm.ToWorldCenter()).FirstOrDefault();
+                currentFinishPos = level.Rooms.Where(rm => rm.Id == level.FinishRoomId).Select(rm => rm.ToWorldCenter()).FirstOrDefault();
+            }
             else
             {
                 Debug.LogError("failed to generate map");
@@ -176,9 +175,6 @@ public class ProgressionManager : MonoBehaviour
             }
             
             await WaitForFade(_fadeInHash);
-
-            // await WaitNFrames(10);
-
             needsFadeOut = true;
         }
         catch (Exception e)
@@ -189,10 +185,11 @@ public class ProgressionManager : MonoBehaviour
         finally
         {
             PauseController.instance.IsPaused = false;
+            updateText.text = "";
         }
     }
 
-    public void OnMapComplete()
+    private void OnMapComplete()
     {
         updateText.text = "Warping...";
         NextLevel();

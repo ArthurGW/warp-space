@@ -43,8 +43,6 @@ namespace MapObjects
         {
             // Player has entered room, turn on the lights
             _entryDetector.enabled = false;  // This is a one-time operation, no need to keep detecting
-            Destroy(_entryDetector);
-            _entryDetector = null;
             foreach (var child in _lights)
             {
                 child.enabled = true;

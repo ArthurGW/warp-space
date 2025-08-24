@@ -11,7 +11,7 @@ namespace System.Runtime.CompilerServices
 
 namespace Layout
 {
-    public record MapResult(List<MapSquareData> Squares, List<RoomData> Rooms, Dictionary<ulong, HashSet<ulong>> Adjacencies, ulong StartRoomId, ulong FinishRoomId);
+    public record MapResult(List<MapSquareData> Squares, List<RoomData> Rooms, Dictionary<ulong, HashSet<ulong>> Adjacencies, ulong StartRoomId, ulong FinishRoomId, ulong NumLevelsGenerated);
     
     public static class SquareSize
     {
@@ -32,6 +32,7 @@ namespace Layout
             }
             Debug.Log($"Start Room: {result.StartRoomId}");
             Debug.Log($"Finish Room: {result.FinishRoomId}");
+            Debug.Log($"Num Levels Generated: {result.NumLevelsGenerated}");
         }
         
         private static readonly (int offX, int offY)[] Adjacent =

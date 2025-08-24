@@ -1,9 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using LevelGenerator.Extensions;
 using UnityEngine;
-using UnityEngine.Events;
+
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
 
 namespace Layout
 {
@@ -25,21 +28,93 @@ namespace Layout
 
         #endregion
 
+        private CancellationTokenSource _disableTokenSource = new();
+        private LevelGenerator.LevelGenerator _currentGen;
+
+        private void Awake()
+        {
+            ResetTokens();
+        }
+
+#if UNITY_EDITOR
+        private void Start()
+        {
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (state == PlayModeStateChange.ExitingPlayMode) DoCancel();
+        }
+#endif
+
+        public void ResetTokens()
+        {
+            _ = destroyCancellationToken;  // Ensure token is initialised
+            if (_disableTokenSource is { IsCancellationRequested: false }) return;
+            _disableTokenSource?.Dispose();
+            _disableTokenSource = new CancellationTokenSource();
+        }
+
+        private void OnEnable()
+        {
+            ResetTokens();
+        }
+
+        private void OnDisable()
+        {
+            DoCancel();
+        }
+
+        private void OnDestroy()
+        {
+            DoCancel();
+            _disableTokenSource?.Dispose();
+            _disableTokenSource = null;
+        }
+
+        public void DoCancel()
+        {
+            if (_disableTokenSource is { IsCancellationRequested: false }) _disableTokenSource.Cancel(false);
+            _currentGen?.Interrupt();
+        }
+
+        public bool CheckCancel()
+        {
+            return destroyCancellationToken.IsCancellationRequested ||  _disableTokenSource == null || _disableTokenSource.Token.IsCancellationRequested;
+        }
+
         public async Awaitable<MapResult> GenerateNewLevel()
         {
             return await GenerateNewLevel(maxNumLevels, width, height, minRooms, maxRooms, numBreaches, seed, solverThreads);
         }
         
-        public static async Awaitable<MapResult> GenerateNewLevel(
+        public async Awaitable<MapResult> GenerateNewLevel(
             uint maxNumberLevels, uint mapWidth, uint mapHeight, uint minRoomCount, uint maxRoomCount, uint numAlienBreaches, uint mapSeed, uint numSolverThreads
         )
         {
             // Run the slow level generation stage in a background thread
             await Awaitable.BackgroundThreadAsync();
-            using var gen = new LevelGenerator.LevelGenerator(
-                maxNumberLevels, mapWidth, mapHeight, minRoomCount, maxRoomCount, numAlienBreaches, mapSeed, false, numSolverThreads
-            );
-            gen.SolveSafe(null);
+            try
+            {
+                _currentGen = new LevelGenerator.LevelGenerator(
+                    maxNumberLevels, mapWidth, mapHeight, minRoomCount, maxRoomCount, numAlienBreaches, mapSeed, false,
+                    numSolverThreads
+                );
+                using (_currentGen)
+                {
+                    return DoSolve(_currentGen);
+                }
+            }
+            finally
+            {
+                _currentGen = null;
+            }
+        }
+
+        private MapResult DoSolve(LevelGenerator.LevelGenerator gen)
+        {
+            gen.SolveSafe(CheckCancel);
             using var level = gen.BestLevel();
             if (level == null)
             {
@@ -82,7 +157,7 @@ namespace Layout
                 adjacency.Dispose();
             }
             
-            var mapResult = new MapResult(newSquares, newRooms, newAdjacencies, startRoomId, finishRoomId);
+            var mapResult = new MapResult(newSquares, newRooms, newAdjacencies, startRoomId, finishRoomId, gen.NumLevels);
             return mapResult;
         }
     }
