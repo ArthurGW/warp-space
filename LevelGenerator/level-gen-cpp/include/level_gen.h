@@ -191,6 +191,8 @@ class LEVEL_GEN_API LevelGenerator {
 
         const char* solve_safe(cancel_cb check_cancel = nullptr);
 
+        void interrupt();
+
         /// Get a pointer to the best level - note this is only valid for the lifetime of the generator
         Level* best_level();
 

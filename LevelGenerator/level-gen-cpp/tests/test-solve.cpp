@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators_all.hpp>
 #include <functional>
+#include <thread>
 #include "level_gen.h"
 
 namespace
@@ -202,6 +203,29 @@ SCENARIO("level generators can be cancelled", "[levelgen][cancel]")
                 REQUIRE_FALSE(res == nullptr);
                 REQUIRE_FALSE(std::string(res).empty());
                 REQUIRE(gen.get_num_levels() == n);
+            }
+        }
+
+        WHEN("solve() is called")
+        {
+            THEN("solving can be interrupted")
+            {
+                LevelGenerator gen{
+                        200, 10, 10, 1, 6, 1, 1234
+                };
+                const char* res;
+
+                std::thread sleeper([&]() {
+                    std::this_thread::sleep_for(std::chrono::seconds(10));
+
+                    gen.interrupt();
+                });
+
+                REQUIRE_NOTHROW(res = gen.solve());
+                sleeper.join();
+
+                REQUIRE_FALSE(res == nullptr);
+                // We don't check the actual content of `res` as it is possible no valid models have been generated yet
             }
         }
     }

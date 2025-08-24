@@ -183,6 +183,11 @@ class LevelGenerator::LevelGenImpl
             return levels.size();
         }
 
+        void interrupt()
+        {
+            solver->interrupt();
+        }
+
         friend class LevelGenerator;
 };
 
@@ -222,4 +227,9 @@ Level* LevelGenerator::best_level()
 size_t LevelGenerator::get_num_levels() const
 {
     return impl->num_levels();
+}
+
+void LevelGenerator::interrupt()
+{
+    impl->interrupt();
 }
