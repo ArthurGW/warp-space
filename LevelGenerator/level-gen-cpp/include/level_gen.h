@@ -20,6 +20,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <functional>
 
 /// Types of map squares
 /// These numbers are in precedence order, i.e. where a position has more than one type, the higher-numbered type takes
@@ -162,9 +163,9 @@ class LEVEL_GEN_API Level {
         CS_IGNORE std::unique_ptr<LevelImpl> impl;
 };
 
-class LEVEL_GEN_API
+using cancel_cb = bool(*)();
 
-LevelGenerator {
+class LEVEL_GEN_API LevelGenerator {
     public:
 
         LevelGenerator(
@@ -186,9 +187,9 @@ LevelGenerator {
         CS_IGNORE LevelGenerator(const LevelGenerator& other) = delete;
         CS_IGNORE LevelGenerator& operator=(const LevelGenerator& other) = delete;
 
-        const char* solve();
+        const char* solve(cancel_cb check_cancel = nullptr);
 
-        const char* solve_safe();
+        const char* solve_safe(cancel_cb check_cancel = nullptr);
 
         /// Get a pointer to the best level - note this is only valid for the lifetime of the generator
         Level* best_level();

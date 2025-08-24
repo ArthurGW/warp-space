@@ -35,6 +35,13 @@ namespace
         }
         return sum;
     }
+
+    thread_local auto current_n = 0U;
+
+    bool check_cancel()
+    {
+        return (--current_n) == 0U;
+    }
 }
 
 SCENARIO("level generators can be solved", "[levelgen][solve]")
@@ -75,10 +82,10 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 const auto level = gen.best_level();
 
                 // These values have been determined empirically
-                REQUIRE(level->get_cost() == 7);
+                REQUIRE(level->get_cost() == 8);
                 REQUIRE(level->get_num_map_squares() == 90UL);
-                REQUIRE(level->get_num_rooms() == 7UL);
-                REQUIRE(level->get_num_adjacencies() == 12UL);
+                REQUIRE(level->get_num_rooms() == 8UL);
+                REQUIRE(level->get_num_adjacencies() == 14UL);
             }
 
             THEN("the best level can iterate over symbols")
@@ -92,8 +99,8 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
 
                 // These values match the test above
                 REQUIRE(count_parts(level->map_squares()) == 90UL);
-                REQUIRE(count_parts(level->rooms()) == 7UL);
-                REQUIRE(count_parts(level->adjacencies()) == 12UL);
+                REQUIRE(count_parts(level->rooms()) == 8UL);
+                REQUIRE(count_parts(level->adjacencies()) == 14UL);
             }
 
             THEN("the best level has the right number and location of breaches")
@@ -129,9 +136,9 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 REQUIRE_NOTHROW(gen.solve());
 
                 const auto* level = gen.best_level();
-                REQUIRE(level->get_num_rooms() == 10UL);
-                REQUIRE(level->get_start_room() == 2UL);
-                REQUIRE(level->get_finish_room() == 1UL);
+                REQUIRE(level->get_num_rooms() == 9UL);
+                REQUIRE(level->get_start_room() == 3UL);
+                REQUIRE(level->get_finish_room() == 2UL);
             }
         }
     }
@@ -168,6 +175,33 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 // Every room must have at least one adjacency, theoretical limit is every room adjacent to every other
                 REQUIRE(level->get_num_adjacencies() >= num_rooms);
                 REQUIRE(level->get_num_adjacencies() <= num_rooms * num_rooms);
+            }
+        }
+    }
+}
+
+
+SCENARIO("level generators can be cancelled", "[levelgen][cancel]")
+{
+    GIVEN("A level generator with valid params")
+    {
+        WHEN("solve() is called with a cancellation callback")
+        {
+            auto n = GENERATE(range(4U, 6U));
+
+            THEN("solving can be cancelled")
+            {
+                LevelGenerator gen{
+                        20, 15, 12, 1, 6, 1, 1234
+                };
+                const char* res;
+
+                // n*2 below because cancellation is checked twice per model iteration
+                current_n = n * 2;
+                REQUIRE_NOTHROW(res = gen.solve(check_cancel));
+                REQUIRE_FALSE(res == nullptr);
+                REQUIRE_FALSE(std::string(res).empty());
+                REQUIRE(gen.get_num_levels() == n);
             }
         }
     }

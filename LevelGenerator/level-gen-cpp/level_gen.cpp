@@ -7,6 +7,25 @@
 #include <fstream>
 #include <numeric>
 #include <random>
+#include <utility>
+
+namespace {
+    class CancelableSolveHandler : public Clingo::SolveEventHandler
+    {
+        public:
+            explicit CancelableSolveHandler(std::function<bool(void)> check_cancel) : check_cancel(std::move(check_cancel)), Clingo::SolveEventHandler() {}
+
+            bool on_model(Clingo::Model& model) override
+            {
+                if (check_cancel()) return false;
+
+                return SolveEventHandler::on_model(model);
+            }
+
+        private:
+            std::function<bool(void)> check_cancel;
+    };
+}
 
 
 class LevelGenerator::LevelGenImpl
@@ -50,7 +69,7 @@ class LevelGenerator::LevelGenImpl
         const unsigned num_breaches;
         std::string program;
 
-        const char* solve()
+        const char* solve(std::function<bool(void)> check_cancel)
         {
             if (program.empty())
             {
@@ -118,7 +137,10 @@ class LevelGenerator::LevelGenImpl
             solver->ground({{"base", {}}});
 
             std::ostringstream out;
-            for (const auto& m : solver->solve())
+
+            std::unique_ptr<CancelableSolveHandler> event_handler = std::make_unique<CancelableSolveHandler>(
+                    [this, &check_cancel](){ return check_cancel && check_cancel(); });
+            for (const auto& m : solver->solve(Clingo::LiteralSpan{}, event_handler.get()))
             {
                 const auto costs = m.cost();
                 const auto total_cost = std::accumulate(costs.cbegin(), costs.cend(), (decltype(costs)::value_type) 0);
@@ -134,6 +156,8 @@ class LevelGenerator::LevelGenImpl
                     out << " " << atom;
                 }
                 out << std::endl;
+
+                if (check_cancel && check_cancel()) break;
             }
             solutions = out.str();
             return solutions.c_str();
@@ -173,16 +197,16 @@ LevelGenerator::LevelGenerator(LevelGenerator&& other) noexcept = default;
 
 LevelGenerator::~LevelGenerator() = default;
 
-const char* LevelGenerator::solve()
+const char* LevelGenerator::solve(cancel_cb check_cancel)
 {
-    return impl->solve();
+    return impl->solve(check_cancel);
 }
 
-const char* LevelGenerator::solve_safe()
+const char* LevelGenerator::solve_safe(cancel_cb check_cancel)
 {
     try
     {
-        return impl->solve();
+        return impl->solve(check_cancel);
     }
     catch (const std::exception& e)
     {
