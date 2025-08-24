@@ -26,8 +26,10 @@ namespace Player
 
         private void Update()
         {
+            if (PauseController.instance.IsPaused) return;
+            
             // Handle x-axis of look as player rotation
-            var lookAmount = _look.ReadValue<Vector2>().x * rotationSpeed * Time.deltaTime;
+            var lookAmount = _look.ReadValue<Vector2>().x * (rotationSpeed * Time.deltaTime);
             var lookInPlane = Quaternion.AngleAxis(lookAmount, Vector3.up);
             transform.rotation *= lookInPlane;
             

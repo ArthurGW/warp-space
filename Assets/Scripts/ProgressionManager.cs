@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using Animations;
 using Layout;
 using MapObjects;
 using TMPro;
@@ -35,7 +36,12 @@ public class ProgressionManager : MonoBehaviour
     [SerializeField]
     private Animator fadeAnimator;
 
+    private FadeComplete _fadeComplete;
+
     public bool needsFadeOut = false;
+
+    private int _fadeInHash;
+    private int _fadeOutHash;
 
     [SerializeField] private TextMeshProUGUI updateText;
 
@@ -50,8 +56,13 @@ public class ProgressionManager : MonoBehaviour
         
         _instance = this;
         
+        _fadeInHash  = Animator.StringToHash("SceneFadeIn");
+        _fadeOutHash  = Animator.StringToHash("SceneFadeOut");
+        _fadeComplete = fadeAnimator.GetComponent<FadeComplete>();
+        
         _mapGenerator = FindAnyObjectByType<GameMapGenerator>();
         _mapController = FindAnyObjectByType<GameMapController>();
+        _mapController.mapComplete.AddListener(OnMapComplete);
         _results = new ConcurrentQueue<MapResult>();
         
         if (resetSeedOnPlay)
@@ -77,17 +88,28 @@ public class ProgressionManager : MonoBehaviour
         }
     }
 
-    private async Awaitable WaitForFade(string trigger)
+    private static async Awaitable WaitNFrames(uint n)
     {
+        for (var i = 0u; i < n; ++i)
+            await Awaitable.NextFrameAsync();
+    }
+
+    private async Awaitable WaitForFade(int trigger)
+    {
+        // fadeAnimator.runtimeAnimatorController.animationClips[0].events[0].
         fadeAnimator.SetTrigger(trigger);
-        while (true)
-        {
-            var state = fadeAnimator.GetCurrentAnimatorStateInfo(0);
-            if (!state.IsTag("SceneFade")) return;
-            // Wait a few frames, which seems to make the animation smoother
-            for (var i = 0; i < 20; ++i)
-                await Awaitable.NextFrameAsync();
-        }
+        await _fadeComplete.onComplete;
+        
+        // while (true)
+        // {
+        //     // Wait a few frames, which seems to make the animation smoother
+        //     await WaitNFrames(30);
+        //     
+        //     var state = fadeAnimator.GetCurrentAnimatorStateInfo(0);
+        //     
+        //     // State names are the same as the triggers causing them here
+        //     if (state.shortNameHash != trigger) return;
+        // }
     }
     
     private async Awaitable<MapResult> WaitForLevel()
@@ -95,36 +117,32 @@ public class ProgressionManager : MonoBehaviour
         MapResult result;
         while (!_results.TryDequeue(out result))
         {
-            for (var i = 0; i < 10; ++i)
-                await Awaitable.NextFrameAsync();
+            await WaitNFrames(10);
         }
         return result;
     }
 
     private async Awaitable StartGenerating()
     {
-        // Keep a few levels queued up
+        // Keep a few levels queued up for faster transitions
         var toGenerate = 3 - _results.Count;
         
-        // Generate sizes now as Random.Range can't be used in the background thread
-        var sizes = Enumerable.Range(0, toGenerate).Select(_ => (width: (uint)Random.Range(16, 24), height: (uint)Random.Range(6, 9) * 2)).ToArray();
+        // Vary the levels - random width and height, new seed each time, increasing breaches (up to a point)
+        // Generate params now as Random.Range can't be used in the background thread
+        var parameters = Enumerable.Range(0, toGenerate).Select(_ =>
+        {
+            var numBreaches = Math.Min((uint)Mathf.FloorToInt(_breaches), maxBreaches);
+            _breaches += breachIncreaseRate;
+            return (width: (uint)Random.Range(14, 18), height: (uint)Random.Range(6, 8) * 2, numBreaches, levelSeed: _levelSeed++);
+        }).ToArray();
 
         await Awaitable.BackgroundThreadAsync();
-        foreach (var size in sizes)
+        foreach (var parameterSet in parameters)
         {
-            // Vary the levels - new seed each time, increasing breaches (up to a point)
-            _mapGenerator.seed = _levelSeed++;
-            _mapGenerator.numBreaches = Math.Min((uint)Mathf.FloorToInt(_breaches), maxBreaches);
-            _mapGenerator.width = size.width;
-            _mapGenerator.height = size.height;
-            Debug.Log($"Generating: {_mapGenerator.width}, {_mapGenerator.height}, {_mapGenerator.numBreaches}, {_mapGenerator.seed}");
-            
-            var result = await _mapGenerator.GenerateNewLevel();
+            Debug.Log($"Generating: {parameterSet}");
+            var result = await GameMapGenerator.GenerateNewLevel(10, parameterSet.width, parameterSet.height, 3, 8, parameterSet.numBreaches, parameterSet.levelSeed, 2);
             _results.Enqueue(result);
-            
-            Debug.Log("Generated");
-
-            _breaches += breachIncreaseRate;
+            Debug.Log($"Generated: {parameterSet}");
         }
     }
 
@@ -136,13 +154,16 @@ public class ProgressionManager : MonoBehaviour
 
             if (needsFadeOut)
             {
-                await WaitForFade("FadeOut");
+                await WaitForFade(_fadeOutHash);
             }
 
             needsFadeOut = false;
             
+            // await WaitNFrames(60);
+            
             _mapController.DestroyMap();
-            await Awaitable.NextFrameAsync();
+
+            // await WaitNFrames(60);
             
             var level = await WaitForLevel();
             StartGenerating();  // Not awaiting this, just letting it run
@@ -154,7 +175,9 @@ public class ProgressionManager : MonoBehaviour
                 _mapController.OnMapGenerationFailed();
             }
             
-            await WaitForFade("FadeIn");
+            await WaitForFade(_fadeInHash);
+
+            // await WaitNFrames(10);
 
             needsFadeOut = true;
         }

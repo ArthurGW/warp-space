@@ -80,7 +80,7 @@ namespace MapObjects
             _corridorFactory.DestroyCorridors();
         }
 
-        public void ConstructRooms(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById, Dictionary<ulong, HashSet<ulong>> adjacencies)
+        public void ConstructRooms(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById, Dictionary<ulong, HashSet<ulong>> adjacencies, ulong startRoom)
         {
             DestroyRooms();
             
@@ -94,6 +94,8 @@ namespace MapObjects
             {
                 var roomController = Instantiate(roomPrefab, roomContainer, false);
                 roomController.SetData(room, _doorsByRoomId);
+                if (room.Id == startRoom)
+                    roomController.GetComponent<LightController>().TurnOnLights();
             }
 
             

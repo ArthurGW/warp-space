@@ -39,16 +39,23 @@ namespace MapObjects
             }
         }
 
-        private void OnTriggerEnter(Collider other)
+        public void TurnOnLights()
         {
-            if (!other.gameObject.CompareTag("Player")) return;
-            
             // Player has entered room, turn on the lights
             _entryDetector.enabled = false;  // This is a one-time operation, no need to keep detecting
+            Destroy(_entryDetector);
+            _entryDetector = null;
             foreach (var child in _lights)
             {
                 child.enabled = true;
             }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!other.gameObject.CompareTag("Player")) return;
+
+            TurnOnLights();
         }
     }
 }

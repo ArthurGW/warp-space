@@ -84,7 +84,7 @@ namespace MapObjects
 
             // Generate rooms and corridors
             _roomFactory.ConstructRooms(result.Rooms, roomsById,
-                result.Adjacencies);
+                result.Adjacencies, result.StartRoomId);
 
             // Set up the start and finish rooms
             if (!roomsById.TryGetValue(result.StartRoomId, out var startRoom))
@@ -100,7 +100,7 @@ namespace MapObjects
             // Player goes in the start room
             var playerPos = startRoom.ToWorldCenter();
             playerPos.y = _playerController.height / 2;
-            _playerController.transform.position = playerPos;
+            _playerController.Move(playerPos - _playerController.transform.position);
             _playerController.transform.rotation = Quaternion.identity;
 
             // Warp control goes in the finish room

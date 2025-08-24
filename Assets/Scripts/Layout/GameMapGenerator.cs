@@ -24,15 +24,22 @@ namespace Layout
         public uint seed = 0;
 
         #endregion
-        
+
         public async Awaitable<MapResult> GenerateNewLevel()
+        {
+            return await GenerateNewLevel(maxNumLevels, width, height, minRooms, maxRooms, numBreaches, seed, solverThreads);
+        }
+        
+        public static async Awaitable<MapResult> GenerateNewLevel(
+            uint maxNumberLevels, uint mapWidth, uint mapHeight, uint minRoomCount, uint maxRoomCount, uint numAlienBreaches, uint mapSeed, uint numSolverThreads
+        )
         {
             // Run the slow level generation stage in a background thread
             await Awaitable.BackgroundThreadAsync();
             using var gen = new LevelGenerator.LevelGenerator(
-                maxNumLevels, width, height, minRooms, maxRooms, numBreaches, seed, false, solverThreads
+                maxNumberLevels, mapWidth, mapHeight, minRoomCount, maxRoomCount, numAlienBreaches, mapSeed, false, numSolverThreads
             );
-            gen.SolveSafe();
+            gen.SolveSafe(null);
             using var level = gen.BestLevel();
             if (level == null)
             {
