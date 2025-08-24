@@ -144,7 +144,7 @@ public class ProgressionManager : MonoBehaviour
             {
                 var numBreaches = Math.Min((uint)Mathf.FloorToInt(_breaches), maxBreaches);
                 _breaches += breachIncreaseRate;
-                return (width: (uint)Random.Range(14, 18), height: (uint)Random.Range(6, 8) * 2, numBreaches,
+                return (width: (uint)Random.Range(14, 18), height: (uint)Random.Range(7, 8) * 2, numBreaches,
                     levelSeed: _levelSeed++);
             }).ToArray();
 
