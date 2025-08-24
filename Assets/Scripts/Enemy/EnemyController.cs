@@ -34,7 +34,6 @@ namespace Enemy
             
             _audioSource.PlayOneShot(shockSound);
             _particleSystem.Play();
-            _player.TakeDamage(5f);
         }
     }
 }

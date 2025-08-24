@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -48,11 +49,22 @@ namespace Player
             set => _controller.enabled = value;
         }
 
-        public void TakeDamage(float damage)
+        private void TakeDamage(float damage)
         {
             health -= damage;
             if (health <= 0f)
                 PauseController.instance.IsPaused = true;
+        }
+
+        private void OnParticleCollision(GameObject other)
+        {
+            if (!other.CompareTag("Enemy")) return;
+            
+            var system = other.GetComponentInChildren<ParticleSystem>();
+
+            List<ParticleCollisionEvent> collisions = new(system.GetSafeCollisionEventSize());
+            var count = system.GetCollisionEvents(gameObject, collisions);
+            TakeDamage((float)count);
         }
     }
 }
