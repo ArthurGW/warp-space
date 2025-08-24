@@ -1,3 +1,4 @@
+using Player;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,7 +7,7 @@ namespace Enemy
     [RequireComponent(typeof(AudioSource), typeof(NavMeshAgent), typeof(ParticleSystem))]
     public class EnemyController : MonoBehaviour
     {
-        private GameObject _player;
+        private PlayerController _player;
         private NavMeshAgent _agent;
         
         private AudioSource _audioSource;
@@ -16,7 +17,7 @@ namespace Enemy
 
         private void Awake()
         {
-            _player = GameObject.FindWithTag("Player");
+            _player = FindAnyObjectByType<PlayerController>();
             _agent = GetComponent<NavMeshAgent>();
             _audioSource = GetComponent<AudioSource>();
             _particleSystem = GetComponent<ParticleSystem>();
@@ -29,10 +30,11 @@ namespace Enemy
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject != _player) return;
+            if (other.gameObject != _player.gameObject) return;
             
             _audioSource.PlayOneShot(shockSound);
             _particleSystem.Play();
+            _player.TakeDamage(5f);
         }
     }
 }

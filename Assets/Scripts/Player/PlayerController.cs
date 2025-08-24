@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 namespace Player
 {
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerController : MonoBehaviour
     {
         private InputAction _move;
         private InputAction _look;
@@ -15,12 +15,15 @@ namespace Player
         
         private CharacterController _controller;
 
+        public float health = 100f;
+
         private void Awake()
         {
             if (!InputSystem.actions) throw new Exception();
             _move = InputSystem.actions.FindAction("Player/Move");
             _look = InputSystem.actions.FindAction("Player/Look");
             _controller = GetComponent<CharacterController>();
+            health = 100f;
             Cursor.lockState = CursorLockMode.Locked;
         }
 
@@ -43,6 +46,13 @@ namespace Player
         {
             get => _controller.enabled;
             set => _controller.enabled = value;
+        }
+
+        public void TakeDamage(float damage)
+        {
+            health -= damage;
+            if (health <= 0f)
+                PauseController.instance.IsPaused = true;
         }
     }
 }

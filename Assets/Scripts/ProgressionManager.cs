@@ -55,7 +55,7 @@ public class ProgressionManager : MonoBehaviour
     private AudioSource _musicSource;
     private AudioSource _fxSource;
     
-    private PlayerMovement _playerMovement;
+    private PlayerController _playerController;
     
     private void Awake()
     {
@@ -80,7 +80,7 @@ public class ProgressionManager : MonoBehaviour
         _mapController.mapComplete.AddListener(OnMapComplete);
         _results = new ConcurrentQueue<MapResult>();
 
-        _playerMovement = FindObjectsByType<PlayerMovement>(FindObjectsInactive.Include, FindObjectsSortMode.None).First(mv => mv.CompareTag("Player"));
+        _playerController = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None).First(mv => mv.CompareTag("Player"));
         
         if (resetSeedOnPlay)
         {
@@ -169,7 +169,7 @@ public class ProgressionManager : MonoBehaviour
     {
         try
         {
-            _playerMovement.EnableMovement = false;
+            _playerController.EnableMovement = false;
             PauseController.instance.IsPaused = true;
 
             if (needsFadeOut)
@@ -206,7 +206,7 @@ public class ProgressionManager : MonoBehaviour
         finally
         {
             PauseController.instance.IsPaused = false;
-            _playerMovement.EnableMovement = true;
+            _playerController.EnableMovement = true;
             updateText.text = "";
         }
     }
