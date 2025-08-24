@@ -121,7 +121,6 @@ GameObject:
   - component: {fileID: 8745144576071367185}
   - component: {fileID: 2016404472576268577}
   - component: {fileID: 2980759369174373778}
-  - component: {fileID: 8513041617769259310}
   m_Layer: 0
   m_Name: Hull (1)
   m_TagString: Untagged
@@ -218,22 +217,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!208 &8513041617769259310
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2112714651705162472}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 1, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1 &2915764275351251611
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,7 +229,6 @@ GameObject:
   - component: {fileID: 8326113782637736327}
   - component: {fileID: 2967608307645222184}
   - component: {fileID: 8092506690616118130}
-  - component: {fileID: 3157944188824947268}
   m_Layer: 0
   m_Name: Hull (4)
   m_TagString: Untagged
@@ -343,22 +325,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!208 &3157944188824947268
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2915764275351251611}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 1, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1 &3247659516937552366
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,7 +338,6 @@ GameObject:
   - component: {fileID: 1626413366867157176}
   - component: {fileID: 1503168777099994234}
   - component: {fileID: 8931163739092947352}
-  - component: {fileID: 7377456198429230235}
   m_Layer: 0
   m_Name: Hull (3)
   m_TagString: Untagged
@@ -686,22 +651,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!208 &7377456198429230235
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3247659516937552366}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 1, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1 &3617352690576924414
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,6 +760,54 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &3813476608359623999
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7448825497135542899}
+  - component: {fileID: 3290724751958267854}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7448825497135542899
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3813476608359623999}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 7.5, z: -5}
+  m_LocalScale: {x: 10, y: 5, z: 20}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 482217168588666112}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!208 &3290724751958267854
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3813476608359623999}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &3869586941247907406
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,7 +821,6 @@ GameObject:
   - component: {fileID: 8850497368646111846}
   - component: {fileID: 3757142855720875636}
   - component: {fileID: 3710393566174441111}
-  - component: {fileID: 6906243052296830819}
   m_Layer: 0
   m_Name: Hull (5)
   m_TagString: Untagged
@@ -1362,22 +1358,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!208 &6906243052296830819
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3869586941247907406}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 1, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1 &4540456826304394842
 GameObject:
   m_ObjectHideFlags: 0
@@ -1390,7 +1370,6 @@ GameObject:
   - component: {fileID: 651160909389703224}
   - component: {fileID: 1200721468881539382}
   - component: {fileID: 3498951955051094658}
-  - component: {fileID: 1883644311365042275}
   m_Layer: 0
   m_Name: Hull (2)
   m_TagString: Untagged
@@ -1487,22 +1466,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!208 &1883644311365042275
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4540456826304394842}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 1, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1 &4900015353816544017
 GameObject:
   m_ObjectHideFlags: 0
@@ -1721,6 +1684,7 @@ Transform:
   - {fileID: 4421156562944904035}
   - {fileID: 5569184368544060000}
   - {fileID: 6840544650528287767}
+  - {fileID: 7448825497135542899}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5054919071042720383
@@ -1760,7 +1724,6 @@ GameObject:
   - component: {fileID: 7817436603280291410}
   - component: {fileID: 5109320467962325165}
   - component: {fileID: 3753196051387907546}
-  - component: {fileID: 2509376731327848118}
   m_Layer: 0
   m_Name: Hull (6)
   m_TagString: Untagged
@@ -2298,22 +2261,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!208 &2509376731327848118
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6999084988796941389}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 1, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1 &7213406424319336920
 GameObject:
   m_ObjectHideFlags: 0
@@ -2326,7 +2273,6 @@ GameObject:
   - component: {fileID: 5935922916932252331}
   - component: {fileID: 3638707457313724829}
   - component: {fileID: 4336656698958913633}
-  - component: {fileID: 4350624327502865929}
   m_Layer: 0
   m_Name: Hull
   m_TagString: Untagged
@@ -2423,22 +2369,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!208 &4350624327502865929
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7213406424319336920}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 1, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1 &7723588696849631319
 GameObject:
   m_ObjectHideFlags: 0
@@ -2700,6 +2630,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 5287272316015571332, guid: 4f2fd4f0e2abe284bbe54de2f5cbfa84, type: 3}
+  minTimeBetweenSpawns: 5
+  maxTimeBetweenSpawns: 10
 --- !u!1 &9074889018990164554
 GameObject:
   m_ObjectHideFlags: 0

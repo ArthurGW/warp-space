@@ -4,6 +4,7 @@ using System.Linq;
 using Animations;
 using Layout;
 using MapObjects;
+using Player;
 using TMPro;
 using static MapObjects.ObjectUtils;
 using UnityEngine;
@@ -47,6 +48,15 @@ public class ProgressionManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI updateText;
 
+    [SerializeField] private AudioClip alarmSound;
+    [SerializeField] private AudioClip warpSound;
+    [SerializeField] private AudioClip[] music;
+
+    private AudioSource _musicSource;
+    private AudioSource _fxSource;
+    
+    private PlayerMovement _playerMovement;
+    
     private void Awake()
     {
         // If instance already exists, ensure we don't create a duplicate
@@ -58,6 +68,9 @@ public class ProgressionManager : MonoBehaviour
         
         _instance = this;
         
+        _musicSource  = GetComponentsInChildren<AudioSource>().First(src => src.CompareTag("Music"));
+        _fxSource  = GetComponentsInChildren<AudioSource>().First(src => src.CompareTag("SoundFX"));
+        
         _fadeInHash  = Animator.StringToHash("SceneFadeIn");
         _fadeOutHash  = Animator.StringToHash("SceneFadeOut");
         _fadeComplete = fadeAnimator.GetComponent<FadeComplete>();
@@ -66,6 +79,8 @@ public class ProgressionManager : MonoBehaviour
         _mapController = FindAnyObjectByType<GameMapController>();
         _mapController.mapComplete.AddListener(OnMapComplete);
         _results = new ConcurrentQueue<MapResult>();
+
+        _playerMovement = FindObjectsByType<PlayerMovement>(FindObjectsInactive.Include, FindObjectsSortMode.None).First(mv => mv.CompareTag("Player"));
         
         if (resetSeedOnPlay)
         {
@@ -82,6 +97,9 @@ public class ProgressionManager : MonoBehaviour
         {
             PauseController.instance.IsPaused = true;
             StartGenerating();
+            _musicSource.clip = music[Random.Range(0, music.Length)];
+            _musicSource.Play();
+            _fxSource.PlayOneShot(alarmSound);
             await NextLevel();
         }
         catch (Exception e)
@@ -151,6 +169,7 @@ public class ProgressionManager : MonoBehaviour
     {
         try
         {
+            _playerMovement.EnableMovement = false;
             PauseController.instance.IsPaused = true;
 
             if (needsFadeOut)
@@ -173,7 +192,9 @@ public class ProgressionManager : MonoBehaviour
                 Debug.LogError("failed to generate map");
                 _mapController.OnMapGenerationFailed();
             }
-            
+
+            await Awaitable.NextFrameAsync();
+            await Awaitable.EndOfFrameAsync();
             await WaitForFade(_fadeInHash);
             needsFadeOut = true;
         }
@@ -185,6 +206,7 @@ public class ProgressionManager : MonoBehaviour
         finally
         {
             PauseController.instance.IsPaused = false;
+            _playerMovement.EnableMovement = true;
             updateText.text = "";
         }
     }
@@ -192,6 +214,8 @@ public class ProgressionManager : MonoBehaviour
     private void OnMapComplete()
     {
         updateText.text = "Warping...";
+        _fxSource.Stop();
+        _fxSource.PlayOneShot(warpSound);
         NextLevel();
     }
 }

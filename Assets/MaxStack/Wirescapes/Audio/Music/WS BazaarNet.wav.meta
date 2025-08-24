@@ -1,0 +1,30 @@
+fileFormatVersion: 2
+guid: 8ad3285ddc625e94abab69e979f5e60c
+AssetOrigin:
+  serializedVersion: 1
+  productId: 325867
+  packageName: Ambient Cyberpunk Music - Wirescapes
+  packageVersion: 1.0
+  assetPath: Assets/MaxStack/Wirescapes/Audio/Music/WS BazaarNet.wav
+  uploadId: 771038
+AudioImporter:
+  externalObjects: {}
+  serializedVersion: 8
+  defaultSettings:
+    serializedVersion: 2
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 44100
+    compressionFormat: 1
+    quality: 1
+    conversionMode: 0
+    preloadAudioData: 1
+  platformSettingOverrides: {}
+  forceToMono: 1
+  normalize: 1
+  loadInBackground: 0
+  ambisonic: 0
+  3D: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

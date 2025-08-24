@@ -26,7 +26,7 @@ namespace Player
 
         private void Update()
         {
-            if (PauseController.instance.IsPaused) return;
+            if (PauseController.instance.IsPaused || !EnableMovement) return;
             
             // Handle x-axis of look as player rotation
             var lookAmount = _look.ReadValue<Vector2>().x * (rotationSpeed * Time.deltaTime);
@@ -37,6 +37,12 @@ namespace Player
             var moveAmount = _move.ReadValue<Vector2>() * (Time.deltaTime * movementSpeed);
             var moveInPlane = transform.forward * moveAmount.y + transform.right * moveAmount.x;
             _controller.Move(moveInPlane);
+        }
+
+        public bool EnableMovement
+        {
+            get => _controller.enabled;
+            set => _controller.enabled = value;
         }
     }
 }
