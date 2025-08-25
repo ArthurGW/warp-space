@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Cursor = UnityEngine.Cursor;
 
 namespace Player
 {
@@ -16,7 +17,9 @@ namespace Player
         
         private CharacterController _controller;
 
-        public float health = 100f;
+        public uint maxHealth = 100u;
+
+        public uint Health { get; private set; } = 100u;
 
         private void Awake()
         {
@@ -24,8 +27,9 @@ namespace Player
             _move = InputSystem.actions.FindAction("Player/Move");
             _look = InputSystem.actions.FindAction("Player/Look");
             _controller = GetComponent<CharacterController>();
-            health = 100f;
+            Health = maxHealth;
             Cursor.lockState = CursorLockMode.Locked;
+            
         }
 
         private void Update()
@@ -49,11 +53,15 @@ namespace Player
             set => _controller.enabled = value;
         }
 
-        private void TakeDamage(float damage)
+        private void TakeDamage(uint damage)
         {
-            health -= damage;
-            if (health <= 0f)
+            if (Health <= damage)
+            {
                 PauseController.instance.IsPaused = true;
+				Health = 0u;
+			}
+			else
+				Health -= damage;
         }
 
         private void OnParticleCollision(GameObject other)
@@ -62,9 +70,10 @@ namespace Player
             
             var system = other.GetComponentInChildren<ParticleSystem>();
 
+			// GetSafeCollisionEventSize is only guaranteed to be >= the number of collisions, so we also fetch them
             List<ParticleCollisionEvent> collisions = new(system.GetSafeCollisionEventSize());
             var count = system.GetCollisionEvents(gameObject, collisions);
-            TakeDamage((float)count);
+            TakeDamage((uint)count);
         }
     }
 }
