@@ -21,9 +21,10 @@ public class ProgressionManager : MonoBehaviour
 
     public uint seed = 0;
 
+    private uint _numWarps = 0u;
+    [SerializeField] private TextMeshProUGUI numWarpsText;
+
     private uint _levelSeed = 0;
-    public Vector3 currentStartPos;
-    public Vector3 currentFinishPos;
     
     public bool resetSeedOnPlay = true;
 
@@ -184,14 +185,13 @@ public class ProgressionManager : MonoBehaviour
             if (level != null)
             {
                 _mapController.OnMapGenerated(level);
-                currentStartPos = level.Rooms.Where(rm => rm.Id == level.StartRoomId).Select(rm => rm.ToWorldCenter()).FirstOrDefault();
-                currentFinishPos = level.Rooms.Where(rm => rm.Id == level.FinishRoomId).Select(rm => rm.ToWorldCenter()).FirstOrDefault();
             }
             else
             {
                 Debug.LogError("failed to generate map");
                 _mapController.OnMapGenerationFailed();
             }
+            
 
             await Awaitable.NextFrameAsync();
             await Awaitable.EndOfFrameAsync();
@@ -214,6 +214,7 @@ public class ProgressionManager : MonoBehaviour
     private void OnMapComplete()
     {
         updateText.text = "Warping...";
+        numWarpsText.text = $"Warps: {++_numWarps}";
         _fxSource.Stop();
         _fxSource.PlayOneShot(warpSound);
         NextLevel();
