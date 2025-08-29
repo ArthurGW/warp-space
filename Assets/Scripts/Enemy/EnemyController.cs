@@ -1,3 +1,4 @@
+using Enemy.States;
 using Player;
 using UnityEngine;
 using UnityEngine.AI;
@@ -8,24 +9,25 @@ namespace Enemy
     public class EnemyController : MonoBehaviour
     {
         private PlayerController _player;
-        private NavMeshAgent _agent;
         
         private AudioSource _audioSource;
         [SerializeField] private AudioClip shockSound;
         
         private ParticleSystem  _particleSystem;
 
+        private EnemyState _state;
+
         private void Awake()
         {
             _player = FindAnyObjectByType<PlayerController>();
-            _agent = GetComponent<NavMeshAgent>();
             _audioSource = GetComponent<AudioSource>();
             _particleSystem = GetComponent<ParticleSystem>();
+            _state = new InitialState(transform, GetComponent<NavMeshAgent>(), _player.transform);
         }
 
         private void Update()
         {
-            _agent.SetDestination(_player.transform.position);
+            _state = _state.Update();
         }
 
         private void OnTriggerEnter(Collider other)
