@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Layout;
 using LevelGenerator;
 using Unity.AI.Navigation;
@@ -27,6 +28,11 @@ namespace MapObjects
         private RoomFactory _roomFactory;
         private NavMeshSurface _navMeshSurface;
 
+        private ConnectedRooms _connectedRooms;
+        private List<DoorController> _doorControllers;
+
+        public Dictionary<ulong, RoomData> RoomsById;
+
         private void Awake()
         {
             mapComplete ??= new UnityEvent();
@@ -36,6 +42,8 @@ namespace MapObjects
                 .First(controller => controller.CompareTag("Player"));
             _navMeshSurface = GetComponent<NavMeshSurface>();
         }
+        
+        public List<ulong> GetConnectedRooms(ulong roomId) => _connectedRooms.GetConnectedRooms(roomId);
 
         private void Start()
         {
@@ -45,6 +53,17 @@ namespace MapObjects
         public void OnMapGenerationFailed()
         {
             DestroyMap();
+        }
+
+        public void DoorOpened(object doorId)
+        {
+            if (doorId is not uint)
+            {
+                Debug.LogError("invalid door id");
+                return;
+            }
+            
+            _connectedRooms.AddConnection(_doorControllers.First(dc => dc.DoorId == (uint)doorId).RoomIds);
         }
 
         public void DestroyMap()
@@ -76,23 +95,53 @@ namespace MapObjects
 #endif
             
             DestroyMap();
-
-            var roomsById = result.Rooms.ToDictionary(rm => rm.Id);
+            
+            _connectedRooms = new ConnectedRooms();
+            _doorControllers = new List<DoorController>();
+            RoomsById = result.Rooms.ToDictionary(rm => rm.Id);
 
             // Create hull
             _hullFactory.ConstructHull(result.Squares);
 
             // Generate rooms and corridors
-            _roomFactory.ConstructRooms(result.Rooms, roomsById,
+            _roomFactory.ConstructRooms(result.Rooms, RoomsById,
                 result.Adjacencies, result.StartRoomId);
+            _doorControllers = GetComponentsInChildren<DoorController>().ToList();
+            
+            // Initialise connected rooms - corridors are connected to corridors next to them, rooms are connected to
+            // nothing at present as all doors start closed
+            foreach (var rc in GetComponentsInChildren<RoomController>())
+            {
+                _connectedRooms.AddRoom(rc.RoomData);
+            }
+            foreach (var cc in GetComponentsInChildren<CorridorController>())
+            {
+                _connectedRooms.AddRoom(cc.RoomData);
+            }
+            var corridorsByGrid = result.Rooms
+                .Where(rm => rm.Type == RoomType.Corridor)
+                .ToDictionary(rm => (rm.X, rm.Y));
+            foreach (var cc in GetComponentsInChildren<CorridorController>())
+            {
+                // Check just right and down, the other direction will be checked by squares above and left
+                var corridorGrid = (cc.RoomData.X, cc.RoomData.Y);
+                if (corridorsByGrid.TryGetValue(corridorGrid.Offset(1, 0), out var corridor))
+                {
+                    _connectedRooms.AddConnection(cc.RoomData.Id, corridor.Id);
+                }
+                if (corridorsByGrid.TryGetValue(corridorGrid.Offset(0, 1), out corridor))
+                {
+                    _connectedRooms.AddConnection(cc.RoomData.Id, corridor.Id);
+                }
+            }
 
             // Set up the start and finish rooms
-            if (!roomsById.TryGetValue(result.StartRoomId, out var startRoom))
+            if (!RoomsById.TryGetValue(result.StartRoomId, out var startRoom))
             {
                 startRoom = result.Rooms.First(rm => rm.Type == RoomType.Room);
             }
 
-            if (!roomsById.TryGetValue(result.FinishRoomId, out var finishRoom))
+            if (!RoomsById.TryGetValue(result.FinishRoomId, out var finishRoom))
             {
                 finishRoom = result.Rooms.Last(rm => rm.Type == RoomType.Room);
             }

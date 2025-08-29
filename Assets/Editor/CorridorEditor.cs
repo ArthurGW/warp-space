@@ -11,10 +11,12 @@ namespace Editor
     {
         public override VisualElement CreateInspectorGUI()
         {
-            VisualElement customInspector = new VisualElement();
+            var customInspector = new VisualElement();
             InspectorElement.FillDefaultInspector(customInspector, new SerializedObject(target), this);
-            var button = new Button(UpdateEntrances);
-            button.text = "Update Entrances";
+            var button = new Button(UpdateEntrances)
+            {
+                text = "Update Entrances"
+            };
             customInspector.Add(button);
             return customInspector;
         }

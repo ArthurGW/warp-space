@@ -17,25 +17,14 @@ namespace MapObjects
         {
             foreach (var corridor in corridors)
             {
-                var obj = Instantiate(corridorPrefab.gameObject, corridorContainer, false);
-                var asSquare = (MapSquareData)corridor;
-                obj.transform.localPosition = asSquare.ToPosition();
-                var corridorController = obj.GetComponent<CorridorController>();
-                corridorController.openDirections = GetOpenings(corridor, doorsByRoomId);
-                corridorController.UpdateCorridor();
+                var obj = Instantiate(corridorPrefab, corridorContainer, false);
+                obj.SetData(corridor, doorsByRoomId);
             }
         }
 
         public void DestroyCorridors()
         {
             DestroyAllChildren(corridorContainer);
-        }
-
-        private static CardinalDirections GetOpenings(RoomData corridor, ILookup<ulong, Door> doorsByRoomId)
-        {
-            return doorsByRoomId[corridor.Id]
-                .Select(door => door.Direction)
-                .Aggregate((CardinalDirections)0, (total, add) => total | (CardinalDirections)add);
         }
     }
 }

@@ -1007,7 +1007,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.8
+  m_Volume: 0.6
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1720,8 +1720,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seed: 999999
   numWarpsText: {fileID: 1534563466}
-  currentStartPos: {x: 0, y: 0, z: 0}
-  currentFinishPos: {x: 0, y: 0, z: 0}
   resetSeedOnPlay: 1
   breachIncreaseRate: 0.5
   maxBreaches: 5

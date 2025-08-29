@@ -23,9 +23,16 @@ namespace MapObjects
         [SerializeField]
         private GameObject doorPrefab;
         
-        private RoomData _roomData;
+        public RoomData RoomData;
         
         private LightController _lightController;
+
+        public static RoomData? GetRoomDataForPosition(Vector3 position)
+        {
+            var rc = FindObjectsByType<RoomController>(FindObjectsSortMode.None)
+                .FirstOrDefault(rc => rc.RoomData.Contains(position));
+            return !rc ? null : rc.RoomData;
+        }
 
         private void Awake()
         {
@@ -34,7 +41,7 @@ namespace MapObjects
 
         public void SetData(RoomData data, ILookup<ulong, Door> doorsByRoomId)
         {
-            _roomData = data;
+            RoomData = data;
             transform.localPosition = data.ToPosition();
             
             foreach (var x in Enumerable.Range(1, (int)data.Width))
@@ -64,11 +71,11 @@ namespace MapObjects
             var walls = new List<CardinalDirection>();
             if (pos.X == 1U) walls.Add(CardinalDirection.West);
             if (pos.Y == 1U) walls.Add(CardinalDirection.North);
-            if (pos.X == _roomData.Width) walls.Add(CardinalDirection.East);
-            if (pos.Y == _roomData.Height) walls.Add(CardinalDirection.South);
+            if (pos.X == RoomData.Width) walls.Add(CardinalDirection.East);
+            if (pos.Y == RoomData.Height) walls.Add(CardinalDirection.South);
             foreach (var wallDir in walls)
             {
-                var doors = doorsByRoomId[_roomData.Id].Where(d => d.InternalX == pos.X && d.InternalY == pos.Y && d.Direction == wallDir).ToArray();
+                var doors = doorsByRoomId[RoomData.Id].Where(d => d.InternalX == pos.X && d.InternalY == pos.Y && d.Direction == wallDir).ToArray();
                 GameObject prefab;
                 if (doors.Length == 0)
                 {

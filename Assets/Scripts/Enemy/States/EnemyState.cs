@@ -44,7 +44,7 @@ namespace Enemy.States
                     break;
             }
 
-            return this;
+            return null;
         }
 
         protected EnemyState(Transform enemy, NavMeshAgent enemyAgent, Transform player)
@@ -56,6 +56,9 @@ namespace Enemy.States
             EnemyAgent = enemyAgent;
             Player = player;
         }
+        
+        protected bool IsAtDestination => !EnemyAgent.pathPending 
+                                && EnemyAgent.remainingDistance <= EnemyAgent.stoppingDistance * 1.2f;
         
         protected abstract void Enter();
         protected abstract EnemyState DoIteration();

@@ -37,14 +37,10 @@ namespace Layout
         
         private static readonly (int offX, int offY)[] Adjacent =
         {
-            (-1, -1),
             (0, -1),
-            (1, -1),
             (-1, 0),
             (1, 0),
-            (-1, 1),
             (0, 1),
-            (1, 1)
         };
         
         public static Vector3 GridToPosition((uint X, uint Y) pos)
@@ -79,7 +75,7 @@ namespace Layout
             return (square.X, square.Y);
         }
 
-        public static (int, int)[] ValidAdjacentSquareOffsets((uint X, uint Y) position, uint mapWidth, uint mapHeight)
+        public static List<(int, int)> ValidAdjacentSquareOffsets((uint X, uint Y) position, uint mapWidth, uint mapHeight)
         {
             // Select in-bounds adjacent squares, and return the offset that leads to them
             return Adjacent
@@ -90,7 +86,7 @@ namespace Layout
                     && posAdj.Y > 0
                     && posAdj.Y <= mapHeight)
                 .Select(posAdj => posAdj.adj)
-                .ToArray();
+                .ToList();
         }
     }
 }

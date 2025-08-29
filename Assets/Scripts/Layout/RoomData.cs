@@ -14,6 +14,14 @@ namespace Layout
             Width = width;
             Height = height;
             Type = roomType;
+            
+            Corners = new[]
+            {
+                GridToPosition((X, Y)), // Top left
+                GridToPosition((X + Width - 1, Y)), // Top right
+                GridToPosition((X + Width - 1, Y + Height - 1)), // Bottom right
+                GridToPosition((X, Y + Height - 1)), // Bottom left
+            };
         }
 
         public static explicit operator RoomData(Room rm)
@@ -39,6 +47,13 @@ namespace Layout
         }
 
         public Vector3 ToWorldCenter() => ToPosition() + ToLocalCenter();
+        
+        private Bounds ToWorldBounds() => new Bounds(ToWorldCenter(), ToSize());
+        
+        public bool Contains(Vector3 point)
+        {
+            return ToWorldBounds().Contains(point);
+        }
 
         public ulong Id { get; }
         public uint X { get; }
@@ -46,5 +61,6 @@ namespace Layout
         public uint Width { get; }
         public uint Height { get; }
         public RoomType Type { get; }
+        public Vector3[] Corners { get; }
     }
 }

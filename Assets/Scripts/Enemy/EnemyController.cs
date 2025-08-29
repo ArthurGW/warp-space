@@ -27,7 +27,9 @@ namespace Enemy
 
         private void Update()
         {
-            _state = _state.Update();
+           var newState = _state.Update();
+           if (newState != null)
+               _state = newState;
         }
 
         private void OnTriggerEnter(Collider other)
