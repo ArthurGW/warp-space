@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 7905544057928234279}
   - component: {fileID: 314408822632366054}
   - component: {fileID: 6321314156292828262}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Nose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7905544057928234279
 Transform:
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 7718461884139018736}
   - component: {fileID: 3832758690325973622}
   - component: {fileID: 5587978884339252197}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -5119,12 +5119,12 @@ GameObject:
   - component: {fileID: 1043334692722965817}
   - component: {fileID: 8795605536782610401}
   - component: {fileID: 3429609477443433817}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1043334692722965817
 Transform:

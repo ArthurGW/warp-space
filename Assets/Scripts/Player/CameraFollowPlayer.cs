@@ -7,7 +7,6 @@ namespace Player
     public class CameraFollowPlayer : MonoBehaviour
     {
         private Transform _mainCameraTransform;
-        private Transform _playerTransform;
 
         private InputAction _zoomAction;
         private InputAction _lookAction;
@@ -18,12 +17,20 @@ namespace Player
         private float _lookAngle = 0f;
         public float lookSpeed = 0.1f;
 
+        public void CopyParams(CameraFollowPlayer other)
+        {
+            offset = other.offset;
+            zoomSpeed = other.zoomSpeed;
+            lookProportion = other.lookProportion;
+            _lookAngle = other._lookAngle;
+            lookSpeed = other.lookSpeed;
+        }
+
         private void Awake()
         {
             if (!InputSystem.actions) return;
             _zoomAction = InputSystem.actions.FindAction("Player/Zoom");
             _lookAction = InputSystem.actions.FindAction("Player/Look");
-            _playerTransform = FindFirstObjectByType<CharacterController>(FindObjectsInactive.Include).transform;
             _mainCameraTransform = Camera.main?.transform;
         }
         
@@ -45,14 +52,14 @@ namespace Player
 
         private void Follow()
         {
-            if (!_playerTransform || !_playerTransform.gameObject.activeInHierarchy) return;
+            if (!gameObject.activeInHierarchy) return;
             
             var sin = MathF.Sin(_lookAngle * MathF.PI/180);
             var cos = MathF.Cos(_lookAngle * MathF.PI/180);
-            var vertical = _playerTransform.up * (offset * sin);
-            var horizontal = -_playerTransform.forward * (offset * cos);
-            _mainCameraTransform.position = _playerTransform.position + vertical + horizontal;
-            _mainCameraTransform.LookAt(_playerTransform);
+            var vertical = transform.up * (offset * sin);
+            var horizontal = -transform.forward * (offset * cos);
+            _mainCameraTransform.position = transform.position + vertical + horizontal;
+            _mainCameraTransform.LookAt(transform);
         }
     }
 }

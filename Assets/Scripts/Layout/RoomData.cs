@@ -48,7 +48,7 @@ namespace Layout
 
         public Vector3 ToWorldCenter() => ToPosition() + ToLocalCenter();
         
-        private Bounds ToWorldBounds() => new Bounds(ToWorldCenter(), ToSize());
+        public Bounds ToWorldBounds() => new (ToWorldCenter(), ToSize());
         
         public bool Contains(Vector3 point)
         {

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.AI;
 
 namespace Enemy.States
@@ -12,6 +13,11 @@ namespace Enemy.States
 
         private EnemyState _nextState;
 
+        // Sensor range is in effect infinite, *but* is blocked by walls and doors
+        private const float SensorRange = 10000f;
+
+        private readonly int _detectionMask;
+
         private enum SubState
         {
             Entering,
@@ -20,6 +26,12 @@ namespace Enemy.States
         }
         
         private SubState _subState;
+
+        public void OverrideNextState(EnemyState newState)
+        {
+            _nextState = newState;
+            _subState = SubState.Exiting;
+        }
 
         public EnemyState Update()
         {
@@ -51,14 +63,38 @@ namespace Enemy.States
         {
             _nextState = null;
             _subState = SubState.Entering;
+            
+            // Detect everything except other enemies
+            _detectionMask = ~LayerMask.GetMask("Enemy");
 
             Enemy = enemy;
             EnemyAgent = enemyAgent;
             Player = player;
         }
         
-        protected bool IsAtDestination => !EnemyAgent.pathPending 
+        protected bool IsAtDestination => !EnemyAgent.pathPending && EnemyAgent.hasPath
                                 && EnemyAgent.remainingDistance <= EnemyAgent.stoppingDistance * 1.2f;
+        
+        protected int FindClosestPoint(Vector3[] points)
+        {
+            return points
+                .Select((pt, ind) => (Vector3.Distance(pt, Enemy.position), ind))
+                .Aggregate(((float dist, int ind) first, (float dist, int ind) second) => first.dist <= second.dist ? first : second
+                ).Item2;
+        }
+
+        protected bool CanDetectPlayer
+        {
+            get
+            {
+                var directionToPlayer = (Player.position - Enemy.position).normalized;
+                if (!Physics.Raycast(
+                        Enemy.position, directionToPlayer, out var hit, SensorRange, _detectionMask, QueryTriggerInteraction.Ignore)
+                )
+                    return false;
+                return hit.transform == Player;
+            }
+        }
         
         protected abstract void Enter();
         protected abstract EnemyState DoIteration();

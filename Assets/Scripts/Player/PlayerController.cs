@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Enemy;
+using Enemy.States;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using Cursor = UnityEngine.Cursor;
 
 namespace Player
 {
-    [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(CharacterController), typeof(CameraFollowPlayer), typeof(AudioListener))]
     public class PlayerController : MonoBehaviour
     {
         private InputAction _move;
@@ -16,8 +20,12 @@ namespace Player
         public float rotationSpeed;
         
         private CharacterController _controller;
+        private CameraFollowPlayer _cameraFollow;
+        private AudioListener _listener;
 
         public uint maxHealth = 100u;
+
+        public uint particleDamage = 2u;
 
         public uint Health { get; private set; } = 100u;
 
@@ -27,6 +35,9 @@ namespace Player
             _move = InputSystem.actions.FindAction("Player/Move");
             _look = InputSystem.actions.FindAction("Player/Look");
             _controller = GetComponent<CharacterController>();
+            _cameraFollow = GetComponent<CameraFollowPlayer>();
+            _listener = GetComponent<AudioListener>();
+            
             Health = maxHealth;
             Cursor.lockState = CursorLockMode.Locked;
             
@@ -55,11 +66,30 @@ namespace Player
 
         private void TakeDamage(uint damage)
         {
-            if (Health <= damage)
+            if (Health > 0u && Health <= damage)
             {
-                PauseController.instance.IsPaused = true;
-				Health = 0u;
-			}
+                // Dead! Player turns into an enemy
+                Health = 0u;
+                
+                var enemy = FindAnyObjectByType<EnemyController>();
+
+                _cameraFollow.enabled = false;
+                _listener.enabled = false;
+                EnableMovement = false;
+                var previousPos = transform.position;
+                var previousRotation = transform.rotation;
+                transform.Translate(1000f, 0f, 0f);  // Translate far offscreen to hide from enemy tracking
+
+                // Make a fake player-turned-to-enemy for the camera to follow
+                var fakePlayer = Instantiate(enemy, previousPos, previousRotation, null);
+                fakePlayer.name = "FakePlayer";
+                fakePlayer.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+                fakePlayer.GetComponent<NavMeshAgent>().SetDestination(previousPos);
+                fakePlayer.SetState(new PursueState(fakePlayer.transform, fakePlayer.GetComponent<NavMeshAgent>(), transform));
+                fakePlayer.AddComponent<AudioListener>();
+                var newFollow = fakePlayer.AddComponent<CameraFollowPlayer>();
+                newFollow.CopyParams(_cameraFollow);
+            }
 			else
 				Health -= damage;
         }
@@ -73,7 +103,7 @@ namespace Player
 			// GetSafeCollisionEventSize is only guaranteed to be >= the number of collisions, so we also fetch them
             List<ParticleCollisionEvent> collisions = new(system.GetSafeCollisionEventSize());
             var count = system.GetCollisionEvents(gameObject, collisions);
-            TakeDamage((uint)count);
+            TakeDamage((uint)count * particleDamage);
         }
     }
 }

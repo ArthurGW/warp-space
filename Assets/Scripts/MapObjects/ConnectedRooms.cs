@@ -57,6 +57,11 @@ namespace MapObjects
             --_numValidSets;
         }
 
+        /// <summary>
+        /// Get rooms connected to the room with the given ID
+        /// </summary>
+        /// <param name="roomId">ID of room to test, which *can* be a corridor</param>
+        /// <returns>Rooms connected to roomId, *excluding* corridors</returns>
         public List<ulong> GetConnectedRooms(ulong roomId)
         {
             var gid = Enumerable.Range(0, _numValidSets)
