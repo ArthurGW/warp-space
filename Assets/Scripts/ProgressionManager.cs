@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading;
 using Animations;
+using Enemy;
 using Layout;
 using MapObjects;
 using Player;
 using TMPro;
 using static MapObjects.ObjectUtils;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
@@ -20,12 +23,7 @@ public class ProgressionManager : MonoBehaviour
     private static ProgressionManager _instance;
 
     public uint seed = 0;
-
-    private uint _numWarps = 0u;
-    [SerializeField] private TextMeshProUGUI numWarpsText;
-
     private uint _levelSeed = 0;
-    
     public bool resetSeedOnPlay = true;
 
     private GameMapGenerator _mapGenerator;
@@ -47,7 +45,11 @@ public class ProgressionManager : MonoBehaviour
     private int _fadeInHash;
     private int _fadeOutHash;
 
+    private uint _numWarps = 0u;
+    [SerializeField] private TextMeshProUGUI numWarpsText;
+    [SerializeField] private Button restartButton;
     [SerializeField] private TextMeshProUGUI updateText;
+    private string _initialUpdateText;
 
     [SerializeField] private AudioClip alarmSound;
     [SerializeField] private AudioClip warpSound;
@@ -57,6 +59,8 @@ public class ProgressionManager : MonoBehaviour
     private AudioSource _fxSource;
     
     private PlayerController _playerController;
+    
+    private static int _generationRunning = 0;
     
     private void Awake()
     {
@@ -79,9 +83,9 @@ public class ProgressionManager : MonoBehaviour
         _mapGenerator = FindAnyObjectByType<GameMapGenerator>();
         _mapController = FindAnyObjectByType<GameMapController>();
         _mapController.mapComplete.AddListener(OnMapComplete);
-        _results = new ConcurrentQueue<MapResult>();
 
         _playerController = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None).First(mv => mv.CompareTag("Player"));
+        _playerController.playerDeath.AddListener(OnPlayerDeath);
         
         if (resetSeedOnPlay)
         {
@@ -90,17 +94,26 @@ public class ProgressionManager : MonoBehaviour
 
         Random.InitState((int)seed);  // All Unity random generation runs off the global seed...
         _levelSeed = seed;  // ...but the level seed changes on each level generation
+
+        restartButton.onClick.AddListener(OnRestartGame);
     }
 
     private async void Start()
     {
         try
         {
+            restartButton.gameObject.SetActive(false);
             PauseController.instance.IsPaused = true;
-            StartGenerating();
+            
+            _results = new ConcurrentQueue<MapResult>();
+            RestartGeneration();
+            
             _musicSource.clip = music[Random.Range(0, music.Length)];
             _musicSource.Play();
             _fxSource.PlayOneShot(alarmSound);
+            
+            _initialUpdateText = updateText.text;
+            
             await NextLevel();
         }
         catch (Exception e)
@@ -132,9 +145,18 @@ public class ProgressionManager : MonoBehaviour
         StartGenerating();
     }
 
+    private bool CheckCancel()
+    {
+        if (!_mapGenerator.CheckCancel()) return false;
+        
+        Interlocked.Exchange(ref _generationRunning, 0);
+        return true;
+    }
+
     private async Awaitable StartGenerating()
     {
-        while(!_mapGenerator.CheckCancel())
+        Interlocked.Exchange(ref _generationRunning, 1);
+        while(!CheckCancel())
         {
             // Keep a few levels queued up for faster transitions
             var toGenerate = 3 - _results.Count;
@@ -150,18 +172,21 @@ public class ProgressionManager : MonoBehaviour
             }).ToArray();
 
             await Awaitable.BackgroundThreadAsync();
+            
             foreach (var parameterSet in parameters)
             {
-                if (_mapGenerator.CheckCancel()) return;
+                if (CheckCancel()) return;
                 Debug.Log($"Generating: {parameterSet}");
                 var result = await _mapGenerator.GenerateNewLevel(5, parameterSet.width, parameterSet.height, 3, 10,
                     parameterSet.numBreaches, parameterSet.levelSeed, 2);
+                if (CheckCancel()) return;
                 _results.Enqueue(result);
                 Debug.Log($"Generated {result.NumLevelsGenerated} levels with: {parameterSet}");
             }
-            if (_mapGenerator.CheckCancel()) return;
+            
+            if (CheckCancel()) return;
             await Awaitable.MainThreadAsync();
-            if (_mapGenerator.CheckCancel()) return;
+            if (CheckCancel()) return;
             await Awaitable.WaitForSecondsAsync(5);
         }
     }
@@ -175,6 +200,7 @@ public class ProgressionManager : MonoBehaviour
 
             if (needsFadeOut)
             {
+                fadeAnimator.gameObject.SetActive(true);
                 await WaitForFade(_fadeOutHash);
                 needsFadeOut = false;
             }
@@ -192,10 +218,10 @@ public class ProgressionManager : MonoBehaviour
                 _mapController.OnMapGenerationFailed();
             }
             
-
             await Awaitable.NextFrameAsync();
             await Awaitable.EndOfFrameAsync();
             await WaitForFade(_fadeInHash);
+            fadeAnimator.gameObject.SetActive(false);
             needsFadeOut = true;
         }
         catch (Exception e)
@@ -218,5 +244,37 @@ public class ProgressionManager : MonoBehaviour
         _fxSource.Stop();
         _fxSource.PlayOneShot(warpSound);
         NextLevel();
+    }
+
+    private void OnRestartGame()
+    {
+        WaitForGenerationExit();
+    }
+
+    private async Awaitable WaitForGenerationExit()
+    {
+        await Awaitable.NextFrameAsync();
+        while (Interlocked.CompareExchange(ref _generationRunning, 1, 1) == 1)
+            await Awaitable.NextFrameAsync();
+
+        foreach (var enemy in FindObjectsByType<EnemyController>(FindObjectsSortMode.None))
+        {
+            DestroyGameObject(enemy.gameObject);
+        }
+
+        await Awaitable.NextFrameAsync();
+        
+        _breaches = 1f;
+        _numWarps = 0u;
+        numWarpsText.text = "Warps: 0";
+        updateText.text = _initialUpdateText;
+        _playerController.Resurrect();
+        Start();
+    }
+
+    private void OnPlayerDeath()
+    {
+        _mapGenerator.DoCancel();
+        restartButton.gameObject.SetActive(true);
     }
 }

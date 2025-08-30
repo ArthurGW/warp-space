@@ -5,6 +5,7 @@ using Enemy.States;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Cursor = UnityEngine.Cursor;
 
@@ -28,6 +29,8 @@ namespace Player
         public uint particleDamage = 2u;
 
         public uint Health { get; private set; } = 100u;
+        
+        public UnityEvent playerDeath;
 
         private void Awake()
         {
@@ -38,9 +41,9 @@ namespace Player
             _cameraFollow = GetComponent<CameraFollowPlayer>();
             _listener = GetComponent<AudioListener>();
             
-            Health = maxHealth;
-            Cursor.lockState = CursorLockMode.Locked;
+            playerDeath ??= new UnityEvent();
             
+            Resurrect();
         }
 
         private void Update()
@@ -62,6 +65,15 @@ namespace Player
         {
             get => _controller.enabled;
             set => _controller.enabled = value;
+        }
+
+        public void Resurrect()
+        {
+            _cameraFollow.enabled = true;
+            _listener.enabled = true;
+            EnableMovement = true;
+            Health = maxHealth;
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void TakeDamage(uint damage)
@@ -89,6 +101,9 @@ namespace Player
                 fakePlayer.AddComponent<AudioListener>();
                 var newFollow = fakePlayer.AddComponent<CameraFollowPlayer>();
                 newFollow.CopyParams(_cameraFollow);
+                
+                Cursor.lockState = CursorLockMode.None;
+                playerDeath.Invoke();
             }
 			else
 				Health -= damage;

@@ -12,8 +12,7 @@ namespace Player
         private List<HealthEntry> _healthEntries;
         private Image _background;
         
-        [SerializeField]
-        private PlayerController playerController;
+        [SerializeField] private PlayerController playerController;
 
         private uint _lastHealth;
     
@@ -33,7 +32,7 @@ namespace Player
             {
                 healthEntry.EntryImage.enabled = newHealth >= healthEntry.minHealth;
             }
-            if (!_healthEntries.Any(e => e.EntryImage.enabled)) _background.color = Constants.EnemyColor;
+            _background.color = _healthEntries.Any(e => e.EntryImage.enabled) ? Color.white : Constants.EnemyColor;
             
             _lastHealth = newHealth;
         }
