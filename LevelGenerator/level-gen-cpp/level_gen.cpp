@@ -32,9 +32,9 @@ class LevelGenerator::LevelGenImpl
 {
     public:
         LevelGenImpl(unsigned max_num_levels, unsigned width, unsigned height, unsigned min_rooms, unsigned max_rooms,
-                unsigned num_breaches, size_t seed, bool load_prog_from_file, unsigned num_threads)
+                unsigned num_breaches, unsigned num_portals, size_t seed, bool load_prog_from_file, unsigned num_threads)
                  : width(width), height(height), min_rooms(min_rooms), max_rooms(max_rooms), num_breaches(num_breaches),
-                 solver(std::make_unique<Clingo::Control>())
+                 num_portals(num_portals), solver(std::make_unique<Clingo::Control>())
         {
             auto config = solver->configuration();
             if (num_threads > 1)
@@ -51,9 +51,11 @@ class LevelGenerator::LevelGenImpl
             config["solver.seed"] = std::to_string(seed).c_str();
             config["solver.rand_freq"] = "1.0";  // Always choose randomly where possible
 
-            if (!load_prog_from_file && prog)
+            if (!load_prog_from_file)
             {
-                program = prog;
+                std::ostringstream stream;
+                stream << ship_prog << std::endl << portal_prog;
+                program = stream.str();
             }
         }
 
@@ -67,41 +69,52 @@ class LevelGenerator::LevelGenImpl
         const unsigned min_rooms;
         const unsigned max_rooms;
         const unsigned num_breaches;
+        const unsigned num_portals;
         std::string program;
+
+        void add_program_from_file(const char *path)
+        {
+            // Load from file
+            const char* error = nullptr;
+            std::ifstream prog;
+            auto success = false;
+            try
+            {
+                prog.open(path);
+                std::stringstream buffer;
+                if (!(buffer << prog.rdbuf()))
+                {
+
+                    throw std::exception(
+                    (std::string("failed to read program: ") + path).c_str()
+                    );
+                }
+                solver->add("base", {}, buffer.str().c_str());
+                success = true;
+            }
+            catch (const std::exception& e)
+            {
+                std::cout << e.what();
+                error = e.what();
+            }
+            if (prog.is_open())
+            {
+                prog.close();
+            }
+            if (!success)
+            {
+                throw std::exception(
+                    (std::string("error creating logic program: ") + (error ? error : "")).c_str()
+                );
+            }
+        }
 
         const char* solve(std::function<bool(void)> check_cancel)
         {
             if (program.empty())
             {
-                // Load from file
-                const char* error = nullptr;
-                std::ifstream ship;
-                auto success = false;
-                try
-                {
-                    ship.open("programs/ship.lp");
-                    std::stringstream buffer;
-                    if (!(buffer << ship.rdbuf()))
-                    {
-                        throw std::exception("failed to read ship.lp");
-                    }
-                    solver->add("base", {}, buffer.str().c_str());
-                    success = true;
-                }
-                catch (const std::exception& e)
-                {
-                    std::cout << e.what();
-                    error = e.what();
-                }
-                if (ship.is_open())
-                {
-                    ship.close();
-                }
-                if (!success)
-                {
-                    throw std::exception(
-                            (std::string("error creating logic program: ") + (error ? error : "")).c_str());
-                }
+                add_program_from_file("programs/ship.lp");
+                add_program_from_file("programs/portal.lp");
             }
             else
             {
@@ -131,6 +144,10 @@ class LevelGenerator::LevelGenImpl
                     << "#const num_breaches = "
                     << Clingo::Number(static_cast<int>(num_breaches))
                     << "."
+                    << std::endl
+                    << "#const num_portals = "
+                    << Clingo::Number(static_cast<int>(num_portals))
+                    << "."
                     << std::endl;
             solver->add("base", {}, inputs.str().c_str());
 
@@ -139,7 +156,7 @@ class LevelGenerator::LevelGenImpl
             std::ostringstream out;
 
             std::unique_ptr<CancelableSolveHandler> event_handler = std::make_unique<CancelableSolveHandler>(
-                    [this, &check_cancel](){ return check_cancel && check_cancel(); });
+                    [&](){ return check_cancel && check_cancel(); });
             for (const auto& m : solver->solve(Clingo::LiteralSpan{}, event_handler.get()))
             {
                 const auto costs = m.cost();
@@ -192,8 +209,10 @@ class LevelGenerator::LevelGenImpl
 };
 
 LevelGenerator::LevelGenerator(unsigned max_num_levels, unsigned width, unsigned height, unsigned min_rooms,
-                               unsigned max_rooms, unsigned num_breaches, size_t seed, bool load_prog_from_file, unsigned num_threads) : impl(
-        std::make_unique<LevelGenImpl>(max_num_levels, width, height, min_rooms, max_rooms, num_breaches, seed, load_prog_from_file, num_threads))
+                               unsigned max_rooms, unsigned num_breaches, unsigned num_portals,
+                               size_t seed, bool load_prog_from_file, unsigned num_threads) : impl(
+        std::make_unique<LevelGenImpl>(max_num_levels, width, height, min_rooms, max_rooms, num_breaches, num_portals,
+                                       seed, load_prog_from_file, num_threads))
 {}
 
 LevelGenerator& LevelGenerator::operator=(LevelGenerator&& other) noexcept = default;

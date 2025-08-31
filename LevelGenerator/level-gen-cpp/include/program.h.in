@@ -1,6 +1,8 @@
 #ifndef LEVELGENERATOR_PROGRAM_H
 #define LEVELGENERATOR_PROGRAM_H
 
-const char *prog = "@SHIP_PROGRAM@";
+const char *ship_prog = "@SHIP_PROGRAM@";
+
+const char *portal_prog = "@PORTAL_PROGRAM@";
 
 #endif //LEVELGENERATOR_PROGRAM_H

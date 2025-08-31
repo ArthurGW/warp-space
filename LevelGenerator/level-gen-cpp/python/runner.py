@@ -3,19 +3,21 @@ import subprocess
 from collections import defaultdict
 from time import time
 
-num_models = 20
-width = 14
-height = 12
-seed = 455035
-min_rooms = 3
-max_rooms = 8
+num_models = 1
+width = 9
+height = 10
+seed = 1234
+min_rooms = 1
+max_rooms = 6
 num_breaches = 1
+num_portals = 0
 
 args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
         f" {num_models} -c width={width} -c height={height} -c num_breaches={num_breaches}"
-        f" -c min_rooms={min_rooms} -c max_rooms={max_rooms}"
-        f" -t 4 --rand-freq=1.0 --seed={seed}"
-        r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\ship.lp")
+        f" -c min_rooms={min_rooms} -c max_rooms={max_rooms} -c num_portals={num_portals}"
+        f" -t 1 --rand-freq=1.0 --seed={seed}"
+        r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\ship.lp"
+        r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\portal.lp")
 
 start = time()
 ret = subprocess.run(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -28,6 +30,7 @@ if ('SATISFIABLE' not in data and 'OPTIMUM FOUND' not in data) or 'UNSATISFIABLE
     raise ChildProcessError(
         f'failed to generate level:{f'\n{ret.stderr}' if ret.stderr else ''}{f'\n{data}' if data else ''}')
 
+print(ret.stderr)
 print(data)
 
 rid = 1
@@ -71,7 +74,7 @@ data = data[data.rfind(f'Answer: '):]
 hull_square = re.compile(r'hull\((\d+),(\d+)\)')
 in_space = re.compile(r'in_space\((\d+),(\d+)\)')
 ship_square = re.compile(r'ship\((\d+),(\d+)\)')
-breach_square = re.compile(r'breach_square\((\d+),(\d+)\)')
+breach_square = re.compile(r'breach_square\((\d+),(\d+),[^)]+\)')
 breach = re.compile(r'alien_breach\((\d+,\d+,\d+,\d+),room\((\d+),(\d+),(\d+),(\d+)\)\)')
 room = re.compile(r'room\(\d+,\d+,\d+,\d+\)')
 start_room = re.compile(r'start_room\(room\((\d+),(\d+),(\d+),(\d+)\)\)')
@@ -79,7 +82,7 @@ finish_room = re.compile(r'finish_room\(room\((\d+),(\d+),(\d+),(\d+)\)\)')
 corridor_square = re.compile(r'corridor\((\d+),(\d+)\)')
 room_square = re.compile(r'room_square\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)')
 reachable = re.compile(r'reachable\(room\((\d+),(\d+),(\d+),(\d+)\)\)')
-adjacent = re.compile(r'adjacent\(room\((\d+),(\d+),(\d+),(\d+)\),room\((\d+),(\d+),(\d+),(\d+)\)\)')
+adjacent = re.compile(r'adjacent\(room\((\d+),(\d+),(\d+),(\d+)\),room\((\d+),(\d+),(\d+),(\d+)\),(\d)\)')
 
 
 for x, y in yield_ints(hull_square, data):
@@ -97,15 +100,15 @@ for mch in breach.findall(data):
     breaches[(x, y, w, h)] = bid
     bid += 1
 
-    adjacency[(x, y, w, h)].append(rm)
-    adjacency[rm].append((x, y, w, h))
+    adjacency[(x, y, w, h)].append((rm, False))
+    adjacency[rm].append(((x, y, w, h), False))
 
     for sx in range(x, x + w):
         for sy in range(y, y + h):
             assign(sx, sy, f' B{breaches[(x, y, w, h)] : <2} ')
 
 for mch in yield_ints(adjacent, data):
-    adjacency[mch[:4]].append(mch[4:])
+    adjacency[mch[:4]].append((mch[4:8], bool(mch[8])))
 
 for x, y, rx, ry, rw, rh in yield_ints(room_square, data):
     if (rw, rh) == (1, 1):
@@ -123,7 +126,7 @@ for x, y, rx, ry, rw, rh in yield_ints(room_square, data):
 
 for r in list(adjacency):
     adj_rooms = adjacency.pop(r)
-    adjacency[room_name(r)] = [room_name(rr) for rr in adj_rooms]
+    adjacency[room_name(r)] = [f'{room_name(rr)}{" (PORTAL)" if is_portal else ""}' for rr, is_portal in adj_rooms]
 
 for row in ship:
     print('|'.join(row))

@@ -56,6 +56,14 @@ namespace
     {
         return {static_cast<unsigned>(index % width) + 1, static_cast<unsigned>(index / width) + 1};
     }
+
+#ifdef TEST_BUILD
+    struct Connection
+    {
+        size_t first_id;
+        size_t second_id;
+    };
+#endif
 } // unnamed namespace
 
 bool operator==(const Room& first, const Room& second)
@@ -69,11 +77,18 @@ bool operator==(const Room& first, const Room& second)
            && (first.room_id == 0 || second.room_id == 0 || first.room_id == second.room_id);
 }
 
+bool operator==(const Adjacency& first, const Adjacency& second)
+{
+    return first.first_id == second.first_id
+           && first.second_id == second.second_id
+           && first.is_portal == second.is_portal;
+}
 
 class Level::LevelImpl
 {
     public:
-        LevelImpl(unsigned width, unsigned height, int64_t cost, const std::vector<uint64_t>& data) : cost(static_cast<int>(cost)), width(width), height(height), corridors(0), breaches(0)
+        LevelImpl(unsigned width, unsigned height, int64_t cost, const std::vector<uint64_t>& data) 
+        : cost(static_cast<int>(cost)), width(width), height(height), corridors(0), breaches(0), portals(0)
         {
             std::unordered_map<uint64_t, SquareType> square_lookup;
 
@@ -151,7 +166,7 @@ class Level::LevelImpl
             {
                 const Clingo::Symbol sym{sym_val};
                 const auto args = sym.arguments();
-                if (sym.match("adjacent", 2))
+                if (sym.match("adjacent", 3))
                 {
                     const auto first = find_room(room_vec, args[0]);
                     const auto second = find_room(room_vec, args[1]);
@@ -160,8 +175,24 @@ class Level::LevelImpl
                         continue;
                     }
 
-                    adjacency_vec.push_back({first, second});
+                    const auto is_portal = args[2].number() == 1;
+                    if (is_portal) ++portals;
+
+                    adjacency_vec.push_back({first, second, is_portal});
                 }
+#ifdef TEST_BUILD
+                else if (sym.match("connected", 2))
+                {
+                    const auto first = find_room(room_vec, args[0]);
+                    const auto second = find_room(room_vec, args[1]);
+                    if (first == 0 || second == 0)
+                    {
+                        continue;
+                    }
+
+                    connection_vec.push_back({first, second});
+                }
+#endif
                 else if (sym.match("start_room", 1))
                 {
                     start_room_id = find_room(room_vec, args[0]);
@@ -189,8 +220,8 @@ class Level::LevelImpl
                     }
 
                     room_vec.push_back({x, y, w, h, RoomType::AlienBreach, room_vec.size() + 1});
-                    adjacency_vec.push_back({breached_room, room_vec.back().room_id});
-                    adjacency_vec.push_back({room_vec.back().room_id, breached_room});
+                    adjacency_vec.push_back({breached_room, room_vec.back().room_id, false});
+                    adjacency_vec.push_back({room_vec.back().room_id, breached_room, false});
                     ++breaches;
                 }
             }
@@ -254,6 +285,11 @@ class Level::LevelImpl
             return adjacency_vec.size();
         }
 
+        size_t num_portals() const
+        {
+            return portals;
+        }
+
         int get_cost() const
         {
             return cost;
@@ -274,8 +310,12 @@ class Level::LevelImpl
         std::vector<MapSquare> square_vec;
         std::vector<Room> room_vec;
         std::vector<Adjacency> adjacency_vec;
+#ifdef TEST_BUILD
+        std::vector<Connection> connection_vec;
+#endif
         size_t corridors;
         size_t breaches;
+        size_t portals;
         size_t start_room_id;
         size_t finish_room_id;
         const unsigned width;
@@ -334,6 +374,11 @@ size_t Level::get_num_rooms() const
 size_t Level::get_num_adjacencies() const
 {
     return impl->num_adjacencies();
+}
+
+size_t Level::get_num_portals() const
+{
+    return impl->num_portals();
 }
 
 int Level::get_cost() const

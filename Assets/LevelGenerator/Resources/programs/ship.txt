@@ -2,6 +2,7 @@
 
 % All available squares
 grid(1..width, 1..height).
+same_square(X, Y, X, Y) :- grid(X, Y).
 
 % Outer space - two triangular regions around the nose of the ship
 in_space(X, Y) :- grid(X, Y), X <= height / 2, Y < height / 2 - X + 2.
@@ -39,7 +40,7 @@ room_square(X, Y, X, Y, 1, 1) :- room(X, Y, 1, 1).
 
 %* Alien breaches - with size 1x2 or 2x1 that start in space and penetrate the hull.
 These are placed next to an existing non-corridor room, to ensure they are reachable. They are also placed only on
-straight hull edges, for ease of placement in 3D. The breached room is also recorded, for connecting up later. *%
+straight hull edges, for ease of placement in the game. The breached room is also recorded, for connecting up later. *%
 num_breaches {
     % Vertical, from the top
     alien_breach(X, Y1, 1, 2, room(RX, RY, RW, RH))
@@ -74,8 +75,10 @@ num_breaches {
           not corridor(X3, Y),
           ship(X3, Y+2), ship(X3, Y+1), ship(X3, Y-1), ship(X3, Y-2)
 } num_breaches.
-breach_square(X, Y; X+1, Y) :- alien_breach(X, Y, 2, 1, _).
-breach_square(X, Y; X, Y+1) :- alien_breach(X, Y, 1, 2, _).
+breach_square(X, Y, X, Y, 2, 1; X+1, Y, X, Y, 2, 1)
+    :- alien_breach(X, Y, 2, 1, _).
+breach_square(X, Y, X, Y, 1, 2; X, Y+1, X, Y, 1, 2)
+    :- alien_breach(X, Y, 1, 2, _).
 
 % Choose start and finish rooms that are not corridors, not breached, and are different to each other
 1 { start_room(room(X, Y, W, H)) : room(X, Y, W, H), not corridor(X, Y), not alien_breach(_, _, _, _, room(X, Y, W, H)) } 1.
@@ -86,20 +89,15 @@ breach_square(X, Y; X, Y+1) :- alien_breach(X, Y, 1, 2, _).
 % Trace reachability from start room, which is always reachable
 reachable(room(X, Y, W, H)) :- start_room(room(X, Y, W, H)).
 
-% A room is reachable if it is adjacent to another reachable room
-reachable(room(X1, Y1, W1, H1)) :- room(X1, Y1, W1, H1), reachable(room(X2, Y2, W2, H2)), adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)).
+% A room is reachable if it is next to another reachable room
+reachable(room(X1, Y1, W1, H1)) :- room(X1, Y1, W1, H1), reachable(room(X2, Y2, W2, H2)), next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)).
 
-% The adjacent relation is commutative
-adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- adjacent(room(X2, Y2, W2, H2), room(X1, Y1, W1, H1)).
+% The next_to relation is commutative
+next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X2, Y2, W2, H2), room(X1, Y1, W1, H1)).
 
 % A room is next_to to another room if it borders it on the right hand or lower side
 next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- room(X1, Y1, W1, H1), room(X2, Y2, W2, H2), X2 = X1 + W1, Y2 > Y1 - H2, Y2 < Y1 + H1.
 next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- room(X1, Y1, W1, H1), room(X2, Y2, W2, H2), Y2 = Y1 + H1, X2 > X1 - W2, X2 < X1 + W1.
-
-% Choose an arbitrary set of next_to *rooms* to connect, i.e. make adjacent - corridors are always connected to adjacent corridors
-% Since adjacent is commutative, these connections go both ways
-0 { adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) } 1 :- next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)).
-adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)), W1 = W2, W2 = 1.
 
 %* Constraints *%
 
@@ -107,21 +105,20 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 :- height \ 2 = 1.
 
 % No square can be part of more than one room (or breach)
-:- 2 { room_square(X, Y, _, _, _, _); breach_square(X, Y)  }, grid(X, Y).
+:- 2 { room_square(X, Y, _, _, _, _); breach_square(X, Y, _, _, _, _)  }, grid(X, Y).
 
 % No square made of 4 adjacent corridors can exist
 :- corridor(X, Y), corridor(X+1, Y), corridor(X, Y+1), corridor(X+1, Y+1).
 
 % No two breaches can be adjacent
-%:- alien_breach(X, Y, 1, 2, _), alien_breach(X + 1, Y, 1, 2, _; X - 1, Y, 1, 2, _).
-%:- alien_breach(X, Y, 1, 2, _), alien_breach(X + 1, Y, 1, 2, _).
-%:- alien_breach(X, Y, 1, 2, _), alien_breach(X - 1, Y, 1, 2, _).
-%:- alien_breach(X, Y, 2, 1, _), alien_breach(X, Y + 1, 2, 1, _; X, Y - 1, 2, 1, _).
-%:- alien_breach(X, Y, 2, 1, _), alien_breach(X, Y + 1, 2, 1, _).
-%:- alien_breach(X, Y, 2, 1, _), alien_breach(X, Y - 1, 2, 1, _).
-%:- 2 { alien_breach(BX, BY, _, _, room(X, Y, W, H)) }, room(X, Y, W, H).
-%:- |Y1-Y2| = 1, alien_breach(X, Y1, 2, 1, _), alien_breach(X, Y2, 2, 1, _).
-%:- |Y1-Y2| = 1, alien_breach(X, Y1, 2, 1, _), alien_breach(X, Y2, 2, 1, _).
+:- breach_square(X, Y, BX1, BY1, _, _),
+    breach_square(X + 1, Y, BX2, BY2, _, _),
+    not same_square(BX1, BY1, BX2, BY2),
+    grid(BX1, BY1), grid(BX2, BY2).
+:- breach_square(X, Y, BX1, BY1, _, _),
+    breach_square(X, Y + 1, BX2, BY2, _, _),
+    not same_square(BX1, BY1, BX2, BY2),
+    grid(BX1, BY1), grid(BX2, BY2).
 
 % Every room must be reachable
 :- room(X1, Y1, W1, H1), not reachable(room(X1, Y1, W1, H1)).
@@ -137,14 +134,8 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 
 %* Preferences *%
 
-% Encourage alien breaches being separated from each other (if there are more than one)
-%#maximize { (|X1-X2| + |Y1-Y2|)@1,X1,Y1,X2,Y2 : alien_breach(X1, Y1, _, _, _), alien_breach(X2, Y2, _, _, _), X1 != X2, Y1 != Y2 }.
-
 % Encourage forming more corridors
 #maximize { 1@1,X,Y : corridor(X, Y) }.
-
-% Discourage having too many adjacent rooms, i.e. not every pair of rooms that are next to each other should be joined
-#minimize { 1@1,X1,Y1,W1,H1,X2,Y2,W2,H2 : adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) }.
 
 %* Output predicates *%
 
@@ -152,11 +143,9 @@ adjacent(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X1, Y1, W1,
 #show in_space/2.
 #show hull/2.
 #show room_square/6.
-#show breach_square/2.
+#show breach_square/6.
 #show corridor/2.
-%#show reachable/1.
 #show room/4.
 #show alien_breach/5.
-#show adjacent/2.
 #show start_room/1.
 #show finish_room/1.

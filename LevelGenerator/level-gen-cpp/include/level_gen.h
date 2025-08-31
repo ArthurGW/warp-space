@@ -60,6 +60,9 @@ struct LEVEL_GEN_API Room {
 struct LEVEL_GEN_API Adjacency {
         size_t first_id;
         size_t second_id;
+        bool is_portal;
+
+        friend bool LEVEL_GEN_API operator==(const Adjacency& first, const Adjacency& second);
 };
 
 struct LEVEL_GEN_API MapSquare {
@@ -158,6 +161,8 @@ class LEVEL_GEN_API Level {
 
         size_t get_num_adjacencies() const;
 
+        size_t get_num_portals() const;
+
     private:
         CS_IGNORE class LevelImpl;  // Internal implementation class
         CS_IGNORE std::unique_ptr<LevelImpl> impl;
@@ -175,6 +180,7 @@ class LEVEL_GEN_API LevelGenerator {
                unsigned min_rooms,
                unsigned max_rooms,
                unsigned num_breaches,
+               unsigned num_portals,
                size_t seed = 0,  // Indicates "unset"
                bool load_prog_from_file = false,  // Load ASP program from file at runtime, for easier iteration during dev
                unsigned num_threads = 1
@@ -193,7 +199,7 @@ class LEVEL_GEN_API LevelGenerator {
 
         void interrupt();
 
-        /// Get a pointer to the best level - note this is only valid for the lifetime of the generator
+        /// Get a pointer to the best level - note this pointer is only valid for the lifetime of the generator
         Level* best_level();
 
         size_t get_num_levels() const;

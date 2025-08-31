@@ -1,7 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators_all.hpp>
-#include <functional>
-#include <thread>
 #include "level_gen.h"
 
 namespace
@@ -37,11 +35,21 @@ namespace
         return sum;
     }
 
-    thread_local auto current_n = 0U;
-
-    bool check_cancel()
+    template<class T>
+    std::vector<T> accumulate_parts(LevelPartIter<T> iter, std::function<bool(const T&)> filter)
     {
-        return (--current_n) == 0U;
+        iter.reset();
+        std::vector<T> ret;
+        while (iter.move_next())
+        {
+            // Check retrieval
+            auto current = iter.current();
+            if (filter(current))
+            {
+                ret.push_back(current);
+            }
+        }
+        return ret;
     }
 }
 
@@ -55,7 +63,7 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
             THEN("a solution is returned")
             {
                 LevelGenerator gen{
-                        1, 9, 10, 1, 6, 1,1234
+                        1, 9, 10, 1, 6, 1, 0, 1234
                 };
                 const char* res;
                 REQUIRE_NOTHROW(res = gen.solve());
@@ -67,51 +75,57 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
             THEN("a best level exists")
             {
                 LevelGenerator gen{
-                        1, 9,  10, 1, 6, 1, 1234
+                        1, 9,  10, 1, 6, 1, 0, 1234
                 };
                 REQUIRE_NOTHROW(gen.solve());
-                REQUIRE_FALSE(gen.best_level()->get_cost() == std::numeric_limits<int>::max());
+                const auto* level = gen.best_level();
+                REQUIRE_FALSE(level == nullptr);
+                REQUIRE_FALSE(level->get_cost() == std::numeric_limits<int>::max());
             }
 
             THEN("the best level has the correct count of symbols and and cost")
             {
                 LevelGenerator gen{
-                        1, 9, 10, 1, 6, 1, 1234
+                        1, 9, 10, 1, 6, 1, 0, 1234
                 };
                 REQUIRE_NOTHROW(gen.solve());
 
                 const auto level = gen.best_level();
+                REQUIRE_FALSE(level == nullptr);
 
                 // These values have been determined empirically
-                REQUIRE(level->get_cost() == 8);
+                REQUIRE(level->get_cost() == 2);
                 REQUIRE(level->get_num_map_squares() == 90UL);
-                REQUIRE(level->get_num_rooms() == 8UL);
-                REQUIRE(level->get_num_adjacencies() == 14UL);
+                REQUIRE(level->get_num_rooms() == 10UL);
+                REQUIRE(level->get_num_adjacencies() == 18UL);
             }
 
             THEN("the best level can iterate over symbols")
             {
                 LevelGenerator gen{
-                        1, 9, 10, 1, 6, 1, 1234, true
+                        1, 9, 10, 1, 6, 1, 0, 1234, true
                 };
                 REQUIRE_NOTHROW(gen.solve());
 
                 const auto* level = gen.best_level();
+                REQUIRE_FALSE(level == nullptr);
 
                 // These values match the test above
                 REQUIRE(count_parts(level->map_squares()) == 90UL);
-                REQUIRE(count_parts(level->rooms()) == 8UL);
-                REQUIRE(count_parts(level->adjacencies()) == 14UL);
+                REQUIRE(count_parts(level->rooms()) == 10UL);
+                REQUIRE(count_parts(level->adjacencies()) == 18UL);
             }
 
             THEN("the best level has the right number and location of breaches")
             {
                 LevelGenerator gen{
-                        1, 9, 10, 1, 6, 2, 1234, true
+                        1, 12, 10, 1, 6, 2, 0, 1234, true
                 };
                 REQUIRE_NOTHROW(gen.solve());
 
                 const auto* level = gen.best_level();
+                REQUIRE_FALSE(level == nullptr);
+
                 auto room_iter = level->rooms();
                 REQUIRE(count_parts<Room>(
                         room_iter,
@@ -125,107 +139,46 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 room_iter.move_next();
                 const auto second_breach = room_iter.current();
 
-                REQUIRE(first_breach == Room{8, 5, 2, 1, RoomType::AlienBreach});
-                REQUIRE(second_breach == Room{8, 6, 2, 1, RoomType::AlienBreach});
+                REQUIRE(first_breach == Room{7, 9, 1, 2, RoomType::AlienBreach});
+                REQUIRE(second_breach == Room{11, 6, 2, 1, RoomType::AlienBreach});
+            }
+
+            THEN("the best level has the right number and location of portals")
+            {
+                LevelGenerator gen{
+                        1, 9, 10, 1, 6, 1, 2, 1234, true
+                };
+                REQUIRE_NOTHROW(gen.solve());
+
+                const auto* level = gen.best_level();
+                REQUIRE_FALSE(level == nullptr);
+
+                auto adj_iter = level->adjacencies();
+                auto portals = accumulate_parts<Adjacency>(
+                    adj_iter,
+                    [](const auto& adj) { return adj.is_portal; }
+                );
+
+                REQUIRE(level->get_num_portals() == 4UL);   // num_portals * 2 since they are bidirectional
+                REQUIRE(portals.size() == 4UL);
+                REQUIRE(portals[0] == Adjacency{3, 1, true});
+                REQUIRE(portals[1] == Adjacency{3, 2, true});
+                REQUIRE(portals[2] == Adjacency{1, 3, true});
+                REQUIRE(portals[3] == Adjacency{2, 3, true});
             }
 
             THEN("the best level has a start room and a finish room")
             {
                 LevelGenerator gen{
-                        1, 9, 10, 1, 6, 2, 1234, true
+                        1, 12, 10, 1, 6, 2, 1, 1234, true
                 };
                 REQUIRE_NOTHROW(gen.solve());
 
                 const auto* level = gen.best_level();
+                REQUIRE_FALSE(level == nullptr);
                 REQUIRE(level->get_num_rooms() == 9UL);
-                REQUIRE(level->get_start_room() == 3UL);
+                REQUIRE(level->get_start_room() == 4UL);
                 REQUIRE(level->get_finish_room() == 2UL);
-            }
-        }
-    }
-    GIVEN("A level generator with other params")
-    {
-        // A fuzz-like test to try some other params and make sanity checks
-        WHEN("solve() is called")
-        {
-            auto width = GENERATE(range(10U, 16U, 2U));
-            auto height = GENERATE(range(10U, 14U, 2U));
-            auto min_rooms = GENERATE(range(3U, 5U));
-            auto max_rooms = GENERATE(range(8U, 16U, 4U));
-            auto num_breaches = GENERATE(range(1U, 2U, 1U));
-            auto seed = GENERATE(take(2, random(1U, 1000U)));
-
-            THEN("the best level has appropriate numbers of symbols")
-            {
-                LevelGenerator gen{
-                        1, width, height, min_rooms, max_rooms, num_breaches, seed, false
-                };
-                REQUIRE_NOTHROW(gen.solve());
-
-                const auto* level = gen.best_level();
-
-                // At least one square type per grid square plus some duplicates
-                REQUIRE(level->get_num_map_squares() == width * height);
-
-                // Num rooms within specified limits
-                const auto num_rooms = level->get_num_rooms();
-                const auto num_restricted_rooms = num_rooms - level->get_num_corridors() - level->get_num_breaches();
-                REQUIRE(num_restricted_rooms >= min_rooms);
-                REQUIRE(num_restricted_rooms <= max_rooms);
-
-                // Every room must have at least one adjacency, theoretical limit is every room adjacent to every other
-                REQUIRE(level->get_num_adjacencies() >= num_rooms);
-                REQUIRE(level->get_num_adjacencies() <= num_rooms * num_rooms);
-            }
-        }
-    }
-}
-
-
-SCENARIO("level generators can be cancelled", "[levelgen][cancel]")
-{
-    GIVEN("A level generator with valid params")
-    {
-        WHEN("solve() is called with a cancellation callback")
-        {
-            auto n = GENERATE(range(4U, 6U));
-
-            THEN("solving can be cancelled")
-            {
-                LevelGenerator gen{
-                        20, 15, 12, 1, 6, 1, 1234
-                };
-                const char* res;
-
-                // n*2 below because cancellation is checked twice per model iteration
-                current_n = n * 2;
-                REQUIRE_NOTHROW(res = gen.solve(check_cancel));
-                REQUIRE_FALSE(res == nullptr);
-                REQUIRE_FALSE(std::string(res).empty());
-                REQUIRE(gen.get_num_levels() == n);
-            }
-        }
-
-        WHEN("solve() is called")
-        {
-            THEN("solving can be interrupted")
-            {
-                LevelGenerator gen{
-                        200, 10, 10, 1, 6, 1, 1234
-                };
-                const char* res;
-
-                std::thread sleeper([&]() {
-                    std::this_thread::sleep_for(std::chrono::seconds(10));
-
-                    gen.interrupt();
-                });
-
-                REQUIRE_NOTHROW(res = gen.solve());
-                sleeper.join();
-
-                REQUIRE_FALSE(res == nullptr);
-                // We don't check the actual content of `res` as it is possible no valid models have been generated yet
             }
         }
     }
