@@ -69,12 +69,12 @@ install(FILES $<TARGET_PDB_FILE:level-gen-cpp>
 
 install(FILES "programs/ship.lp"
         COMPONENT level-gen
-        DESTINATION "LevelGenerator/Resources/programs"
+        DESTINATION "LevelGenerator/programs"
         RENAME "ship.txt")
 
 install(FILES "programs/connections.lp"
         COMPONENT level-gen
-        DESTINATION "LevelGenerator/Resources/programs"
+        DESTINATION "LevelGenerator/programs"
         RENAME "connections.txt")
 
 set(HEADER_PATH "include/level_gen.h")

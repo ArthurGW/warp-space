@@ -111,15 +111,12 @@ namespace
     inline tl::optional<Adjacency> try_get_adjacency(const Clingo::Symbol &sym, const std::vector<Room>& room_vec)
     {
         bool is_portal = false;
-        if (sym.match("connected", 4))
-        {
 
-        }
-        else if (sym.match("portal", 4))
+        if (sym.match("portal", 4))
         {
             is_portal = true;
         }
-        else
+        else if (!sym.match("connected", 4))
         {
             return tl::nullopt;
         }
@@ -226,9 +223,10 @@ class Level::LevelImpl
 
                 if (auto adj = try_get_adjacency(sym, room_vec))
                 {
-                    if (adj->is_portal) ++portals;
+                    if (adj->is_portal) portals += 2;  // Bidirectional, so add 2
 
                     adjacency_vec.emplace_back(adj.value());
+                    adjacency_vec.emplace_back(adj->second_id, adj->first_id, adj->is_portal);
                     continue;
                 }
 
