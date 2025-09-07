@@ -1,0 +1,5 @@
+--backprop --learn-explicit --no-gamma --eq=0 --sat-prepro=0 --trans-ext=integ --del-cfl=F,55 --heuristic=Vsids,94
+--restarts=no --strengthen=recursive,0 --del-glue=4,1 --del-grow=1.9111,94.6281 --del-init=30.3279,19,12774
+--deletion=ipHeap,30,1 --lookahead=no --init-moms --local-restarts --contraction=no --del-estimate=2
+--del-max=1803231815 --del-on-restart=4 --init-watches=0 --loops=shared --otfs=1 --partial-check=30 --rand-freq=0.0
+--reverse-arcs=2 --save-progress=115 --score-other=0 --score-res=3 --sign-def=1 --update-lbd=0

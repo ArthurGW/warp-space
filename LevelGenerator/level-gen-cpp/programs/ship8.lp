@@ -1,3 +1,5 @@
+% CHANGE TO NON-NESTED ATOMS
+
 %* Specification for the ship, i.e. the overall level shape *%
 
 % All available squares
@@ -84,6 +86,21 @@ breach_square(X, Y, X, Y; X, Y+1, X, Y)
 1 { start_room(X, Y) : room(X, Y, W, H), not corridor(X, Y), not alien_breach(_, _, _, _, X, Y) } 1.
 1 { finish_room(X, Y) : room(X, Y, W, H), not corridor(X, Y), not alien_breach(_, _, _, _, X, Y), not start_room(X, Y) } 1.
 
+%* Reachability determination *%
+
+% Trace reachability from start room, which is always reachable
+reachable(X, Y) :- start_room(X, Y).
+
+% A room is reachable if it is next to another reachable room
+reachable(X1, Y1) :- room(X1, Y1, _, _), reachable(X2, Y2), next_to(X1, Y1, X2, Y2).
+
+%% The next_to relation is commutative
+%next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- next_to(room(X2, Y2, W2, H2), room(X1, Y1, W1, H1)).
+%
+%% A room is next_to to another room if it borders it on the right hand or lower side
+%next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- room(X1, Y1, W1, H1), room(X2, Y2, W2, H2), X2 = X1 + W1, Y2 > Y1 - H2, Y2 < Y1 + H1.
+%next_to(room(X1, Y1, W1, H1), room(X2, Y2, W2, H2)) :- room(X1, Y1, W1, H1), room(X2, Y2, W2, H2), Y2 = Y1 + H1, X2 > X1 - W2, X2 < X1 + W1.
+
 %* Constraints *%
 
 % height must be an even number (i.e. height modulo 2 == 1 is not allowed), so there is a central nose point
@@ -107,6 +124,9 @@ breach_square(X, Y, X, Y; X, Y+1, X, Y)
     breach_square(X, Y + 1, BX2, BY2),
     not same_square(BX1, BY1, BX2, BY2),
     grid(BX1, BY1), grid(BX2, BY2).
+
+% Every room must be reachable
+:- room(X1, Y1, W1, H1), not reachable(X1, Y1).
 
 % Every (ship) row and column must have some part of a room in it (-4 to account for space and hull around ship)
 % This reads as "count the number of X values that are both in a room and in a ship square, and reject if there are not

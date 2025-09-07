@@ -37,7 +37,7 @@ class LevelGenerator::LevelGenImpl
                  num_portals(num_portals), solver(std::make_unique<Clingo::Control>())
         {
             auto config = solver->configuration();
-            if (num_threads > 1)
+            if (num_threads >= 1)
             {
                 config["solve.parallel_mode"] = std::to_string(num_threads).c_str();;
             }

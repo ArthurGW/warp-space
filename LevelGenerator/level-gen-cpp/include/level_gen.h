@@ -52,7 +52,10 @@ struct LEVEL_GEN_API Room {
         unsigned h;
 
         RoomType type;
-        size_t room_id = 0;
+        size_t room_id;
+
+        Room(unsigned x, unsigned y, unsigned w, unsigned h, RoomType type, size_t room_id = 0)
+            : x(x), y(y), w(w), h(h), type(type), room_id(room_id) {}
 
         friend bool LEVEL_GEN_API operator==(const Room& first, const Room& second);
 };
@@ -62,6 +65,9 @@ struct LEVEL_GEN_API Adjacency {
         size_t second_id;
         bool is_portal;
 
+        Adjacency(size_t first_id, size_t second_id, bool is_portal)
+            : first_id(first_id), second_id(second_id), is_portal(is_portal) {}
+
         friend bool LEVEL_GEN_API operator==(const Adjacency& first, const Adjacency& second);
 };
 
@@ -70,6 +76,8 @@ struct LEVEL_GEN_API MapSquare {
         unsigned y;
 
         SquareType type;
+
+        MapSquare(unsigned x, unsigned y, SquareType type) : x(x), y(y), type(type) {}
 };
 
 /// Template for creating a C#-style IEnumerator over a type of level part

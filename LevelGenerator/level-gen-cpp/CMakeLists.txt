@@ -51,7 +51,7 @@ add_library(level-gen-cpp SHARED
 set_property(TARGET level-gen-cpp PROPERTY OUTPUT_NAME LevelGenCpp)
 target_include_directories(level-gen-cpp PUBLIC include)
 target_include_directories(level-gen-cpp PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include)
-target_link_libraries(level-gen-cpp PRIVATE libclingo)
+target_link_libraries(level-gen-cpp PRIVATE libclingo tl::optional)
 target_compile_definitions(level-gen-cpp PRIVATE LEVEL_GEN_EXPORT)
 
 install(TARGETS level-gen-cpp
@@ -84,18 +84,6 @@ set_property(TARGET level-gen-cpp PROPERTY PUBLIC_HEADER ${HEADER_PATH})
 # Test the level generator C++ library
 # ===================================================
 if (BUILD_TESTING)
-    add_library(level-gen-cpp-for-test SHARED
-            level_gen.cpp
-            level.cpp
-            ${CMAKE_CURRENT_BINARY_DIR}/include/program.h
-            "programs/ship.lp"
-            "programs/portal.lp")
-    target_include_directories(level-gen-cpp-for-test PUBLIC include)
-    target_include_directories(level-gen-cpp-for-test PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include)
-    target_link_libraries(level-gen-cpp-for-test PRIVATE libclingo)
-    # Add TEST_BUILD define to get some extra test data
-    target_compile_definitions(level-gen-cpp-for-test PRIVATE LEVEL_GEN_EXPORT TEST_BUILD)
-
     # Use clingo's bundled copy of Catch2 for simplicity
     add_subdirectory(${CLINGO_SOURCE_DIR}/third_party/catch "./catch")
     include(Catch)
@@ -107,7 +95,7 @@ if (BUILD_TESTING)
             tests/test-fuzz.cpp
     )
     target_compile_definitions(level-gen-cpp-test PRIVATE TEST_BUILD)
-    target_link_libraries(level-gen-cpp-test PRIVATE Catch2::Catch2WithMain level-gen-cpp-for-test)
+    target_link_libraries(level-gen-cpp-test PRIVATE Catch2::Catch2WithMain level-gen-cpp)
 
     add_custom_command(TARGET level-gen-cpp-test
             POST_BUILD

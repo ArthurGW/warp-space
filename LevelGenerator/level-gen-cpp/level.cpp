@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_map>
 #include <sstream>
+#include <tl/optional.hpp>
 
 namespace
 {
@@ -24,18 +25,12 @@ namespace
         return ret;
     }
 
-    inline size_t find_room(const std::vector<Room>& rooms, Clingo::Symbol room_sym)
+    inline size_t find_room(const std::vector<Room>& rooms, unsigned room_x, unsigned room_y)
     {
-        if (!room_sym.match("room", 4))
-        {
-            return 0;  // 0 means invalid
-        }
-
-        const auto args = unsigned_args(room_sym);
-        const auto room = std::find(
+        const auto room = std::find_if(
             rooms.cbegin(),
             rooms.cend(),
-            Room{args[0], args[1], args[2], args[3], args[3] == 1U ? RoomType::Corridor : RoomType::Room}
+            [=](const auto& room) { return room.x == room_x && room.y == room_y; }
         );
 
         if (room == rooms.cend())
@@ -57,13 +52,113 @@ namespace
         return {static_cast<unsigned>(index % width) + 1, static_cast<unsigned>(index / width) + 1};
     }
 
-#ifdef TEST_BUILD
-    struct Connection
+    inline tl::optional<Room> try_get_room(const Clingo::Symbol &sym, size_t next_id)
     {
-        size_t first_id;
-        size_t second_id;
-    };
-#endif
+        if (!sym.match("room", 4))
+        {
+            return tl::nullopt;
+        }
+
+        const auto args = unsigned_args(sym);
+        const auto x = args[0];
+        const auto y = args[1];
+        const auto rw = args[2];
+        const auto rh = args[3];
+        const auto is_corridor = rh == 1U;
+
+        return tl::make_optional<Room>(x, y, rw, rh, is_corridor ? RoomType::Corridor : RoomType::Room, next_id);
+    }
+
+    inline tl::optional<MapSquare> try_get_square(const Clingo::Symbol &sym)
+    {
+        SquareType type;
+        if (sym.match("in_space", 2))
+        {
+            type = SquareType::Space;
+        }
+        else if (sym.match("hull", 2))
+        {
+            type = SquareType::Hull;
+        }
+        else if (sym.match("ship", 2))
+        {
+            type = SquareType::Ship;
+        }
+        else if (sym.match("corridor", 2))
+        {
+            type = SquareType::Corridor;
+        }
+        else if (sym.match("room_square", 4))
+        {
+            type = SquareType::Room;
+        }
+        else if (sym.match("breach_square", 4))
+        {
+            type = SquareType::AlienBreach;
+        }
+        else
+        {
+            return tl::nullopt;  // Not a map square symbol
+        }
+
+        const auto args = unsigned_args(sym);
+        const auto sqx = args[0];
+        const auto sqy = args[1];
+
+        return tl::make_optional<MapSquare>(sqx, sqy, type);
+    }
+
+    inline tl::optional<Adjacency> try_get_adjacency(const Clingo::Symbol &sym, const std::vector<Room>& room_vec)
+    {
+        bool is_portal = false;
+        if (sym.match("connected", 4))
+        {
+
+        }
+        else if (sym.match("portal", 4))
+        {
+            is_portal = true;
+        }
+        else
+        {
+            return tl::nullopt;
+        }
+
+        const auto args = unsigned_args(sym);
+
+        const auto first = find_room(room_vec, args[0], args[1]);
+        const auto second = find_room(room_vec, args[2], args[3]);
+        if (first == 0 || second == 0)
+        {
+            return tl::nullopt;
+        }
+
+        return tl::make_optional<Adjacency>(first, second, is_portal);
+    }
+
+    inline tl::optional<std::tuple<Room, size_t>> try_get_breach(const Clingo::Symbol &sym, const std::vector<Room>& room_vec, size_t next_id)
+    {
+        if (!sym.match("alien_breach", 6))
+        {
+            return tl::nullopt;
+        }
+
+        const auto args = unsigned_args(sym);
+
+        // Convert the breach to a room with a special room type, connected to the breached room
+        auto breached_room = find_room(room_vec, args[4], args[5]);
+        if (breached_room == 0)
+        {
+            return tl::nullopt;
+        }
+
+        return tl::make_optional<std::tuple<Room, size_t>>(
+            std::make_tuple<Room, size_t>(
+                Room{args[0], args[1], args[2], args[3], RoomType::AlienBreach, next_id},
+                std::move(breached_room)
+            )
+        );
+    }
 } // unnamed namespace
 
 bool operator==(const Room& first, const Room& second)
@@ -101,133 +196,67 @@ class Level::LevelImpl
                     continue;
                 }
 
-                if (sym.match("room", 4))
+                if (auto room = try_get_room(sym, room_vec.size() + 1))
                 {
-                    const auto args = unsigned_args(sym);
-                    const auto x = args[0];
-                    const auto y = args[1];
-                    const auto rw = args[2];
-                    const auto rh = args[3];
-                    const auto is_corridor = rh == 1U;
-                    if (is_corridor)
+                    if (room->type == RoomType::Corridor)
                     {
                         ++corridors;
                     }
 
-                    // Create rooms, with IDs starting from 1
-                    room_vec.push_back({x, y, rw, rh, is_corridor ? RoomType::Corridor : RoomType::Room, room_vec.size() + 1});
+                    room_vec.emplace_back(room.value());
                     continue;
                 }
 
-                SquareType type;
-                if (sym.match("in_space", 2))
+                if (auto sq = try_get_square(sym))
                 {
-                    type = SquareType::Space;
-                }
-                else if (sym.match("hull", 2))
-                {
-                    type = SquareType::Hull;
-                }
-                else if (sym.match("ship", 2))
-                {
-                    type = SquareType::Ship;
-                }
-                else if (sym.match("corridor", 2))
-                {
-                    type = SquareType::Corridor;
-                }
-                else if (sym.match("room_square", 6))
-                {
-                    type = SquareType::Room;
-                }
-                else if (sym.match("breach_square", 2))
-                {
-                    type = SquareType::AlienBreach;
-                }
-                else
-                {
-                    continue;  // Not a map square symbol
-                }
-
-                const auto args = unsigned_args(sym);
-                const auto sqx = args[0];
-                const auto sqy = args[1];
-                const auto key = square_pos_to_serial_index(sqx, sqy, width);
-                const auto pair = square_lookup.emplace(key, type);
-                // If key already existed, insert if new type has higher precedence
-                if (!pair.second && (uint8_t)pair.first->second < (uint8_t)type)
-                {
-                    square_lookup[key] = type;
+                    const auto key = square_pos_to_serial_index(sq->x, sq->y, width);
+                    const auto pair = square_lookup.emplace(key, sq->type);
+                    // If key already existed, insert if new type has higher precedence
+                    if (!pair.second && (uint8_t) pair.first->second < (uint8_t) sq->type)
+                    {
+                        square_lookup[key] = sq->type;
+                    }
                 }
             }
 
-            // Second pass to get adjacencies, breaches, and start/finish points, referring to already-created rooms
+            // Second pass to get connections, breaches, and start/finish points, referring to already-created rooms
             for (const auto& sym_val : data)
             {
                 const Clingo::Symbol sym{sym_val};
-                const auto args = sym.arguments();
-                if (sym.match("adjacent", 3))
-                {
-                    const auto first = find_room(room_vec, args[0]);
-                    const auto second = find_room(room_vec, args[1]);
-                    if (first == 0 || second == 0)
-                    {
-                        continue;
-                    }
 
-                    const auto is_portal = args[2].number() == 1;
-                    if (is_portal) ++portals;
+                if (auto adj = try_get_adjacency(sym, room_vec))
+                {
+                    if (adj->is_portal) ++portals;
 
-                    adjacency_vec.push_back({first, second, is_portal});
+                    adjacency_vec.emplace_back(adj.value());
+                    continue;
                 }
-#ifdef TEST_BUILD
-                else if (sym.match("connected", 2))
-                {
-                    const auto first = find_room(room_vec, args[0]);
-                    const auto second = find_room(room_vec, args[1]);
-                    if (first == 0 || second == 0)
-                    {
-                        continue;
-                    }
 
-                    connection_vec.push_back({first, second});
-                }
-#endif
-                else if (sym.match("start_room", 1))
+                if (auto breach = try_get_breach(sym, room_vec, room_vec.size() + 1))
                 {
-                    start_room_id = find_room(room_vec, args[0]);
-                }
-                else if (sym.match("finish_room", 1))
-                {
-                    finish_room_id = find_room(room_vec, args[0]);
-                }
-                else if (sym.match("alien_breach", 5))
-                {
-                    // Convert the breach to a room with a special room type, connected to the breached room bidirectionally
-                    const auto x = static_cast<unsigned>(args[0].number());
-                    const auto y = static_cast<unsigned>(args[1].number());
-                    const auto w = static_cast<unsigned>(args[2].number());
-                    const auto h = static_cast<unsigned>(args[3].number());
-                    const auto breached_room_sym = args[4];
-                    if (!(breached_room_sym.match("room", 4)))
-                    {
-                        continue;
-                    }
-                    const auto breached_room = find_room(room_vec, breached_room_sym);
-                    if (breached_room == 0)
-                    {
-                        continue;
-                    }
-
-                    room_vec.push_back({x, y, w, h, RoomType::AlienBreach, room_vec.size() + 1});
-                    adjacency_vec.push_back({breached_room, room_vec.back().room_id, false});
-                    adjacency_vec.push_back({room_vec.back().room_id, breached_room, false});
+                    room_vec.emplace_back(std::get<0>(breach.value()));
+                    adjacency_vec.emplace_back(std::get<1>(breach.value()), room_vec.back().room_id, false);
+                    adjacency_vec.emplace_back(room_vec.back().room_id, std::get<1>(breach.value()), false);
                     ++breaches;
+                    continue;
+                }
+
+                const auto args = unsigned_args(sym);
+
+                if (sym.match("start_room", 2))
+                {
+                    start_room_id = find_room(room_vec, args[0], args[1]);
+                    continue;
+                }
+
+                if (sym.match("finish_room", 2))
+                {
+                    finish_room_id = find_room(room_vec, args[0], args[1]);
                 }
             }
 
             // Finally, convert the square lookup to a vector
-            square_vec = std::vector<MapSquare>(square_lookup.size());
+            square_vec = std::vector<MapSquare>(square_lookup.size(), MapSquare(0, 0, SquareType::Unknown));
             std::transform(square_lookup.cbegin(), square_lookup.cend(), square_vec.begin(), [=](const auto& entry) {
                 const auto pos = serial_index_to_square_pos(entry.first, width);
                 return MapSquare{std::get<0>(pos), std::get<1>(pos), entry.second};
@@ -310,9 +339,6 @@ class Level::LevelImpl
         std::vector<MapSquare> square_vec;
         std::vector<Room> room_vec;
         std::vector<Adjacency> adjacency_vec;
-#ifdef TEST_BUILD
-        std::vector<Connection> connection_vec;
-#endif
         size_t corridors;
         size_t breaches;
         size_t portals;

@@ -1,0 +1,1076 @@
+"C:\Program Files\Python312\python.exe" C:\Source\warp-space\LevelGenerator\level-gen-cpp\python\runner.py 
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '-e bt --project=show,3', '--opt-strategy=bb,inc') CONFIG: jumpy
+Solving took 44.572911500930786s
+*** Warn : (clingo): Selected reasoning mode implies #Threads=1.
+
+Answer: 1 (Time: 40.999s) Optimization: 8
+Answer: 2 (Time: 41.579s) Optimization: 8
+Answer: 3 (Time: 42.120s) Optimization: 8
+Answer: 4 (Time: 42.728s) Optimization: 8
+Answer: 5 (Time: 43.359s) Optimization: 8
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '-e bt --project=show,3', '--opt-strategy=bb,inc') CONFIG: tweety
+Solving took 164.97111105918884s
+*** Warn : (clingo): Selected reasoning mode implies #Threads=1.
+
+Answer: 1 (Time: 113.755s) Optimization: 5
+Answer: 2 (Time: 132.931s) Optimization: 8
+Answer: 3 (Time: 137.345s) Optimization: 7
+Answer: 4 (Time: 152.787s) Optimization: 7
+Answer: 5 (Time: 163.627s) Optimization: 8
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '-e bt --project=show,3', '--opt-strategy=bb,inc') CONFIG: trendy
+Solving took 127.43938899040222s
+*** Warn : (clingo): Selected reasoning mode implies #Threads=1.
+
+Answer: 1 (Time: 124.570s) Optimization: 8
+Answer: 2 (Time: 125.124s) Optimization: 8
+Answer: 3 (Time: 125.621s) Optimization: 8
+Answer: 4 (Time: 126.079s) Optimization: 8
+Answer: 5 (Time: 126.470s) Optimization: 8
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '-e bt --project=show,3', '--opt-strategy=bb,inc') CONFIG: frumpy
+Solving took 180.44578528404236s
+*** Warn : (clingo): Selected reasoning mode implies #Threads=1.
+
+Answer: 1 (Time: 53.359s) Optimization: 7
+Answer: 2 (Time: 56.299s) Optimization: 7
+Answer: 3 (Time: 79.572s) Optimization: 6
+Answer: 4 (Time: 89.405s) Optimization: 7
+Answer: 5 (Time: 178.221s) Optimization: 7
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '-e bt --project=show,3', '--opt-strategy=bb,inc') CONFIG: crafty
+Solving took 240.42807030677795s
+*** Warn : (clingo): Selected reasoning mode implies #Threads=1.
+*** Info : (clingo): INTERRUPTED by signal!
+
+Answer: 1 (Time: 83.108s) Optimization: 8
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '-e bt --project=show,3', '--opt-strategy=bb,inc') CONFIG: handy
+Solving took 72.41123461723328s
+*** Warn : (clingo): Selected reasoning mode implies #Threads=1.
+
+Answer: 1 (Time: 69.090s) Optimization: 8
+Answer: 2 (Time: 69.859s) Optimization: 8
+Answer: 3 (Time: 70.619s) Optimization: 8
+Answer: 4 (Time: 71.048s) Optimization: 8
+Answer: 5 (Time: 71.381s) Optimization: 8
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '-e bt --project=show,3', '--opt-strategy=bb,inc') CONFIG: many
+Solving took 165.2918770313263s
+*** Warn : (clingo): Selected reasoning mode implies #Threads=1.
+
+Answer: 1 (Time: 114.464s) Optimization: 5
+Answer: 2 (Time: 133.035s) Optimization: 8
+Answer: 3 (Time: 138.560s) Optimization: 7
+Answer: 4 (Time: 152.189s) Optimization: 7
+Answer: 5 (Time: 163.457s) Optimization: 8
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '-e bt --project=show,3', '--opt-strategy=bb,dec') CONFIG: jumpy
+Solving took 42.99759554862976s
+*** Warn : (clingo): Selected reasoning mode implies #Threads=1.
+
+Answer: 1 (Time: 40.082s) Optimization: 8
+Answer: 2 (Time: 40.650s) Optimization: 8
+Answer: 3 (Time: 41.167s) Optimization: 8
+Answer: 4 (Time: 41.626s) Optimization: 8
+Answer: 5 (Time: 42.070s) Optimization: 8
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '-e bt --project=show,3', '--opt-strategy=bb,dec') CONFIG: tweety
+Traceback (most recent call last):
+  File "C:\Source\warp-space\LevelGenerator\level-gen-cpp\python\runner.py", line 160, in <module>
+    
+  File "C:\Program Files\Python312\Lib\subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\subprocess.py", line 1209, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\subprocess.py", line 1626, in _communicate
+    self.stdout_thread.join(self._remaining_time(endtime))
+  File "C:\Program Files\Python312\Lib\threading.py", line 1147, in join
+    self._wait_for_tstate_lock()
+  File "C:\Program Files\Python312\Lib\threading.py", line 1167, in _wait_for_tstate_lock
+    if lock.acquire(block, timeout):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+
+Process finished with exit code -1073741510 (0xC000013A: interrupted by Ctrl+C)
+
+*********************************************************************
+
+"C:\Program Files\Python312\python.exe" C:\Source\warp-space\LevelGenerator\level-gen-cpp\python\runner.py
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: auto
+Solving took 66.75504326820374s
+
+Answer: 1 (Time: 62.705s) Optimization: 5
+Answer: 2 (Time: 62.714s) Optimization: 5
+Answer: 3 (Time: 62.722s) Optimization: 5
+Answer: 4 (Time: 62.728s) Optimization: 5
+Answer: 5 (Time: 62.737s) Optimization: 5
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: jumpy
+Solving took 32.29741382598877s
+
+Answer: 1 (Time: 29.280s) Optimization: 7
+Answer: 2 (Time: 29.288s) Optimization: 7
+Answer: 3 (Time: 29.294s) Optimization: 7
+Answer: 4 (Time: 29.305s) Optimization: 7
+Answer: 5 (Time: 29.311s) Optimization: 7
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: tweety
+Solving took 243.74569725990295s
+*** Info : (clingo): Sending shutdown signal...
+*** ERROR: (clingo): solving stopped by signal
+*** Info : (clingo): Shutdown completed in 0.430 seconds
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: trendy
+Solving took 48.03731727600098s
+
+Answer: 1 (Time: 44.842s) Optimization: 6
+Answer: 2 (Time: 44.850s) Optimization: 6
+Answer: 3 (Time: 44.856s) Optimization: 6
+Answer: 4 (Time: 44.864s) Optimization: 6
+Answer: 5 (Time: 44.871s) Optimization: 6
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: frumpy
+Solving took 243.58948850631714s
+*** Info : (clingo): Sending shutdown signal...
+*** ERROR: (clingo): solving stopped by signal
+*** Info : (clingo): Shutdown completed in 0.299 seconds
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: crafty
+Solving took 34.58202290534973s
+
+Answer: 1 (Time: 30.794s) Optimization: 6
+Answer: 2 (Time: 30.802s) Optimization: 6
+Answer: 3 (Time: 30.809s) Optimization: 6
+Answer: 4 (Time: 30.816s) Optimization: 6
+Answer: 5 (Time: 30.825s) Optimization: 6
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: handy
+Solving took 34.04060244560242s
+
+Answer: 1 (Time: 30.441s) Optimization: 7
+Answer: 2 (Time: 30.448s) Optimization: 7
+Answer: 3 (Time: 30.455s) Optimization: 7
+Answer: 4 (Time: 30.464s) Optimization: 7
+Answer: 5 (Time: 30.471s) Optimization: 7
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: many
+Solving took 60.12577724456787s
+
+Answer: 1 (Time: 56.475s) Optimization: 7
+Answer: 2 (Time: 56.482s) Optimization: 7
+Answer: 3 (Time: 56.489s) Optimization: 7
+Answer: 4 (Time: 56.496s) Optimization: 7
+Answer: 5 (Time: 56.506s) Optimization: 7
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: jumpy
+Solving took 56.92259454727173s
+
+Answer: 1 (Time: 53.540s) Optimization: 6
+Answer: 2 (Time: 53.549s) Optimization: 6
+Answer: 3 (Time: 53.557s) Optimization: 6
+Answer: 4 (Time: 53.565s) Optimization: 6
+Answer: 5 (Time: 53.575s) Optimization: 6
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: tweety
+Solving took 100.28554105758667s
+
+Answer: 1 (Time: 96.437s) Optimization: 6
+Answer: 2 (Time: 96.450s) Optimization: 6
+Answer: 3 (Time: 96.461s) Optimization: 6
+Answer: 4 (Time: 96.481s) Optimization: 6
+Answer: 5 (Time: 96.497s) Optimization: 6
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: trendy
+Solving took 69.04267001152039s
+
+Answer: 1 (Time: 66.119s) Optimization: 7
+Answer: 2 (Time: 66.131s) Optimization: 7
+Answer: 3 (Time: 66.137s) Optimization: 7
+Answer: 4 (Time: 66.142s) Optimization: 7
+Answer: 5 (Time: 66.148s) Optimization: 7
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: frumpy
+Solving took 243.78721237182617s
+*** Info : (clingo): Sending shutdown signal...
+*** ERROR: (clingo): solving stopped by signal
+*** Info : (clingo): Shutdown completed in 0.366 seconds
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: crafty
+Solving took 53.4465229511261s
+
+Answer: 1 (Time: 50.255s) Optimization: 6
+Answer: 2 (Time: 50.262s) Optimization: 6
+Answer: 3 (Time: 50.271s) Optimization: 6
+Answer: 4 (Time: 50.277s) Optimization: 6
+Answer: 5 (Time: 50.285s) Optimization: 6
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: handy
+Solving took 36.89256763458252s
+
+Answer: 1 (Time: 33.714s) Optimization: 7
+Answer: 2 (Time: 33.722s) Optimization: 7
+Answer: 3 (Time: 33.730s) Optimization: 7
+Answer: 4 (Time: 33.736s) Optimization: 7
+Answer: 5 (Time: 33.742s) Optimization: 7
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: many
+Solving took 73.48012232780457s
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: auto
+Solving took 78.41110730171204s
+
+Answer: 1 (Time: 74.672s) Optimization: 4
+Answer: 2 (Time: 74.680s) Optimization: 4
+Answer: 3 (Time: 74.689s) Optimization: 4
+Answer: 4 (Time: 74.696s) Optimization: 4
+Answer: 5 (Time: 74.707s) Optimization: 4
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: auto
+Solving took 244.69238448143005s
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: jumpy
+Solving took 48.36019253730774s
+Answer: 1 (Time: 44.589s) Optimization: 7
+Answer: 2 (Time: 44.599s) Optimization: 7
+Answer: 3 (Time: 44.607s) Optimization: 7
+Answer: 4 (Time: 44.615s) Optimization: 7
+Answer: 5 (Time: 44.628s) Optimization: 7
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: tweety
+Solving took 72.9490225315094s
+Answer: 1 (Time: 68.949s) Optimization: 6
+Answer: 2 (Time: 68.961s) Optimization: 6
+Answer: 3 (Time: 68.971s) Optimization: 6
+Answer: 4 (Time: 68.982s) Optimization: 6
+Answer: 5 (Time: 68.996s) Optimization: 6
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: trendy
+Solving took 39.18921232223511s
+Answer: 1 (Time: 35.892s) Optimization: 6
+Answer: 2 (Time: 35.900s) Optimization: 6
+Answer: 3 (Time: 35.909s) Optimization: 6
+Answer: 4 (Time: 35.916s) Optimization: 6
+Answer: 5 (Time: 35.925s) Optimization: 6
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: frumpy
+Solving took 244.8396942615509s
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: crafty
+Solving took 38.360174894332886s
+Answer: 1 (Time: 34.202s) Optimization: 6
+Answer: 2 (Time: 34.213s) Optimization: 6
+Answer: 3 (Time: 34.222s) Optimization: 6
+Answer: 4 (Time: 34.228s) Optimization: 6
+Answer: 5 (Time: 34.238s) Optimization: 6
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: handy
+Solving took 41.01277232170105s
+Answer: 1 (Time: 37.931s) Optimization: 7
+Answer: 2 (Time: 37.946s) Optimization: 7
+Answer: 3 (Time: 37.962s) Optimization: 7
+Answer: 4 (Time: 37.973s) Optimization: 7
+Answer: 5 (Time: 37.988s) Optimization: 7
+
+PARAM: ('-t 4,compete', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: many
+Solving took 74.05592751502991s
+Answer: 1 (Time: 70.082s) Optimization: 5
+Answer: 2 (Time: 70.091s) Optimization: 5
+Answer: 3 (Time: 70.100s) Optimization: 5
+Answer: 4 (Time: 70.108s) Optimization: 5
+Answer: 5 (Time: 70.118s) Optimization: 5
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,inc')
+CONFIG: auto
+Solving took 244.3893666267395s
+Answer: 1 (Time: 61.567s) Optimization: 5
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,inc')
+CONFIG: jumpy
+Solving took 244.91869139671326s
+Answer: 1 (Time: 30.729s) Optimization: 7
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,inc')
+CONFIG: tweety
+Solving took 243.5408582687378s
+Answer: 1 (Time: 34.330s) Optimization: 6
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,inc')
+CONFIG: trendy
+Solving took 245.62130069732666s
+Answer: 1 (Time: 43.270s) Optimization: 8
+Answer: 2 (Time: 107.601s) Optimization: 7
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,inc')
+CONFIG: frumpy
+Solving took 243.6452841758728s
+Answer: 1 (Time: 113.347s) Optimization: 6
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,inc')
+CONFIG: crafty
+Solving took 243.2392816543579s
+Answer: 1 (Time: 70.456s) Optimization: 5
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,inc')
+CONFIG: handy
+Solving took 244.78288769721985s
+Answer: 1 (Time: 40.929s) Optimization: 4
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,inc')
+CONFIG: many
+Solving took 244.52303743362427s
+Answer: 1 (Time: 45.980s) Optimization: 5
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,dec')
+CONFIG: auto
+Solving took 244.9014036655426s
+Answer: 1 (Time: 61.567s) Optimization: 5
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,dec')
+CONFIG: jumpy
+Solving took 242.85742664337158s
+Answer: 1 (Time: 27.275s) Optimization: 7
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,dec')
+CONFIG: tweety
+Solving took 244.5252776145935s
+Answer: 1 (Time: 33.903s) Optimization: 6
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,dec')
+CONFIG: trendy
+Solving took 242.98904418945312s
+Answer: 1 (Time: 38.716s) Optimization: 8
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,dec')
+CONFIG: frumpy
+Solving took 243.49556016921997s
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,dec')
+CONFIG: crafty
+Solving took 243.76118683815002s
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,dec')
+CONFIG: handy
+Solving took 243.66423416137695s
+Answer: 1 (Time: 29.021s) Optimization: 4
+
+PARAM: ('-t 4,compete', '', '--opt-strategy=bb,dec')
+CONFIG: many
+Solving took 245.18912839889526s
+Answer: 1 (Time: 46.328s) Optimization: 5
+
+PARAM: ('-t 4,compete', '', '')
+CONFIG: auto
+Solving took 245.06235218048096s
+Answer: 1 (Time: 62.721s) Optimization: 5
+
+PARAM: ('-t 4,compete', '', '')
+CONFIG: jumpy
+Solving took 246.87339687347412s
+Answer: 1 (Time: 27.832s) Optimization: 7
+Answer: 2 (Time: 46.533s) Optimization: 6
+
+PARAM: ('-t 4,compete', '', '')
+CONFIG: tweety
+Solving took 244.56072282791138s
+
+PARAM: ('-t 4,compete', '', '')
+CONFIG: trendy
+Solving took 246.06905341148376s
+Answer: 1 (Time: 79.620s) Optimization: 7
+
+PARAM: ('-t 4,compete', '', '')
+CONFIG: frumpy
+Solving took 243.46533846855164s
+Answer: 1 (Time: 95.645s) Optimization: 5
+
+PARAM: ('-t 4,compete', '', '')
+CONFIG: crafty
+Solving took 243.40511798858643s
+Answer: 1 (Time: 30.681s) Optimization: 6
+
+PARAM: ('-t 4,compete', '', '')
+CONFIG: handy
+Solving took 243.4552915096283s
+Answer: 1 (Time: 25.894s) Optimization: 6
+Answer: 2 (Time: 38.589s) Optimization: 5
+
+PARAM: ('-t 4,compete', '', '')
+CONFIG: many
+Solving took 243.68023991584778s
+Answer: 1 (Time: 67.229s) Optimization: 5
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: auto
+Solving took 69.21361994743347s
+Answer: 1 (Time: 65.432s) Optimization: 5
+Answer: 2 (Time: 65.443s) Optimization: 5
+Answer: 3 (Time: 65.450s) Optimization: 5
+Answer: 4 (Time: 65.457s) Optimization: 5
+Answer: 5 (Time: 65.466s) Optimization: 5
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: jumpy
+Solving took 33.72907590866089s
+Answer: 1 (Time: 30.692s) Optimization: 6
+Answer: 2 (Time: 30.702s) Optimization: 6
+Answer: 3 (Time: 30.710s) Optimization: 6
+Answer: 4 (Time: 30.716s) Optimization: 6
+Answer: 5 (Time: 30.724s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: tweety
+Solving took 73.5765929222107s
+Answer: 1 (Time: 69.965s) Optimization: 8
+Answer: 2 (Time: 69.981s) Optimization: 8
+Answer: 3 (Time: 70.008s) Optimization: 8
+Answer: 4 (Time: 70.030s) Optimization: 8
+Answer: 5 (Time: 70.058s) Optimization: 8
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: trendy
+Solving took 33.42093539237976s
+Answer: 1 (Time: 30.275s) Optimization: 6
+Answer: 2 (Time: 30.283s) Optimization: 6
+Answer: 3 (Time: 30.290s) Optimization: 6
+Answer: 4 (Time: 30.297s) Optimization: 6
+Answer: 5 (Time: 30.304s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: frumpy
+Solving took 90.22156119346619s
+Answer: 1 (Time: 86.599s) Optimization: 7
+Answer: 2 (Time: 86.609s) Optimization: 7
+Answer: 3 (Time: 86.619s) Optimization: 7
+Answer: 4 (Time: 86.633s) Optimization: 7
+Answer: 5 (Time: 86.648s) Optimization: 7
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: crafty
+Solving took 43.85708260536194s
+Answer: 1 (Time: 40.382s) Optimization: 5
+Answer: 2 (Time: 40.392s) Optimization: 5
+Answer: 3 (Time: 40.400s) Optimization: 5
+Answer: 4 (Time: 40.407s) Optimization: 5
+Answer: 5 (Time: 40.416s) Optimization: 5
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: handy
+Solving took 29.744328260421753s
+Answer: 1 (Time: 26.863s) Optimization: 6
+Answer: 2 (Time: 26.872s) Optimization: 6
+Answer: 3 (Time: 26.880s) Optimization: 6
+Answer: 4 (Time: 26.888s) Optimization: 6
+Answer: 5 (Time: 26.895s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: many
+Solving took 29.718132257461548s
+Answer: 1 (Time: 26.382s) Optimization: 4
+Answer: 2 (Time: 26.389s) Optimization: 4
+Answer: 3 (Time: 26.396s) Optimization: 4
+Answer: 4 (Time: 26.402s) Optimization: 4
+Answer: 5 (Time: 26.409s) Optimization: 4
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: auto
+Solving took 219.04245924949646s
+Answer: 1 (Time: 215.477s) Optimization: 8
+Answer: 2 (Time: 215.487s) Optimization: 8
+Answer: 3 (Time: 215.495s) Optimization: 8
+Answer: 4 (Time: 215.501s) Optimization: 8
+Answer: 5 (Time: 215.515s) Optimization: 8
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: jumpy
+Solving took 34.53681683540344s
+Answer: 1 (Time: 31.392s) Optimization: 6
+Answer: 2 (Time: 31.401s) Optimization: 6
+Answer: 3 (Time: 31.407s) Optimization: 6
+Answer: 4 (Time: 31.414s) Optimization: 6
+Answer: 5 (Time: 31.422s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: tweety
+Solving took 133.47907900810242s
+Answer: 1 (Time: 129.644s) Optimization: 8
+Answer: 2 (Time: 129.659s) Optimization: 8
+Answer: 3 (Time: 129.672s) Optimization: 8
+Answer: 4 (Time: 129.684s) Optimization: 8
+Answer: 5 (Time: 129.696s) Optimization: 8
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: trendy
+Solving took 33.731672286987305s
+Answer: 1 (Time: 30.778s) Optimization: 6
+Answer: 2 (Time: 30.787s) Optimization: 6
+Answer: 3 (Time: 30.793s) Optimization: 6
+Answer: 4 (Time: 30.801s) Optimization: 6
+Answer: 5 (Time: 30.809s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: frumpy
+Solving took 38.35444140434265s
+Answer: 1 (Time: 34.895s) Optimization: 6
+Answer: 2 (Time: 34.903s) Optimization: 6
+Answer: 3 (Time: 34.910s) Optimization: 6
+Answer: 4 (Time: 34.919s) Optimization: 6
+Answer: 5 (Time: 34.925s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: crafty
+Solving took 36.00969219207764s
+Answer: 1 (Time: 32.897s) Optimization: 6
+Answer: 2 (Time: 32.904s) Optimization: 6
+Answer: 3 (Time: 32.913s) Optimization: 6
+Answer: 4 (Time: 32.919s) Optimization: 6
+Answer: 5 (Time: 32.930s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: handy
+Solving took 29.396742582321167s
+Answer: 1 (Time: 26.610s) Optimization: 6
+Answer: 2 (Time: 26.619s) Optimization: 6
+Answer: 3 (Time: 26.625s) Optimization: 6
+Answer: 4 (Time: 26.631s) Optimization: 6
+Answer: 5 (Time: 26.638s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: many
+Solving took 30.197107076644897s
+Answer: 1 (Time: 26.835s) Optimization: 4
+Answer: 2 (Time: 26.843s) Optimization: 4
+Answer: 3 (Time: 26.851s) Optimization: 4
+Answer: 4 (Time: 26.858s) Optimization: 4
+Answer: 5 (Time: 26.865s) Optimization: 4
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: auto
+Solving took 37.579405546188354s
+Answer: 1 (Time: 33.979s) Optimization: 4
+Answer: 2 (Time: 33.987s) Optimization: 4
+Answer: 3 (Time: 33.996s) Optimization: 4
+Answer: 4 (Time: 34.004s) Optimization: 4
+Answer: 5 (Time: 34.012s) Optimization: 4
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: jumpy
+Solving took 34.52618145942688s
+Answer: 1 (Time: 31.163s) Optimization: 6
+Answer: 2 (Time: 31.171s) Optimization: 6
+Answer: 3 (Time: 31.177s) Optimization: 6
+Answer: 4 (Time: 31.185s) Optimization: 6
+Answer: 5 (Time: 31.192s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: tweety
+Solving took 109.06880736351013s
+Answer: 1 (Time: 105.580s) Optimization: 8
+Answer: 2 (Time: 105.621s) Optimization: 8
+Answer: 3 (Time: 105.643s) Optimization: 8
+Answer: 4 (Time: 105.656s) Optimization: 8
+Answer: 5 (Time: 105.678s) Optimization: 8
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: trendy
+Solving took 33.716084480285645s
+Answer: 1 (Time: 30.610s) Optimization: 6
+Answer: 2 (Time: 30.618s) Optimization: 6
+Answer: 3 (Time: 30.624s) Optimization: 6
+Answer: 4 (Time: 30.632s) Optimization: 6
+Answer: 5 (Time: 30.638s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: frumpy
+Solving took 43.00675106048584s
+Answer: 1 (Time: 39.909s) Optimization: 4
+Answer: 2 (Time: 39.917s) Optimization: 4
+Answer: 3 (Time: 39.923s) Optimization: 4
+Answer: 4 (Time: 39.930s) Optimization: 4
+Answer: 5 (Time: 39.938s) Optimization: 4
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: crafty
+Solving took 35.799742698669434s
+Answer: 1 (Time: 32.552s) Optimization: 6
+Answer: 2 (Time: 32.561s) Optimization: 6
+Answer: 3 (Time: 32.570s) Optimization: 6
+Answer: 4 (Time: 32.578s) Optimization: 6
+Answer: 5 (Time: 32.586s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: handy
+Solving took 30.18422293663025s
+Answer: 1 (Time: 26.995s) Optimization: 6
+Answer: 2 (Time: 27.001s) Optimization: 6
+Answer: 3 (Time: 27.007s) Optimization: 6
+Answer: 4 (Time: 27.012s) Optimization: 6
+Answer: 5 (Time: 27.019s) Optimization: 6
+
+PARAM: ('-t 4,split', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: many
+Solving took 40.6294379234314s
+Answer: 1 (Time: 37.200s) Optimization: 6
+Answer: 2 (Time: 37.208s) Optimization: 6
+Answer: 3 (Time: 37.216s) Optimization: 6
+Answer: 4 (Time: 37.222s) Optimization: 6
+Answer: 5 (Time: 37.229s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,inc')
+CONFIG: auto
+Solving took 243.3335075378418s
+Answer: 1 (Time: 64.240s) Optimization: 5
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,inc')
+CONFIG: jumpy
+Solving took 244.07857203483582s
+Answer: 1 (Time: 29.804s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,inc')
+CONFIG: tweety
+Solving took 243.885249376297s
+Answer: 1 (Time: 27.740s) Optimization: 6
+Answer: 2 (Time: 61.005s) Optimization: 5
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,inc')
+CONFIG: trendy
+Solving took 243.64630818367004s
+Answer: 1 (Time: 48.184s) Optimization: 7
+Answer: 2 (Time: 95.471s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,inc')
+CONFIG: frumpy
+Solving took 248.92624187469482s
+Answer: 1 (Time: 28.678s) Optimization: 6
+Answer: 2 (Time: 137.071s) Optimization: 5
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,inc')
+CONFIG: crafty
+Solving took 243.61975169181824s
+Answer: 1 (Time: 39.331s) Optimization: 6
+Answer: 2 (Time: 42.847s) Optimization: 5
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,inc')
+CONFIG: handy
+Solving took 243.5928611755371s
+Answer: 1 (Time: 43.581s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,inc')
+CONFIG: many
+Solving took 246.17629837989807s
+Answer: 1 (Time: 28.937s) Optimization: 5
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,dec')
+CONFIG: auto
+Solving took 243.76639103889465s
+Answer: 1 (Time: 27.818s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,dec')
+CONFIG: jumpy
+Solving took 242.9046449661255s
+Answer: 1 (Time: 30.480s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,dec')
+CONFIG: tweety
+Solving took 243.1749701499939s
+Answer: 1 (Time: 32.993s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,dec')
+CONFIG: trendy
+Solving took 243.1830096244812s
+Answer: 1 (Time: 42.012s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,dec')
+CONFIG: frumpy
+Solving took 243.55228233337402s
+Answer: 1 (Time: 24.933s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,dec')
+CONFIG: crafty
+Solving took 242.94613933563232s
+Answer: 1 (Time: 47.890s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,dec')
+CONFIG: handy
+Solving took 243.05531525611877s
+Answer: 1 (Time: 29.900s) Optimization: 5
+
+PARAM: ('-t 4,split', '', '--opt-strategy=bb,dec')
+CONFIG: many
+Solving took 243.70139455795288s
+Answer: 1 (Time: 30.341s) Optimization: 5
+
+PARAM: ('-t 4,split', '', '')
+CONFIG: auto
+Solving took 243.58052134513855s
+Answer: 1 (Time: 234.932s) Optimization: 8
+
+PARAM: ('-t 4,split', '', '')
+CONFIG: jumpy
+Solving took 246.05267643928528s
+Answer: 1 (Time: 32.843s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '')
+CONFIG: tweety
+Solving took 243.3835699558258s
+Answer: 1 (Time: 49.618s) Optimization: 7
+Answer: 2 (Time: 232.198s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '')
+CONFIG: trendy
+Solving took 245.55273389816284s
+Answer: 1 (Time: 28.561s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '')
+CONFIG: frumpy
+Solving took 253.03962993621826s
+Answer: 1 (Time: 27.003s) Optimization: 5
+Answer: 2 (Time: 96.646s) Optimization: 4
+
+PARAM: ('-t 4,split', '', '')
+CONFIG: crafty
+Solving took 247.7540009021759s
+Answer: 1 (Time: 33.920s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '')
+CONFIG: handy
+Solving took 245.95207238197327s
+Answer: 1 (Time: 39.356s) Optimization: 6
+
+PARAM: ('-t 4,split', '', '')
+CONFIG: many
+Solving took 244.25340962409973s
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: auto
+Solving took 165.43232822418213s
+Answer: 1 (Time: 111.159s) Optimization: 5
+Answer: 2 (Time: 130.502s) Optimization: 8
+Answer: 3 (Time: 135.712s) Optimization: 7
+Answer: 4 (Time: 151.190s) Optimization: 7
+Answer: 5 (Time: 163.856s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: jumpy
+Solving took 45.87132740020752s
+Answer: 1 (Time: 42.456s) Optimization: 8
+Answer: 2 (Time: 43.111s) Optimization: 8
+Answer: 3 (Time: 43.689s) Optimization: 8
+Answer: 4 (Time: 44.204s) Optimization: 8
+Answer: 5 (Time: 44.775s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: tweety
+Solving took 174.453626871109s
+Answer: 1 (Time: 118.063s) Optimization: 5
+Answer: 2 (Time: 138.939s) Optimization: 8
+Answer: 3 (Time: 144.540s) Optimization: 7
+Answer: 4 (Time: 160.596s) Optimization: 7
+Answer: 5 (Time: 172.920s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: trendy
+Solving took 128.27312517166138s
+Answer: 1 (Time: 124.681s) Optimization: 8
+Answer: 2 (Time: 125.373s) Optimization: 8
+Answer: 3 (Time: 126.058s) Optimization: 8
+Answer: 4 (Time: 126.665s) Optimization: 8
+Answer: 5 (Time: 127.134s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: frumpy
+Solving took 189.90520477294922s
+Answer: 1 (Time: 56.350s) Optimization: 7
+Answer: 2 (Time: 59.184s) Optimization: 7
+Answer: 3 (Time: 85.969s) Optimization: 6
+Answer: 4 (Time: 95.033s) Optimization: 7
+Answer: 5 (Time: 187.807s) Optimization: 7
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: crafty
+Solving took 240.40098571777344s
+Answer: 1 (Time: 89.462s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: handy
+Solving took 71.66540455818176s
+Answer: 1 (Time: 68.003s) Optimization: 8
+Answer: 2 (Time: 68.799s) Optimization: 8
+Answer: 3 (Time: 69.691s) Optimization: 8
+Answer: 4 (Time: 70.208s) Optimization: 8
+Answer: 5 (Time: 70.583s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,inc')
+CONFIG: many
+Solving took 161.95181226730347s
+Answer: 1 (Time: 108.285s) Optimization: 5
+Answer: 2 (Time: 128.100s) Optimization: 8
+Answer: 3 (Time: 133.395s) Optimization: 7
+Answer: 4 (Time: 148.564s) Optimization: 7
+Answer: 5 (Time: 160.326s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: auto
+Solving took 166.97056198120117s
+Answer: 1 (Time: 113.225s) Optimization: 5
+Answer: 2 (Time: 132.616s) Optimization: 8
+Answer: 3 (Time: 137.626s) Optimization: 7
+Answer: 4 (Time: 153.119s) Optimization: 7
+Answer: 5 (Time: 165.146s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: jumpy
+Solving took 44.104214668273926s
+Answer: 1 (Time: 40.431s) Optimization: 8
+Answer: 2 (Time: 41.010s) Optimization: 8
+Answer: 3 (Time: 41.582s) Optimization: 8
+Answer: 4 (Time: 42.081s) Optimization: 8
+Answer: 5 (Time: 42.665s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: tweety
+Solving took 163.30012369155884s
+Answer: 1 (Time: 110.085s) Optimization: 5
+Answer: 2 (Time: 129.615s) Optimization: 8
+Answer: 3 (Time: 134.381s) Optimization: 7
+Answer: 4 (Time: 149.634s) Optimization: 7
+Answer: 5 (Time: 161.824s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: trendy
+Solving took 123.03629279136658s
+Answer: 1 (Time: 119.599s) Optimization: 8
+Answer: 2 (Time: 120.210s) Optimization: 8
+Answer: 3 (Time: 120.724s) Optimization: 8
+Answer: 4 (Time: 121.214s) Optimization: 8
+Answer: 5 (Time: 121.653s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: frumpy
+Solving took 180.1666820049286s
+Answer: 1 (Time: 51.706s) Optimization: 7
+Answer: 2 (Time: 54.541s) Optimization: 7
+Answer: 3 (Time: 81.116s) Optimization: 6
+Answer: 4 (Time: 90.466s) Optimization: 7
+Answer: 5 (Time: 177.666s) Optimization: 7
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: crafty
+Solving took 240.41560339927673s
+Answer: 1 (Time: 86.437s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: handy
+Solving took 71.14690256118774s
+Answer: 1 (Time: 67.829s) Optimization: 8
+Answer: 2 (Time: 68.518s) Optimization: 8
+Answer: 3 (Time: 69.238s) Optimization: 8
+Answer: 4 (Time: 69.733s) Optimization: 8
+Answer: 5 (Time: 70.118s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '--opt-strategy=bb,dec')
+CONFIG: many
+Solving took 162.0490128993988s
+Answer: 1 (Time: 109.921s) Optimization: 5
+Answer: 2 (Time: 128.898s) Optimization: 8
+Answer: 3 (Time: 133.996s) Optimization: 7
+Answer: 4 (Time: 148.642s) Optimization: 7
+Answer: 5 (Time: 160.329s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: auto
+Solving took 165.3580198287964s
+Answer: 1 (Time: 111.588s) Optimization: 5
+Answer: 2 (Time: 131.384s) Optimization: 8
+Answer: 3 (Time: 136.519s) Optimization: 7
+Answer: 4 (Time: 151.163s) Optimization: 7
+Answer: 5 (Time: 163.962s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: jumpy
+Solving took 46.395336866378784s
+Answer: 1 (Time: 42.972s) Optimization: 8
+Answer: 2 (Time: 43.568s) Optimization: 8
+Answer: 3 (Time: 44.241s) Optimization: 8
+Answer: 4 (Time: 44.784s) Optimization: 8
+Answer: 5 (Time: 45.270s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: tweety
+Solving took 164.15869903564453s
+Answer: 1 (Time: 110.732s) Optimization: 5
+Answer: 2 (Time: 130.385s) Optimization: 8
+Answer: 3 (Time: 135.135s) Optimization: 7
+Answer: 4 (Time: 150.022s) Optimization: 7
+Answer: 5 (Time: 162.521s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: trendy
+Solving took 130.8554995059967s
+Answer: 1 (Time: 127.647s) Optimization: 8
+Answer: 2 (Time: 128.326s) Optimization: 8
+Answer: 3 (Time: 128.867s) Optimization: 8
+Answer: 4 (Time: 129.418s) Optimization: 8
+Answer: 5 (Time: 129.852s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: frumpy
+Solving took 192.90015077590942s
+Answer: 1 (Time: 58.268s) Optimization: 7
+Answer: 2 (Time: 61.607s) Optimization: 7
+Answer: 3 (Time: 87.820s) Optimization: 6
+Answer: 4 (Time: 97.387s) Optimization: 7
+Answer: 5 (Time: 190.287s) Optimization: 7
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: crafty
+Solving took 240.6915786266327s
+Answer: 1 (Time: 92.997s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: handy
+Solving took 66.18952775001526s
+Answer: 1 (Time: 63.182s) Optimization: 8
+Answer: 2 (Time: 63.783s) Optimization: 8
+Answer: 3 (Time: 64.361s) Optimization: 8
+Answer: 4 (Time: 64.809s) Optimization: 8
+Answer: 5 (Time: 65.157s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '--restart-on-model --opt-mode=enum,9 --opt-stop=2', '')
+CONFIG: many
+Solving took 153.6962776184082s
+Answer: 1 (Time: 104.169s) Optimization: 5
+Answer: 2 (Time: 122.289s) Optimization: 8
+Answer: 3 (Time: 127.016s) Optimization: 7
+Answer: 4 (Time: 140.997s) Optimization: 7
+Answer: 5 (Time: 152.257s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,inc')
+CONFIG: auto
+Solving took 240.43276500701904s
+Answer: 1 (Time: 68.042s) Optimization: 5
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,inc')
+CONFIG: jumpy
+Solving took 240.4177918434143s
+Answer: 1 (Time: 41.309s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,inc')
+CONFIG: tweety
+Solving took 240.44600439071655s
+Answer: 1 (Time: 65.471s) Optimization: 5
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,inc')
+CONFIG: trendy
+Solving took 240.37842726707458s
+Answer: 1 (Time: 33.740s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,inc')
+CONFIG: frumpy
+Solving took 240.4646143913269s
+Answer: 1 (Time: 34.816s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,inc')
+CONFIG: crafty
+Solving took 240.4545156955719s
+Answer: 1 (Time: 89.268s) Optimization: 6
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,inc')
+CONFIG: handy
+Solving took 240.5029797554016s
+Answer: 1 (Time: 50.063s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,inc')
+CONFIG: many
+Solving took 240.59551668167114s
+Answer: 1 (Time: 63.532s) Optimization: 5
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,dec')
+CONFIG: auto
+Solving took 240.46345973014832s
+Answer: 1 (Time: 66.057s) Optimization: 5
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,dec')
+CONFIG: jumpy
+Solving took 240.41609048843384s
+Answer: 1 (Time: 41.325s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,dec')
+CONFIG: tweety
+Solving took 240.75530362129211s
+Answer: 1 (Time: 65.933s) Optimization: 5
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,dec')
+CONFIG: trendy
+Solving took 240.66357374191284s
+Answer: 1 (Time: 47.066s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,dec')
+CONFIG: frumpy
+Solving took 240.51779437065125s
+Answer: 1 (Time: 45.300s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,dec')
+CONFIG: crafty
+Solving took 240.52338433265686s
+Answer: 1 (Time: 119.899s) Optimization: 6
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,dec')
+CONFIG: handy
+Solving took 240.66526412963867s
+Answer: 1 (Time: 69.972s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '--opt-strategy=bb,dec')
+CONFIG: many
+Solving took 240.63155055046082s
+Answer: 1 (Time: 83.071s) Optimization: 5
+
+PARAM: ('-e bt --project=show,3', '', '')
+CONFIG: auto
+Solving took 240.63467955589294s
+Answer: 1 (Time: 137.304s) Optimization: 5
+
+PARAM: ('-e bt --project=show,3', '', '')
+CONFIG: jumpy
+Solving took 240.49675345420837s
+Answer: 1 (Time: 53.368s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '')
+CONFIG: tweety
+Solving took 240.64316368103027s
+Answer: 1 (Time: 139.228s) Optimization: 5
+
+PARAM: ('-e bt --project=show,3', '', '')
+CONFIG: trendy
+Solving took 240.54254412651062s
+Answer: 1 (Time: 168.410s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '')
+CONFIG: frumpy
+Solving took 240.4592468738556s
+Answer: 1 (Time: 70.285s) Optimization: 7
+
+PARAM: ('-e bt --project=show,3', '', '')
+CONFIG: crafty
+Solving took 240.67033624649048s
+Answer: 1 (Time: 107.291s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '')
+CONFIG: handy
+Solving took 240.8397991657257s
+Answer: 1 (Time: 90.458s) Optimization: 8
+
+PARAM: ('-e bt --project=show,3', '', '')
+CONFIG: many
+Solving took 240.94074010849s
+Answer: 1 (Time: 139.126s) Optimization: 5

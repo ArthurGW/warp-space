@@ -1,0 +1,350 @@
+PARAM:  -t 4,compete CONFIG: jumpy
+Answer: 1 (Time: 31.298s) Optimization: 7
+Answer: 2 (Time: 135.747s) Optimization: 6
+
+PARAM:  -t 4,compete CONFIG: trendy
+Answer: 1 (Time: 105.960s) Optimization: 7
+
+PARAM:  -t 4,compete CONFIG: frumpy
+
+PARAM:  -t 4,compete CONFIG: crafty
+Answer: 1 (Time: 32.166s) Optimization: 6
+
+PARAM:  -t 4,compete CONFIG: handy
+Answer: 1 (Time: 53.791s) Optimization: 5
+
+PARAM:  -t 4,compete CONFIG: many
+Answer: 1 (Time: 66.163s) Optimization: 5
+
+
+PARAM:  -e bt CONFIG: jumpy
+Answer: 1 (Time: 37.960s) Optimization: 8
+
+PARAM:  -e bt CONFIG: trendy
+Answer: 1 (Time: 110.808s) Optimization: 8
+
+PARAM:  -e bt CONFIG: frumpy
+Answer: 1 (Time: 51.104s) Optimization: 7
+
+PARAM:  -e bt CONFIG: crafty
+Answer: 1 (Time: 80.402s) Optimization: 8
+
+PARAM:  -e bt CONFIG: handy
+Answer: 1 (Time: 60.501s) Optimization: 8
+
+PARAM:  -e bt CONFIG: many
+Answer: 1 (Time: 100.178s) Optimization: 5
+
+
+PARAM:  --project=show,3 CONFIG: jumpy
+Answer: 1 (Time: 37.796s) Optimization: 8
+
+PARAM:  --project=show,3 CONFIG: trendy
+Answer: 1 (Time: 112.897s) Optimization: 8
+
+PARAM:  --project=show,3 CONFIG: frumpy
+Answer: 1 (Time: 51.403s) Optimization: 7
+
+PARAM:  --project=show,3 CONFIG: crafty
+Answer: 1 (Time: 80.263s) Optimization: 8
+
+PARAM:  --project=show,3 CONFIG: handy
+Answer: 1 (Time: 61.563s) Optimization: 8
+
+PARAM:  --project=show,3 CONFIG: many
+Answer: 1 (Time: 102.392s) Optimization: 5
+
+
+PARAM:  --opt-stop=5 CONFIG: jumpy
+Answer: 1 (Time: 44.597s) Optimization: 8
+
+PARAM:  --opt-stop=5 CONFIG: trendy
+Answer: 1 (Time: 116.242s) Optimization: 8
+
+PARAM:  --opt-stop=5 CONFIG: frumpy
+Answer: 1 (Time: 50.965s) Optimization: 7
+Answer: 2 (Time: 162.250s) Optimization: 6
+
+PARAM:  --opt-stop=5 CONFIG: crafty
+Answer: 1 (Time: 79.750s) Optimization: 8
+Answer: 2 (Time: 119.890s) Optimization: 7
+Answer: 3 (Time: 197.860s) Optimization: 6
+
+PARAM:  --opt-stop=5 CONFIG: handy
+Answer: 1 (Time: 61.649s) Optimization: 8
+
+PARAM:  --opt-stop=5 CONFIG: many
+Solving took 103.78137278556824s
+
+Answer: 1 (Time: 102.404s) Optimization: 5
+
+
+PARAM:  --opt-strategy=bb,hier CONFIG: jumpy
+Answer: 1 (Time: 38.040s) Optimization: 8
+
+PARAM:  --opt-strategy=bb,hier CONFIG: trendy
+Answer: 1 (Time: 112.454s) Optimization: 8
+
+PARAM:  --opt-strategy=bb,hier CONFIG: frumpy
+Answer: 1 (Time: 51.913s) Optimization: 7
+Answer: 2 (Time: 161.057s) Optimization: 6
+
+PARAM:  --opt-strategy=bb,hier CONFIG: crafty
+Answer: 1 (Time: 79.910s) Optimization: 8
+Answer: 2 (Time: 120.880s) Optimization: 7
+Answer: 3 (Time: 199.561s) Optimization: 6
+
+PARAM:  --opt-strategy=bb,hier CONFIG: handy
+Answer: 1 (Time: 61.706s) Optimization: 8
+
+PARAM:  --opt-strategy=bb,hier CONFIG: many
+Answer: 1 (Time: 101.464s) Optimization: 5
+
+
+PARAM:  --opt-strategy=bb,inc CONFIG: jumpy
+Answer: 1 (Time: 39.310s) Optimization: 8
+
+PARAM:  --opt-strategy=bb,inc CONFIG: trendy
+Answer: 1 (Time: 32.196s) Optimization: 8
+
+PARAM:  --opt-strategy=bb,inc CONFIG: frumpy
+Answer: 1 (Time: 33.728s) Optimization: 8
+Answer: 2 (Time: 85.839s) Optimization: 5
+
+PARAM:  --opt-strategy=bb,inc CONFIG: crafty
+Answer: 1 (Time: 86.458s) Optimization: 6
+
+PARAM:  --opt-strategy=bb,inc CONFIG: handy
+Answer: 1 (Time: 50.438s) Optimization: 8
+
+PARAM:  --opt-strategy=bb,inc CONFIG: many
+Answer: 1 (Time: 62.725s) Optimization: 5
+
+
+PARAM:  --opt-strategy=usc,oll,7 CONFIG: jumpy
+
+PARAM:  --opt-strategy=usc,oll,7 CONFIG: trendy
+
+PARAM:  --opt-strategy=usc,oll,7 CONFIG: frumpy
+
+PARAM:  --opt-strategy=usc,oll,7 CONFIG: crafty
+
+PARAM:  --opt-strategy=usc,oll,7 CONFIG: handy
+
+PARAM:  --opt-strategy=usc,oll,7 CONFIG: many
+
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=rgs CONFIG: jumpy
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=rgs CONFIG: trendy
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=rgs CONFIG: frumpy
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=rgs CONFIG: crafty
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=rgs CONFIG: handy
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=rgs CONFIG: many
+
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=bin CONFIG: jumpy
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=bin CONFIG: trendy
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=bin CONFIG: frumpy
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=bin CONFIG: crafty
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=bin CONFIG: handy
+
+PARAM:  --opt-strategy=usc,oll,7 --opt-usc-shrink=bin CONFIG: many
+
+
+PARAM:  --opt-heuristic=sign,model CONFIG: jumpy
+Answer: 1 (Time: 43.499s) Optimization: 8
+
+PARAM:  --opt-heuristic=sign,model CONFIG: trendy
+Answer: 1 (Time: 111.990s) Optimization: 8
+
+PARAM:  --opt-heuristic=sign,model CONFIG: frumpy
+Answer: 1 (Time: 74.737s) Optimization: 6
+
+PARAM:  --opt-heuristic=sign,model CONFIG: crafty
+Answer: 1 (Time: 42.364s) Optimization: 8
+
+PARAM:  --opt-heuristic=sign,model CONFIG: handy
+Answer: 1 (Time: 62.227s) Optimization: 8
+
+PARAM:  --opt-heuristic=sign,model CONFIG: many
+Answer: 1 (Time: 55.430s) Optimization: 8
+Answer: 2 (Time: 179.868s) Optimization: 5
+
+
+PARAM:  --heuristic=Domain CONFIG: jumpy
+Answer: 1 (Time: 39.538s) Optimization: 8
+
+PARAM:  --heuristic=Domain CONFIG: trendy
+Answer: 1 (Time: 114.944s) Optimization: 8
+
+PARAM:  --heuristic=Domain CONFIG: frumpy
+Answer: 1 (Time: 53.507s) Optimization: 7
+Answer: 2 (Time: 176.324s) Optimization: 6
+
+PARAM:  --heuristic=Domain CONFIG: crafty
+Answer: 1 (Time: 81.529s) Optimization: 8
+Answer: 2 (Time: 124.099s) Optimization: 7
+Answer: 3 (Time: 206.165s) Optimization: 6
+
+PARAM:  --heuristic=Domain CONFIG: handy
+Answer: 1 (Time: 62.440s) Optimization: 8
+
+PARAM:  --heuristic=Domain CONFIG: many
+Answer: 1 (Time: 102.751s) Optimization: 5
+
+
+PARAM:  --heuristic=Domain --dom-mod=factor,opt CONFIG: jumpy
+Answer: 1 (Time: 39.158s) Optimization: 8
+
+PARAM:  --heuristic=Domain --dom-mod=factor,opt CONFIG: trendy
+Answer: 1 (Time: 115.559s) Optimization: 8
+
+PARAM:  --heuristic=Domain --dom-mod=factor,opt CONFIG: frumpy
+Answer: 1 (Time: 53.647s) Optimization: 7
+Answer: 2 (Time: 170.716s) Optimization: 6
+
+PARAM:  --heuristic=Domain --dom-mod=factor,opt CONFIG: crafty
+Answer: 1 (Time: 81.110s) Optimization: 8
+Answer: 2 (Time: 122.061s) Optimization: 7
+Answer: 3 (Time: 200.571s) Optimization: 6
+
+PARAM:  --heuristic=Domain --dom-mod=factor,opt CONFIG: handy
+Answer: 1 (Time: 63.390s) Optimization: 8
+
+PARAM:  --heuristic=Domain --dom-mod=factor,opt CONFIG: many
+Answer: 1 (Time: 104.567s) Optimization: 5
+
+
+PARAM:  --heuristic=Berkmin CONFIG: jumpy
+Answer: 1 (Time: 38.640s) Optimization: 8
+
+PARAM:  --heuristic=Berkmin CONFIG: trendy
+Answer: 1 (Time: 114.402s) Optimization: 8
+
+PARAM:  --heuristic=Berkmin CONFIG: frumpy
+Answer: 1 (Time: 51.686s) Optimization: 7
+Answer: 2 (Time: 160.950s) Optimization: 6
+
+PARAM:  --heuristic=Berkmin CONFIG: crafty
+Answer: 1 (Time: 80.711s) Optimization: 8
+Answer: 2 (Time: 121.700s) Optimization: 7
+Answer: 3 (Time: 201.442s) Optimization: 6
+
+PARAM:  --heuristic=Berkmin CONFIG: handy
+Answer: 1 (Time: 62.327s) Optimization: 8
+
+PARAM:  --heuristic=Berkmin CONFIG: many
+Answer: 1 (Time: 100.570s) Optimization: 5
+
+
+PARAM:  --heuristic=Vsids CONFIG: jumpy
+Answer: 1 (Time: 38.392s) Optimization: 8
+
+PARAM:  --heuristic=Vsids CONFIG: trendy
+Answer: 1 (Time: 116.483s) Optimization: 8
+
+PARAM:  --heuristic=Vsids CONFIG: frumpy
+Answer: 1 (Time: 54.537s) Optimization: 7
+Answer: 2 (Time: 171.137s) Optimization: 6
+
+PARAM:  --heuristic=Vsids CONFIG: crafty
+Answer: 1 (Time: 81.307s) Optimization: 8
+Answer: 2 (Time: 122.126s) Optimization: 7
+Answer: 3 (Time: 200.753s) Optimization: 6
+
+PARAM:  --heuristic=Vsids CONFIG: handy
+Answer: 1 (Time: 62.886s) Optimization: 8
+
+PARAM:  --heuristic=Vsids CONFIG: many
+Answer: 1 (Time: 114.986s) Optimization: 5
+
+
+PARAM:  --heuristic=Vsids --vsids-acids CONFIG: jumpy
+Answer: 1 (Time: 41.717s) Optimization: 8
+
+PARAM:  --heuristic=Vsids --vsids-acids CONFIG: trendy
+Answer: 1 (Time: 121.935s) Optimization: 8
+
+PARAM:  --heuristic=Vsids --vsids-acids CONFIG: frumpy
+Answer: 1 (Time: 53.689s) Optimization: 7
+Answer: 2 (Time: 175.855s) Optimization: 6
+
+PARAM:  --heuristic=Vsids --vsids-acids CONFIG: crafty
+Answer: 1 (Time: 86.040s) Optimization: 8
+Answer: 2 (Time: 127.334s) Optimization: 7
+Answer: 3 (Time: 207.548s) Optimization: 6
+
+PARAM:  --heuristic=Vsids --vsids-acids CONFIG: handy
+Answer: 1 (Time: 62.304s) Optimization: 8
+
+PARAM:  --heuristic=Vsids --vsids-acids CONFIG: many
+Answer: 1 (Time: 103.587s) Optimization: 5
+
+
+PARAM:  --heuristic=Vsids --init-moms CONFIG: jumpy
+Answer: 1 (Time: 39.937s) Optimization: 8
+
+PARAM:  --heuristic=Vsids --init-moms CONFIG: trendy
+Answer: 1 (Time: 113.310s) Optimization: 8
+
+PARAM:  --heuristic=Vsids --init-moms CONFIG: frumpy
+Answer: 1 (Time: 54.007s) Optimization: 7
+Answer: 2 (Time: 169.288s) Optimization: 6
+
+PARAM:  --heuristic=Vsids --init-moms CONFIG: crafty
+Answer: 1 (Time: 80.260s) Optimization: 8
+Answer: 2 (Time: 121.818s) Optimization: 7
+Answer: 3 (Time: 199.866s) Optimization: 6
+
+PARAM:  --heuristic=Vsids --init-moms CONFIG: handy
+Answer: 1 (Time: 62.129s) Optimization: 8
+
+PARAM:  --heuristic=Vsids --init-moms CONFIG: many
+Answer: 1 (Time: 103.427s) Optimization: 5
+
+
+PARAM:  --save-progress=50 CONFIG: jumpy
+Answer: 1 (Time: 35.482s) Optimization: 8
+
+PARAM:  --save-progress=50 CONFIG: trendy
+Answer: 1 (Time: 116.211s) Optimization: 8
+
+PARAM:  --save-progress=50 CONFIG: frumpy
+Answer: 1 (Time: 38.569s) Optimization: 8
+
+PARAM:  --save-progress=50 CONFIG: crafty
+Answer: 1 (Time: 76.211s) Optimization: 8
+
+PARAM:  --save-progress=50 CONFIG: handy
+Answer: 1 (Time: 221.801s) Optimization: 8
+
+PARAM:  --save-progress=50 CONFIG: many
+Answer: 1 (Time: 72.272s) Optimization: 8
+
+
+PARAM:  --save-progress=75 CONFIG: jumpy
+Answer: 1 (Time: 39.200s) Optimization: 8
+
+PARAM:  --save-progress=75 CONFIG: trendy
+Answer: 1 (Time: 119.612s) Optimization: 8
+
+PARAM:  --save-progress=75 CONFIG: frumpy
+Answer: 1 (Time: 38.370s) Optimization: 8
+
+PARAM:  --save-progress=75 CONFIG: crafty
+Answer: 1 (Time: 95.071s) Optimization: 8
+
+PARAM:  --save-progress=75 CONFIG: handy
+Answer: 1 (Time: 218.870s) Optimization: 8
+
+PARAM:  --save-progress=75 CONFIG: many
+Answer: 1 (Time: 71.334s) Optimization: 8

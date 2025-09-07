@@ -1,0 +1,267 @@
+PARAM: ('-t 4,compete', '')
+CONFIG: auto
+Solving took 26.312047481536865s
+*** Warn : (clingo): Domain options require heuristic 'Domain'!
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 21.966s) Optimization: 8
+Answer: 2 (Time: 21.989s) Optimization: 7
+Answer: 3 (Time: 22.001s) Optimization: 6
+Answer: 4 (Time: 22.020s) Optimization: 5
+Answer: 5 (Time: 22.057s) Optimization: 4
+
+PARAM: ('-t 4,compete', '')
+CONFIG: jumpy
+Solving took 25.707587480545044s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 21.382s) Optimization: 8
+Answer: 2 (Time: 21.403s) Optimization: 7
+Answer: 3 (Time: 21.411s) Optimization: 6
+Answer: 4 (Time: 21.432s) Optimization: 5
+Answer: 5 (Time: 21.463s) Optimization: 4
+
+PARAM: ('-t 4,compete', '')
+CONFIG: tweety
+Solving took 24.878896236419678s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.447s) Optimization: 8
+Answer: 2 (Time: 20.473s) Optimization: 7
+Answer: 3 (Time: 20.480s) Optimization: 6
+Answer: 4 (Time: 20.498s) Optimization: 5
+Answer: 5 (Time: 20.526s) Optimization: 4
+
+PARAM: ('-t 4,compete', '')
+CONFIG: trendy
+Solving took 25.24752926826477s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.750s) Optimization: 8
+Answer: 2 (Time: 20.768s) Optimization: 7
+Answer: 3 (Time: 20.776s) Optimization: 6
+Answer: 4 (Time: 20.796s) Optimization: 5
+Answer: 5 (Time: 20.826s) Optimization: 4
+
+PARAM: ('-t 4,compete', '')
+CONFIG: frumpy
+Solving took 25.024529933929443s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.696s) Optimization: 8
+Answer: 2 (Time: 20.712s) Optimization: 7
+Answer: 3 (Time: 20.720s) Optimization: 6
+Answer: 4 (Time: 20.738s) Optimization: 5
+Answer: 5 (Time: 20.752s) Optimization: 4
+
+PARAM: ('-t 4,compete', '')
+CONFIG: crafty
+Solving took 25.045392751693726s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.499s) Optimization: 8
+Answer: 2 (Time: 20.512s) Optimization: 7
+Answer: 3 (Time: 20.520s) Optimization: 6
+Answer: 4 (Time: 20.538s) Optimization: 5
+Answer: 5 (Time: 20.565s) Optimization: 4
+
+PARAM: ('-t 4,compete', '')
+CONFIG: handy
+Solving took 26.439779043197632s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 21.432s) Optimization: 8
+Answer: 2 (Time: 21.450s) Optimization: 7
+Answer: 3 (Time: 21.460s) Optimization: 6
+Answer: 4 (Time: 21.479s) Optimization: 5
+Answer: 5 (Time: 21.511s) Optimization: 4
+
+PARAM: ('-t 4,compete', '')
+CONFIG: many
+Solving took 24.954776525497437s
+*** Warn : (clingo): Domain options require heuristic 'Domain'!
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.874s) Optimization: 8
+Answer: 2 (Time: 20.887s) Optimization: 7
+Answer: 3 (Time: 20.895s) Optimization: 6
+Answer: 4 (Time: 20.912s) Optimization: 5
+Answer: 5 (Time: 20.940s) Optimization: 4
+
+PARAM: ('-t 4,split', '')
+CONFIG: auto
+Solving took 25.03470540046692s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.738s) Optimization: 7
+Answer: 2 (Time: 20.751s) Optimization: 6
+Answer: 3 (Time: 20.764s) Optimization: 5
+Answer: 4 (Time: 20.775s) Optimization: 4
+Answer: 5 (Time: 20.793s) Optimization: 3
+
+PARAM: ('-t 4,split', '')
+CONFIG: jumpy
+Solving took 24.863518714904785s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.871s) Optimization: 7
+Answer: 2 (Time: 20.886s) Optimization: 6
+Answer: 3 (Time: 20.900s) Optimization: 5
+Answer: 4 (Time: 20.910s) Optimization: 4
+Answer: 5 (Time: 20.936s) Optimization: 3
+
+PARAM: ('-t 4,split', '')
+CONFIG: tweety
+Solving took 25.332316398620605s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.741s) Optimization: 7
+Answer: 2 (Time: 20.757s) Optimization: 6
+Answer: 3 (Time: 20.774s) Optimization: 5
+Answer: 4 (Time: 20.788s) Optimization: 4
+Answer: 5 (Time: 20.807s) Optimization: 3
+
+PARAM: ('-t 4,split', '')
+CONFIG: trendy
+Solving took 25.731278657913208s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 21.431s) Optimization: 7
+Answer: 2 (Time: 21.446s) Optimization: 6
+Answer: 3 (Time: 21.459s) Optimization: 5
+Answer: 4 (Time: 21.471s) Optimization: 4
+Answer: 5 (Time: 21.490s) Optimization: 3
+
+PARAM: ('-t 4,split', '')
+CONFIG: frumpy
+Solving took 25.026396989822388s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.835s) Optimization: 7
+Answer: 2 (Time: 20.848s) Optimization: 6
+Answer: 3 (Time: 20.862s) Optimization: 5
+Answer: 4 (Time: 20.874s) Optimization: 4
+Answer: 5 (Time: 20.897s) Optimization: 3
+
+PARAM: ('-t 4,split', '')
+CONFIG: crafty
+Solving took 25.454312801361084s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.656s) Optimization: 7
+Answer: 2 (Time: 20.672s) Optimization: 6
+Answer: 3 (Time: 20.687s) Optimization: 5
+Answer: 4 (Time: 20.697s) Optimization: 4
+Answer: 5 (Time: 20.718s) Optimization: 3
+
+PARAM: ('-t 4,split', '')
+CONFIG: handy
+Solving took 26.362521171569824s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 21.905s) Optimization: 7
+Answer: 2 (Time: 21.943s) Optimization: 6
+Answer: 3 (Time: 21.956s) Optimization: 5
+Answer: 4 (Time: 21.967s) Optimization: 4
+Answer: 5 (Time: 21.987s) Optimization: 3
+
+PARAM: ('-t 4,split', '')
+CONFIG: many
+Solving took 25.285610675811768s
+*** Warn : (clingo): Domain options require heuristic 'Domain'!
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+*** Warn : (clingo): Selected strategies imply Mode=compete.
+
+Answer: 1 (Time: 20.981s) Optimization: 8
+Answer: 2 (Time: 20.995s) Optimization: 7
+Answer: 3 (Time: 21.002s) Optimization: 6
+Answer: 4 (Time: 21.022s) Optimization: 5
+Answer: 5 (Time: 21.050s) Optimization: 4
+
+PARAM: ('', '')
+CONFIG: auto
+Solving took 20.63705039024353s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 19.204s) Optimization: 8
+Answer: 2 (Time: 19.215s) Optimization: 7
+Answer: 3 (Time: 19.221s) Optimization: 6
+Answer: 4 (Time: 19.236s) Optimization: 5
+Answer: 5 (Time: 19.260s) Optimization: 4
+
+PARAM: ('', '')
+CONFIG: jumpy
+Solving took 20.624818086624146s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 19.198s) Optimization: 8
+Answer: 2 (Time: 19.208s) Optimization: 7
+Answer: 3 (Time: 19.215s) Optimization: 6
+Answer: 4 (Time: 19.228s) Optimization: 5
+Answer: 5 (Time: 19.251s) Optimization: 4
+
+PARAM: ('', '')
+CONFIG: tweety
+Solving took 21.340243816375732s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 19.618s) Optimization: 8
+Answer: 2 (Time: 19.628s) Optimization: 7
+Answer: 3 (Time: 19.636s) Optimization: 6
+Answer: 4 (Time: 19.651s) Optimization: 5
+Answer: 5 (Time: 19.675s) Optimization: 4
+
+PARAM: ('', '')
+CONFIG: trendy
+Solving took 21.775426387786865s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.266s) Optimization: 8
+Answer: 2 (Time: 20.278s) Optimization: 7
+Answer: 3 (Time: 20.284s) Optimization: 6
+Answer: 4 (Time: 20.299s) Optimization: 5
+Answer: 5 (Time: 20.324s) Optimization: 4
+
+PARAM: ('', '')
+CONFIG: frumpy
+Solving took 22.539140701293945s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.884s) Optimization: 8
+Answer: 2 (Time: 20.906s) Optimization: 7
+Answer: 3 (Time: 20.940s) Optimization: 6
+Answer: 4 (Time: 20.961s) Optimization: 5
+Answer: 5 (Time: 21.008s) Optimization: 4
+
+PARAM: ('', '')
+CONFIG: crafty
+Solving took 22.035372972488403s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 20.569s) Optimization: 8
+Answer: 2 (Time: 20.580s) Optimization: 7
+Answer: 3 (Time: 20.588s) Optimization: 6
+Answer: 4 (Time: 20.604s) Optimization: 5
+Answer: 5 (Time: 20.629s) Optimization: 4
+
+PARAM: ('', '')
+CONFIG: handy
+Solving took 20.91209578514099s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 19.429s) Optimization: 8
+Answer: 2 (Time: 19.440s) Optimization: 7
+Answer: 3 (Time: 19.447s) Optimization: 6
+Answer: 4 (Time: 19.462s) Optimization: 5
+Answer: 5 (Time: 19.486s) Optimization: 4
+
+PARAM: ('', '')
+CONFIG: many
+Solving took 21.847368240356445s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 19.867s) Optimization: 8
+Answer: 2 (Time: 19.880s) Optimization: 7
+Answer: 3 (Time: 19.888s) Optimization: 6
+Answer: 4 (Time: 19.911s) Optimization: 5
+Answer: 5 (Time: 19.951s) Optimization: 4
