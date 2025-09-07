@@ -1,11 +1,8 @@
 using System;
-using System.Collections;
 using System.Linq;
 using LevelGenerator;
 using LevelGenerator.Extensions;
 using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace Tests.EditMode.LevelGeneratorTests
 {
@@ -33,7 +30,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Act
             using var genUnderTest = new LevelGenerator.LevelGenerator(
-                1, 1, 2, 3, 4, 1, 5, false, 1
+                1, 1, 2, 3, 4, 1, 0, 5, false, 1
             );
             
             // Assert
@@ -45,7 +42,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             var genUnderTest = new LevelGenerator.LevelGenerator(
-                1, 1, 2, 3, 4, 1, 5, false, 1
+                1, 1, 2, 3, 4, 1, 0, 5, false, 1
             );
             
             // Act - checking that no exceptions happen during the native dtor
@@ -61,7 +58,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             using var genUnderTest = new LevelGenerator.LevelGenerator(
-                2, 10, 10, 1, 6, 1, 1234, false, 2
+                2, 10, 10, 1, 6, 1, 0, 1234, false, 2
             );
             
             // Act
@@ -78,7 +75,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             using var genUnderTest = new LevelGenerator.LevelGenerator(
-                20, 10, 10, 1, 6, 1, 1234, false, 2
+                20, 10, 10, 1, 6, 1, 0, 1234, false, 2
             );
             var canceller = new CancelAfterN(n * 2);  // n*2 as cancellation is checked twice per model
             
@@ -95,7 +92,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             using var genUnderTest = new LevelGenerator.LevelGenerator(
-                3, 12, 12, 2, 8, 2, 1234, false, 1
+                3, 12, 12, 2, 8, 2, 0, 1234, false, 1
             );
             
             // Act
@@ -111,17 +108,17 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             using var gen = new LevelGenerator.LevelGenerator(
-                1, 9, 10, 1, 6, 1, 1234, false, 1
+                1, 9, 10, 1, 6, 1, 0, 1234, false, 1
             );
             // Act
             gen.Solve(null);
             using var bestLevelUnderTest = gen.BestLevel();
                 
             // Assert - these values are the same as in the C++ equivalent tests with the same seed
-            Assert.That(bestLevelUnderTest.Cost, Is.EqualTo(8));
+            Assert.That(bestLevelUnderTest.Cost, Is.EqualTo(4));
             Assert.That(bestLevelUnderTest.NumMapSquares, Is.EqualTo(90));
-            Assert.That(bestLevelUnderTest.NumRooms, Is.EqualTo(8));
-            Assert.That(bestLevelUnderTest.NumAdjacencies, Is.EqualTo(14));
+            Assert.That(bestLevelUnderTest.NumRooms, Is.EqualTo(7));
+            Assert.That(bestLevelUnderTest.NumAdjacencies, Is.EqualTo(12));
         }
 
         private static uint CountAndDisposeSymbols<T>(LevelPartIter<T> iter, bool useExtensions) where T : IDisposable
@@ -166,7 +163,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             using var gen = new LevelGenerator.LevelGenerator(
-                1, 9, 10, 1, 6, 1, 1234, false, 1
+                1, 9, 10, 1, 6, 1, 0, 1234, false, 1
             );
             
             // Act
@@ -178,8 +175,8 @@ namespace Tests.EditMode.LevelGeneratorTests
                 
             // Assert - these values are the same as in the C++ equivalent tests with the same seed
             Assert.That(CountAndDisposeSymbols(mapSquares, false), Is.EqualTo(90));
-            Assert.That(CountAndDisposeSymbols(rooms, false), Is.EqualTo(8));
-            Assert.That(CountAndDisposeSymbols(adjacencies, false), Is.EqualTo(14));
+            Assert.That(CountAndDisposeSymbols(rooms, false), Is.EqualTo(7));
+            Assert.That(CountAndDisposeSymbols(adjacencies, false), Is.EqualTo(12));
         }
         
         [Test]
@@ -187,7 +184,7 @@ namespace Tests.EditMode.LevelGeneratorTests
         {
             // Arrange
             using var gen = new LevelGenerator.LevelGenerator(
-                1, 9, 10, 1, 6, 1, 1234, false, 1
+                1, 9, 10, 1, 6, 1, 0, 1234, false, 1
             );
             
             // Act
@@ -199,8 +196,8 @@ namespace Tests.EditMode.LevelGeneratorTests
                 
             // Assert - these values are the same as in the C++ equivalent tests with the same seed
             Assert.That(CountAndDisposeSymbols(mapSquaresUnderTest, true), Is.EqualTo(90));
-            Assert.That(CountAndDisposeSymbols(roomsUnderTest, true), Is.EqualTo(8));
-            Assert.That(CountAndDisposeSymbols(adjacenciesUnderTest, true), Is.EqualTo(14));
+            Assert.That(CountAndDisposeSymbols(roomsUnderTest, true), Is.EqualTo(7));
+            Assert.That(CountAndDisposeSymbols(adjacenciesUnderTest, true), Is.EqualTo(12));
         }
     }
 }

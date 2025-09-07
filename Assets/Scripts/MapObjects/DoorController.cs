@@ -50,7 +50,7 @@ namespace MapObjects
             
             _opened = true;
             _animator.SetTrigger(_triggerId);
-            SendMessageUpwards("DoorOpened", DoorId);
+            SendMessageUpwards("DoorOpened", RoomIds);
         }
     }
 }

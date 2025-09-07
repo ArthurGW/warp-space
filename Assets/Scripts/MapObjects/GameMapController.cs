@@ -29,7 +29,6 @@ namespace MapObjects
         private NavMeshSurface _navMeshSurface;
 
         private ConnectedRooms _connectedRooms;
-        private List<DoorController> _doorControllers;
 
         public Dictionary<ulong, RoomData> RoomsById;
 
@@ -55,15 +54,15 @@ namespace MapObjects
             DestroyMap();
         }
 
-        public void DoorOpened(object doorId)
+        public void DoorOpened(object roomIds)
         {
-            if (doorId is not uint)
+            if (roomIds is not (ulong, ulong))
             {
                 Debug.LogError("invalid door id");
                 return;
             }
-            
-            _connectedRooms.AddConnection(_doorControllers.First(dc => dc.DoorId == (uint)doorId).RoomIds);
+
+            _connectedRooms.AddConnection(((ulong, ulong))roomIds); //_doorControllers.First(dc => dc.DoorId == (uint)doorId).RoomIds);
         }
 
         public void DestroyMap()
@@ -97,7 +96,6 @@ namespace MapObjects
             DestroyMap();
             
             _connectedRooms = new ConnectedRooms();
-            _doorControllers = new List<DoorController>();
             RoomsById = result.Rooms.ToDictionary(rm => rm.Id);
 
             // Create hull
@@ -106,7 +104,6 @@ namespace MapObjects
             // Generate rooms and corridors
             _roomFactory.ConstructRooms(result.Rooms, RoomsById,
                 result.Adjacencies, result.StartRoomId);
-            _doorControllers = GetComponentsInChildren<DoorController>().ToList();
             
             // Initialise connected rooms - corridors are connected to corridors next to them, rooms are connected to
             // nothing at present as all doors start closed

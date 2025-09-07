@@ -31,9 +31,20 @@ public class ProgressionManager : MonoBehaviour
 
     private ConcurrentQueue<MapResult> _results;
 
+    private uint _levelsPerGeneration;
+    public uint levelsFirstGeneration = 3u;
+    public uint maxLevelsPerGeneration = 5u;
+    public uint minRoomCount = 3u;
+    public uint maxRoomCount = 10u;
+    public uint numSolverThreads = 2u;
+    
     private float _breaches = 1f;
     public float breachIncreaseRate = 0.5f;
     public uint maxBreaches = 5u;
+
+    private float _portals = 0f;
+    public float portalIncreaseRate = 0.5f;
+    public uint maxPortals = 10u;
     
     [SerializeField]
     private Animator fadeAnimator;
@@ -106,6 +117,7 @@ public class ProgressionManager : MonoBehaviour
             PauseController.instance.IsPaused = true;
             
             _results = new ConcurrentQueue<MapResult>();
+            _levelsPerGeneration = levelsFirstGeneration;
             RestartGeneration();
             
             _musicSource.clip = music[Random.Range(0, music.Length)];
@@ -135,6 +147,7 @@ public class ProgressionManager : MonoBehaviour
         {
             for (var i = 0u; i < 10u; ++i)
                 await Awaitable.NextFrameAsync();
+            _mapGenerator.InterruptIfHasLevel();
         }
         return result;
     }
@@ -166,9 +179,20 @@ public class ProgressionManager : MonoBehaviour
             var parameters = Enumerable.Range(0, toGenerate).Select(_ =>
             {
                 var numBreaches = Math.Min((uint)Mathf.FloorToInt(_breaches), maxBreaches);
+                var numPortals = Math.Min((uint)Mathf.FloorToInt(_portals), maxPortals);
                 _breaches += breachIncreaseRate;
-                return (width: (uint)Random.Range(14, 18), height: (uint)Random.Range(7, 8) * 2, numBreaches,
-                    levelSeed: _levelSeed++);
+                _portals += portalIncreaseRate;
+                
+                var paramTuple = (
+                    numLevels: _levelsPerGeneration,
+                    width: (uint)Random.Range(14, 18),
+                    height: (uint)Random.Range(7, 8) * 2,
+                    numBreaches,
+                    numPortals,
+                    levelSeed: _levelSeed++
+                );
+                _levelsPerGeneration = maxLevelsPerGeneration;  // All bar first gen get the max levels
+                return paramTuple;
             }).ToArray();
 
             await Awaitable.BackgroundThreadAsync();
@@ -177,8 +201,17 @@ public class ProgressionManager : MonoBehaviour
             {
                 if (CheckCancel()) return;
                 Debug.Log($"Generating: {parameterSet}");
-                var result = await _mapGenerator.GenerateNewLevel(5, parameterSet.width, parameterSet.height, 3, 10,
-                    parameterSet.numBreaches, parameterSet.levelSeed, 2);
+                var result = await _mapGenerator.GenerateNewLevel(
+                    parameterSet.numLevels,
+                    parameterSet.width,
+                    parameterSet.height,
+                    minRoomCount,
+                    maxRoomCount,
+                    parameterSet.numBreaches,
+                    parameterSet.numPortals,
+                    parameterSet.levelSeed,
+                    numSolverThreads
+                );
                 if (CheckCancel()) return;
                 _results.Enqueue(result);
                 Debug.Log($"Generated {result.NumLevelsGenerated} levels with: {parameterSet}");
@@ -265,6 +298,7 @@ public class ProgressionManager : MonoBehaviour
         await Awaitable.NextFrameAsync();
         
         _breaches = 1f;
+        _portals = 0f;
         _numWarps = 0u;
         numWarpsText.text = "Warps: 0";
         updateText.text = _initialUpdateText;

@@ -9,51 +9,6 @@ using Random = UnityEngine.Random;
 
 namespace MapObjects
 {
-    public readonly struct Door : IEquatable<Door>
-    {
-        public readonly uint InternalX;
-        public readonly uint InternalY;
-        public readonly RoomType ConnectsTo;
-        public readonly CardinalDirection Direction;
-
-        public Door(uint internalX, uint internalY, RoomType connectsTo, CardinalDirection direction)
-        {
-            InternalX = internalX;
-            InternalY = internalY;
-            ConnectsTo = connectsTo;
-            Direction = direction;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Door other && Equals(other);
-        }
-
-        public bool Equals(Door other)
-        {
-            return Direction == other.Direction
-                   && InternalX == other.InternalX 
-                   && InternalY == other.InternalY
-                   && ConnectsTo == other.ConnectsTo;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(InternalX, InternalY, (byte)ConnectsTo, (byte)Direction);
-        }
-
-        public static bool operator ==(Door left, Door right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(Door left, Door right)
-        {
-            return !left.Equals(right);
-        }
-    }
-    
-  
     [RequireComponent(typeof(CorridorFactory))]
     public class RoomFactory : MonoBehaviour
     {
@@ -65,6 +20,7 @@ namespace MapObjects
         [SerializeField] private Transform roomContainer;
 
         private ILookup<ulong, Door> _doorsByRoomId;
+        private ILookup<ulong, Door> _portalsByRoomId;
 
         private void Awake()
         {
@@ -80,7 +36,8 @@ namespace MapObjects
             _corridorFactory.DestroyCorridors();
         }
 
-        public void ConstructRooms(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById, Dictionary<ulong, HashSet<ulong>> adjacencies, ulong startRoom)
+        public void ConstructRooms(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById,
+            Dictionary<ulong, HashSet<(ulong id, bool isPortal)>> adjacencies, ulong startRoom)
         {
             DestroyRooms();
             
@@ -102,21 +59,43 @@ namespace MapObjects
         }
         
         private void InitDoors(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById, 
-            Dictionary<ulong, HashSet<ulong>> adjacencies)
+            Dictionary<ulong, HashSet<(ulong id, bool isPortal)>> adjacencies)
         {
             var seen = new HashSet<(ulong firstId, ulong secondId)>();
             var doors = new List<(ulong roomId, Door door)>();
 
             foreach (var room in rooms) 
             {
-                foreach (var adjRoom in adjacencies[room.Id])
+                foreach (var adjRoom in adjacencies[room.Id].Where(entry => !entry.isPortal))
                 {
-                    var minId = Math.Min(room.Id, adjRoom);
-                    var maxId = Math.Max(room.Id, adjRoom);
+                    var minId = Math.Min(room.Id, adjRoom.id);
+                    var maxId = Math.Max(room.Id, adjRoom.id);
                     if (!seen.Add((minId, maxId))) continue;  // Already processed
-                    var newDoors = MakeDoor(room, roomsById[adjRoom]);
+                    var newDoors = MakeDoor(room, roomsById[adjRoom.id]);
                     doors.Add((room.Id, newDoors.roomDoor));
-                    doors.Add((adjRoom, newDoors.adjRoomDoor));
+                    doors.Add((adjRoom.id, newDoors.adjRoomDoor));
+                }
+            }
+            
+            _doorsByRoomId = doors.ToLookup(entry => entry.roomId,  entry => entry.door);
+        }
+        
+        private void InitPortals(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById, 
+            Dictionary<ulong, HashSet<(ulong id, bool isPortal)>> adjacencies)
+        {
+            var seen = new HashSet<(ulong firstId, ulong secondId)>();
+            var doors = new List<(ulong roomId, Door door)>();
+
+            foreach (var room in rooms) 
+            {
+                foreach (var adjRoom in adjacencies[room.Id].Where(entry => !entry.isPortal))
+                {
+                    var minId = Math.Min(room.Id, adjRoom.id);
+                    var maxId = Math.Max(room.Id, adjRoom.id);
+                    if (!seen.Add((minId, maxId))) continue;  // Already processed
+                    var newDoors = MakeDoor(room, roomsById[adjRoom.id]);
+                    doors.Add((room.Id, newDoors.roomDoor));
+                    doors.Add((adjRoom.id, newDoors.adjRoomDoor));
                 }
             }
             
@@ -144,6 +123,7 @@ namespace MapObjects
                     new Door(xPos.adj, doorPoint - adjRoom.Y + 1, room.Type, directions.adj)
                 );
             }
+            else
             {
                 // To the south or north, contacts a horizontal edge
                 var choices = Enumerable.Range((int)room.X, (int)room.Width)

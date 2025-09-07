@@ -11,7 +11,7 @@ namespace System.Runtime.CompilerServices
 
 namespace Layout
 {
-    public record MapResult(List<MapSquareData> Squares, List<RoomData> Rooms, Dictionary<ulong, HashSet<ulong>> Adjacencies, ulong StartRoomId, ulong FinishRoomId, ulong NumLevelsGenerated);
+    public record MapResult(List<MapSquareData> Squares, List<RoomData> Rooms, Dictionary<ulong, HashSet<(ulong id, bool isPortal)>> Adjacencies, ulong StartRoomId, ulong FinishRoomId, ulong NumLevelsGenerated);
     
     public static class SquareSize
     {
