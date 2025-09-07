@@ -88,11 +88,11 @@ namespace
         {
             type = SquareType::Corridor;
         }
-        else if (sym.match("room_square", 4))
+        else if (sym.match("room_square", 6))
         {
             type = SquareType::Room;
         }
-        else if (sym.match("breach_square", 4))
+        else if (sym.match("breach_square", 6))
         {
             type = SquareType::AlienBreach;
         }
