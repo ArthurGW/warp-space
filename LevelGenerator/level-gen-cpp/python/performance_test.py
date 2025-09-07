@@ -44,8 +44,8 @@ news = "--backprop --learn-explicit --no-gamma --eq=0 --sat-prepro=0 --trans-ext
 
 for params in itertools.product(
         # ("-t 4,compete",  # parallel mode compete
-        ( "-t 4,split",),#, ""),
-        (8,),
+        ("-t 4,compete", "-t 4,split", ""),
+        (7,),
         # (2, 3, 4, 5, 6,),
         # ("-t 4,split",)
          # "-e bt --project=show,3"),  # parallel mode split),

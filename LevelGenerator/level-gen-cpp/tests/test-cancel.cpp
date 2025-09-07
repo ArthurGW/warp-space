@@ -60,5 +60,17 @@ SCENARIO("level generators can be cancelled", "[levelgen][cancel]")
                 // We don't check the actual content of `res` as it is possible no valid models have been generated yet
             }
         }
+
+        WHEN("solve() has not been called")
+        {
+            THEN("calling interrupt_if_has_level returns false")
+            {
+                LevelGenerator gen{
+                        200, 10, 10, 1, 6, 1, 1, 1234
+                };
+
+                REQUIRE_FALSE(gen.interrupt_if_has_level());
+            }
+        }
     }
 }

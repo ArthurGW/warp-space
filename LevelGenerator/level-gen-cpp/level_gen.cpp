@@ -8,6 +8,7 @@
 #include <numeric>
 #include <random>
 #include <utility>
+#include <mutex>
 
 namespace {
     class CancelableSolveHandler : public Clingo::SolveEventHandler
@@ -54,7 +55,7 @@ class LevelGenerator::LevelGenImpl
             if (!load_prog_from_file)
             {
                 std::ostringstream stream;
-                stream << ship_prog << std::endl << portal_prog;
+                stream << ship_prog << std::endl << connections_prog;
                 program = stream.str();
             }
         }
@@ -71,6 +72,8 @@ class LevelGenerator::LevelGenImpl
         const unsigned num_breaches;
         const unsigned num_portals;
         std::string program;
+
+        mutable std::mutex level_mutex;
 
         void add_program_from_file(const char *path)
         {
@@ -114,7 +117,7 @@ class LevelGenerator::LevelGenImpl
             if (program.empty())
             {
                 add_program_from_file("programs/ship.lp");
-                add_program_from_file("programs/portal.lp");
+                add_program_from_file("programs/connections.lp");
             }
             else
             {
@@ -166,13 +169,14 @@ class LevelGenerator::LevelGenImpl
                 std::vector<clingo_symbol_t> transformed_symbols(model_symbols.size(), (clingo_symbol_t) 0);
                 std::transform(model_symbols.cbegin(), model_symbols.cend(), transformed_symbols.begin(),
                                [](const auto& sym) { return sym.to_c(); });
-                levels.emplace_back(width, height, total_cost, transformed_symbols);
                 out << "Model: ";
                 for (auto& atom : m.symbols())
                 {
                     out << " " << atom;
                 }
                 out << std::endl;
+                std::lock_guard<std::mutex> guard(level_mutex);
+                levels.emplace_back(width, height, total_cost, transformed_symbols);
 
                 if (check_cancel && check_cancel()) break;
             }
@@ -180,29 +184,49 @@ class LevelGenerator::LevelGenImpl
             return solutions.c_str();
         }
 
+        bool has_level() const
+        {
+            std::lock_guard<std::mutex> guard(level_mutex);
+            return !levels.empty();
+        }
+
         Level* best_level()
         {
+            std::lock_guard<std::mutex> guard(level_mutex);
             if (levels.empty())
             {
                 return nullptr;
             }
 
-            return &(*std::min_element(levels.begin(), levels.end(),
-                                       [&](const auto& left, const auto& right)
-                                       {
-                                           return left.get_cost() <= right.get_cost();
-                                       }
+            return &(*std::min_element(
+                levels.begin(),
+                levels.end(),
+                [&](const auto& left, const auto& right)
+                {
+                    return left.get_cost() <= right.get_cost();
+                }
             ));
         }
 
         size_t num_levels() const
         {
+            std::lock_guard<std::mutex> guard(level_mutex);
             return levels.size();
         }
 
         void interrupt()
         {
             solver->interrupt();
+        }
+
+        bool interrupt_if_has_level()
+        {
+            if (has_level())
+            {
+                interrupt();
+                return true;
+            }
+            return false;
         }
 
         friend class LevelGenerator;
@@ -251,4 +275,9 @@ size_t LevelGenerator::get_num_levels() const
 void LevelGenerator::interrupt()
 {
     impl->interrupt();
+}
+
+bool LevelGenerator::interrupt_if_has_level()
+{
+    return impl->interrupt_if_has_level();
 }

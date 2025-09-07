@@ -207,6 +207,8 @@ class LEVEL_GEN_API LevelGenerator {
 
         void interrupt();
 
+        bool interrupt_if_has_level();
+
         /// Get a pointer to the best level - note this pointer is only valid for the lifetime of the generator
         Level* best_level();
 

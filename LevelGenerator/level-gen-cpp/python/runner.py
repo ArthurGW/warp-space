@@ -12,12 +12,14 @@ max_rooms = 6
 num_breaches = 1
 num_portals = 0
 
+piclasp_args = news = "--backprop --learn-explicit --no-gamma --eq=0 --sat-prepro=0 --trans-ext=integ --del-cfl=F,55 --heuristic=Domain,94 --restarts=no --strengthen=recursive,all --del-glue=4,1 --del-grow=1.9111,94.6281 --del-init=30.3279,19,12774 --deletion=ipHeap,30,lbd --lookahead=no --init-moms --local-restarts --contraction=no --del-estimate=2 --del-max=1803231815 --del-on-restart=4 --init-watches=first --loops=shared --otfs=1 --partial-check=30 --reverse-arcs=2 --save-progress=115 --score-other=no --score-res=multiset --sign-def=pos --update-lbd=0"
+
 args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
         f" {num_models} -c width={width} -c height={height} -c num_breaches={num_breaches}"
         f" -c min_rooms={min_rooms} -c max_rooms={max_rooms} -c num_portals={num_portals}"
-        f" -t 1 --rand-freq=1.0 --seed={seed}"
+        f" -t 1 --rand-freq=1.0 --seed={seed} --configuration=jumpy {piclasp_args}"
         r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\ship.lp"
-        r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\portal.lp")
+        r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\connections.lp")
 
 start = time()
 ret = subprocess.run(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -40,7 +42,6 @@ breaches = {}
 rooms = {}
 corridors = {}
 ship = [['     ' for __ in range(width)] for _ in range(height)]
-reachable_r = set()
 all_r = set()
 
 adjacency = defaultdict(list)
@@ -74,66 +75,64 @@ data = data[data.rfind(f'Answer: '):]
 hull_square = re.compile(r'hull\((\d+),(\d+)\)')
 in_space = re.compile(r'in_space\((\d+),(\d+)\)')
 ship_square = re.compile(r'ship\((\d+),(\d+)\)')
-breach_square = re.compile(r'breach_square\((\d+),(\d+),[^)]+\)')
-breach = re.compile(r'alien_breach\((\d+,\d+,\d+,\d+),room\((\d+),(\d+),(\d+),(\d+)\)\)')
-room = re.compile(r'room\(\d+,\d+,\d+,\d+\)')
-start_room = re.compile(r'start_room\(room\((\d+),(\d+),(\d+),(\d+)\)\)')
-finish_room = re.compile(r'finish_room\(room\((\d+),(\d+),(\d+),(\d+)\)\)')
 corridor_square = re.compile(r'corridor\((\d+),(\d+)\)')
+breach_square = re.compile(r'breach_square\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)')
 room_square = re.compile(r'room_square\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)')
-reachable = re.compile(r'reachable\(room\((\d+),(\d+),(\d+),(\d+)\)\)')
-adjacent = re.compile(r'adjacent\(room\((\d+),(\d+),(\d+),(\d+)\),room\((\d+),(\d+),(\d+),(\d+)\),(\d)\)')
-
+breach = re.compile(r'alien_breach\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)')
+room = re.compile(r'room\((\d+),(\d+),(\d+),(\d+)\)')
+start_room = re.compile(r'start_room\((\d+),(\d+)\)')
+finish_room = re.compile(r'finish_room\((\d+),(\d+)\)')
+connected = re.compile(r'connected\((\d+),(\d+),(\d+),(\d+)\)')
+portal = re.compile(r'portal\((\d+),(\d+),(\d+),(\d+)\)')
 
 for x, y in yield_ints(hull_square, data):
     assign(x, y, '  H  ')
 
-for mch in yield_ints(reachable, data):
-    reachable_r.add(mch)
+for mch in yield_ints(room, data):
+    if mch[2] == 1:  # Corridor
+        continue
 
-for mch in room.findall(data):
-    all_r.add(mch)
+    rooms[mch[:2]] = rid
+    rid += 1
+    all_r.add(mch[:2])
 
-for mch in breach.findall(data):
-    x, y, w, h = map(int, mch[0].split(','))
-    rm = tuple(map(int, mch[1:]))
-    breaches[(x, y, w, h)] = bid
+for mch in yield_ints(breach, data):
+    xy = mch[:2]
+    rm = mch[4:]
+    breaches[xy] = bid
     bid += 1
 
-    adjacency[(x, y, w, h)].append((rm, False))
-    adjacency[rm].append(((x, y, w, h), False))
+    adjacency[xy].append((rm, False))
+    adjacency[rm].append((xy, False))
 
-    for sx in range(x, x + w):
-        for sy in range(y, y + h):
-            assign(sx, sy, f' B{breaches[(x, y, w, h)] : <2} ')
+for x, y, bx, by, bw, bh in yield_ints(breach_square, data):
+    assign(x, y, f' B{breaches[(bx, by)]: <2} ')
 
-for mch in yield_ints(adjacent, data):
-    adjacency[mch[:4]].append((mch[4:8], bool(mch[8])))
+for x1, y1, x2, y2 in yield_ints(connected, data):
+    adjacency[(x1, y1)].append(((x2, y2), False))
+    adjacency[(x2, y2)].append(((x1, y1), False))
+
+for x1, y1, x2, y2 in yield_ints(portal, data):
+    adjacency[(x1, y1)].append(((x2, y2), True))
+    adjacency[(x2, y2)].append(((x1, y1), True))
 
 for x, y, rx, ry, rw, rh in yield_ints(room_square, data):
-    if (rw, rh) == (1, 1):
-        if (rx, ry, rw, rh) not in corridors:
-            corridors[(rx, ry, rw, rh)] = cid
-            cid += 1
+    if (rx, ry) in rooms:
+        assign(x, y, f' R{rooms[(rx, ry)]: <2} ')
 
-        assign(x, y, f' C{corridors[(rx, ry, rw, rh)]: <2} ')
-    else:
-        if (rx, ry, rw, rh) not in rooms:
-            rooms[(rx, ry, rw, rh)] = rid
-            rid += 1
+for xy in yield_ints(corridor_square, data):
+    if xy not in corridors:
+        corridors[xy] = cid
+        cid += 1
 
-        assign(x, y, f' R{rooms[(rx, ry, rw, rh)]: <2} ')
-
-for r in list(adjacency):
-    adj_rooms = adjacency.pop(r)
-    adjacency[room_name(r)] = [f'{room_name(rr)}{" (PORTAL)" if is_portal else ""}' for rr, is_portal in adj_rooms]
+    assign(xy[0], xy[1], f' C{corridors[xy]: <2} ')
 
 for row in ship:
     print('|'.join(row))
     print('-' * (5 * len(row) + len(row) - 1))
 
-for a, r in adjacency.items():
-    print(f'{a}: {r}')
+for r, adj in adjacency.items():
+    print(f'{room_name(r)}: {[f'{room_name(rr)}{" (PORTAL)" if is_portal else ""}' for rr, is_portal in adj]}')
 
 for rm in yield_ints(start_room, data):  # Should be only one
     print(f'Start Room: {room_name(rm)}')
