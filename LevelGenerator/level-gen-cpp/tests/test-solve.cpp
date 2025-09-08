@@ -94,10 +94,10 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 REQUIRE_FALSE(level == nullptr);
 
                 // These values have been determined empirically
-                REQUIRE(level->get_cost() == 4);
+                REQUIRE(level->get_cost() == 25);
                 REQUIRE(level->get_num_map_squares() == 90UL);
                 REQUIRE(level->get_num_rooms() == 7UL);
-                REQUIRE(level->get_num_adjacencies() == 12UL);
+                REQUIRE(level->get_num_adjacencies() == 18UL);
             }
 
             THEN("the best level can iterate over symbols")
@@ -113,7 +113,7 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 // These values match the test above
                 REQUIRE(count_parts(level->map_squares()) == 90UL);
                 REQUIRE(count_parts(level->rooms()) == 7UL);
-                REQUIRE(count_parts(level->adjacencies()) == 12UL);
+                REQUIRE(count_parts(level->adjacencies()) == 18UL);
             }
 
             THEN("the best level has the right number of breaches")
@@ -163,8 +163,8 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 const auto* level = gen.best_level();
                 REQUIRE_FALSE(level == nullptr);
                 REQUIRE(level->get_num_rooms() == 11UL);
-                REQUIRE(level->get_start_room() == 1UL);
-                REQUIRE(level->get_finish_room() == 2UL);
+                REQUIRE(level->get_start_room() == 4UL);
+                REQUIRE(level->get_finish_room() == 5UL);
             }
         }
     }

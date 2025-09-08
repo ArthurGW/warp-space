@@ -1,4 +1,5 @@
 import itertools
+import os
 import re
 import subprocess
 from time import time
@@ -39,13 +40,13 @@ num_portals = 3
 #         # "--save-progress=75",
 # ):
 
-news = "--backprop --learn-explicit --no-gamma --eq=0 --sat-prepro=0 --trans-ext=integ --del-cfl=F,55 --heuristic=Domain,94 --restarts=no --strengthen=recursive,all --del-glue=4,1 --del-grow=1.9111,94.6281 --del-init=30.3279,19,12774 --deletion=ipHeap,30,lbd --lookahead=no --init-moms --local-restarts --contraction=no --del-estimate=2 --del-max=1803231815 --del-on-restart=4 --init-watches=first --loops=shared --otfs=1 --partial-check=30 --reverse-arcs=2 --save-progress=115 --score-other=no --score-res=multiset --sign-def=pos --update-lbd=0"
-# --rand-freq=0.0
+piclasp_args = "--backprop --learn-explicit --no-gamma --eq=0 --sat-prepro=0 --trans-ext=integ --del-cfl=F,55 --heuristic=Domain,94 --restarts=no --strengthen=recursive,all --del-glue=4,1 --del-grow=1.9111,94.6281 --del-init=30.3279,19,12774 --deletion=ipHeap,30,lbd --lookahead=no --init-moms --local-restarts --contraction=no --del-estimate=2 --del-max=1803231815 --del-on-restart=4 --init-watches=first --loops=shared --otfs=1 --partial-check=30 --reverse-arcs=2 --save-progress=115 --score-other=no --score-res=multiset --sign-def=pos --update-lbd=0"
 
 for params in itertools.product(
         # ("-t 4,compete",  # parallel mode compete
-        ("-t 4,compete", "-t 4,split", ""),
-        (7,),
+        ("-t 4,split",),
+        (15,),
+        # (10, 9, 8),
         # (2, 3, 4, 5, 6,),
         # ("-t 4,split",)
          # "-e bt --project=show,3"),  # parallel mode split),
@@ -86,27 +87,23 @@ for params in itertools.product(
             # 'handy',
             # 'many'
     ):
-        if (('--opt-strategy=bb,inc' in params or '--opt-strategy=bb,dec' in params)
-            and "--restart-on-model --opt-mode=enum,9 --opt-stop=2" in params
-            and "-t 4,compete" in params
-        ):
-            continue
+        this_dir = os.path.dirname(__file__)
 
-        args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
-                f" {num_models} -c width={width} -c height={height} -c num_breaches={num_breaches}"
-                f" -c min_rooms={min_rooms} -c max_rooms={max_rooms} -c num_portals={num_portals}"
-                f" --configuration={config}"
-                f' {news}'
-                f' {params[0]}'
-                # f" {' '.join(params[0])} {news}"
-                # f" {param}"
-                # ' --stats'
-                # ' -e bt'
-                " --time-limit=240"  # seconds
-                # ' --rand-freq=0.0'
-                f" --rand-freq=1.0 --seed={seed}"
-                rf" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\ship{params[1]}.lp"
-                rf" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\portal{params[1]}.lp")
+        args = (
+            f"{os.path.join(this_dir, 'clingo.exe')}"
+            f" {num_models} -c width={width} -c height={height} -c num_breaches={num_breaches}"
+            f" -c min_rooms={min_rooms} -c max_rooms={max_rooms} -c num_portals={num_portals}"
+
+            f" --configuration={config}"
+            f' {piclasp_args}'
+            f' {params[0]}'
+            # f" {param}"
+            # ' --stats'
+            " --time-limit=240"  # seconds
+            f" --rand-freq=1.0 --seed={seed}"
+            f" {os.path.abspath(os.path.join(this_dir, '..', 'programs', f'ship{params[1]}.lp'))}"
+            f" {os.path.abspath(os.path.join(this_dir, '..', 'programs', f'portal{params[1]}.lp'))}"
+        )
 
         print(f"PARAMS: {params}")
         print(f"CONFIG: {config}")

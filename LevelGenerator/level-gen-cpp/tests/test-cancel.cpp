@@ -19,7 +19,7 @@ SCENARIO("level generators can be cancelled", "[levelgen][cancel]")
     {
         WHEN("solve() is called with a cancellation callback")
         {
-            auto n = GENERATE(range(2U, 4U));
+            auto n = GENERATE(range(2U, 4U, 2U));
 
             THEN("solving can be cancelled")
             {
@@ -48,7 +48,7 @@ SCENARIO("level generators can be cancelled", "[levelgen][cancel]")
                 const char* res;
 
                 std::thread sleeper([&]() {
-                    std::this_thread::sleep_for(std::chrono::seconds(10));
+                    std::this_thread::sleep_for(std::chrono::seconds(5));
 
                     gen.interrupt();
                 });

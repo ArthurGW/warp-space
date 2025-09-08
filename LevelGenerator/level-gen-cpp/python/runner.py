@@ -1,3 +1,4 @@
+import os
 import re
 import subprocess
 from collections import defaultdict
@@ -14,12 +15,16 @@ num_portals = 0
 
 piclasp_args = news = "--backprop --learn-explicit --no-gamma --eq=0 --sat-prepro=0 --trans-ext=integ --del-cfl=F,55 --heuristic=Domain,94 --restarts=no --strengthen=recursive,all --del-glue=4,1 --del-grow=1.9111,94.6281 --del-init=30.3279,19,12774 --deletion=ipHeap,30,lbd --lookahead=no --init-moms --local-restarts --contraction=no --del-estimate=2 --del-max=1803231815 --del-on-restart=4 --init-watches=first --loops=shared --otfs=1 --partial-check=30 --reverse-arcs=2 --save-progress=115 --score-other=no --score-res=multiset --sign-def=pos --update-lbd=0"
 
-args = (r"C:\Source\warp-space\LevelGenerator\clingo-exe\clingo.exe"
-        f" {num_models} -c width={width} -c height={height} -c num_breaches={num_breaches}"
-        f" -c min_rooms={min_rooms} -c max_rooms={max_rooms} -c num_portals={num_portals}"
-        f" -t 1 --rand-freq=1.0 --seed={seed} --configuration=jumpy {piclasp_args}"
-        r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\ship.lp"
-        r" C:\Source\warp-space\LevelGenerator\level-gen-cpp\programs\connections.lp")
+this_dir = os.path.dirname(__file__)
+
+args = (
+    f"{os.path.join(this_dir, 'clingo.exe')}"
+    f" {num_models} -c width={width} -c height={height} -c num_breaches={num_breaches}"
+    f" -c min_rooms={min_rooms} -c max_rooms={max_rooms} -c num_portals={num_portals}"
+    f" -t 1 --rand-freq=1.0 --seed={seed} --configuration=jumpy {piclasp_args}"
+    f" {os.path.abspath(os.path.join(this_dir, '..', 'programs', 'ship.lp'))}"
+    f" {os.path.abspath(os.path.join(this_dir, '..', 'programs', 'connections.lp'))}"
+)
 
 start = time()
 ret = subprocess.run(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

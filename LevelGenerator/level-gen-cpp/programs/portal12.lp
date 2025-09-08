@@ -1,0 +1,75 @@
+% ADDED BIDIRECTIONAL CONNECTED AND PORTAL
+
+%* Specification for the connections in the ship *%
+
+%* Connectedness of rooms *%
+
+% A room is next_to to another room if it borders it on the right hand or lower side
+next_to(X1, Y1, W1, H1, X2, Y2, W2, H2) :- room(X1, Y1, W1, H1), room(X2, Y2, W2, H2), X2 = X1 + W1, Y2 > Y1 - H2, Y2 < Y1 + H1.
+next_to(X1, Y1, W1, H1, X2, Y2, W2, H2) :- room(X1, Y1, W1, H1), room(X2, Y2, W2, H2), Y2 = Y1 + H1, X2 > X1 - W2, X2 < X1 + W1.
+
+% Choose an arbitrary set of next_to *rooms* to physically connect (corridors are always connected to adjacent corridors)
+0 { connected(X1, Y1, W1, H1, X2, Y2, W2, H2) } 1
+    :- next_to(X1, Y1, W1, H1, X2, Y2, W2, H2).
+connected(X1, Y1, W1, H1, X2, Y2, W2, H2)
+    :- next_to(X1, Y1, W1, H1, X2, Y2, W2, H2), W1 = 1, W2 = 1.
+
+connected(X1, Y1, W1, H1, X2, Y2, W2, H2) :-
+   connected(X1, Y1, W1, H1, X2, Y2, W2, H2).
+
+% Choose num_portals rooms to connect by portal, that are not the same room, and not corridors
+num_portals {
+    portal(X1, Y1, X2, Y2)
+        : room(X1, Y1, W1, H1),
+          room(X2, Y2, W2, H2),
+          W1 != 1, W2 != 1,
+          not same_square(X1, Y1, X2, Y2)
+} num_portals.
+
+portal(X1, Y1, X2, Y2) :-
+   portal(X2, Y2, X1, Y1).
+
+%* Reachability determination *%
+
+% Trace reachability from start room, which is always reachable
+reachable(X, Y) :- start_room(X, Y).
+
+% A room is reachable if it is connected to another reachable room physically or by portal, in either direction
+reachable(X1, Y1)
+    :- room(X1, Y1, _, _),
+    reachable(X2, Y2),
+    connected(X1, Y1, _, _, X2, Y2, _, _).
+
+reachable(X1, Y1)
+    :- room(X1, Y1, W1, H1),
+    reachable(X2, Y2),
+    portal(X1, Y1, X2, Y2).
+
+%* Constraints *%
+
+% Every room must be reachable
+:- room(X1, Y1, _, _), not reachable(X1, Y1).
+
+% The start room and finish room cannot be connected
+:- connected(X1, Y1, _, _, X2, Y2, _, _),
+    start_room(X1, Y1), finish_room(X2, Y2).
+:- portal(X1, Y1, X2, Y2),
+    start_room(X1, Y1), finish_room(X2, Y2).
+
+% At least one breached room must be connected physically to another room
+:- {
+    connected(RX, RY, _, _, _, _, _, _) : alien_breach(_, _, _, _, RX, RY)
+} 0, num_portals > 0.
+
+%* Preferences *%
+
+% Discourage having too many connected rooms, i.e. not every pair of rooms that are next to each other should be joined
+% The particular formulation means corridor-corridor connections have zero cost, wider rooms have higher cost
+#minimize { (W1+W2+H1+H2-4)@1,X1,Y1,X2,Y2
+    : connected(X1, Y1, W1, H1, X2, Y2, W2, H2)
+}.
+
+%* Output predicates *%
+
+#show connected/8.
+#show portal/4.

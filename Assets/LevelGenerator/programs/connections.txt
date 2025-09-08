@@ -42,10 +42,10 @@ reachable(X1, Y1)
 % Every room must be reachable
 :- room(X1, Y1, _, _), not reachable(X1, Y1).
 
-% The start room and finish room cannot be adjacent
-:- connected(X1, Y1, X2, Y2; X2, Y2, X1, Y1),
+% The start room and finish room cannot be connected
+:- connected(X1, Y1, X2, Y2),
     start_room(X1, Y1), finish_room(X2, Y2).
-:- portal(X1, Y1, X2, Y2; X2, Y2, X1, Y1),
+:- portal(X1, Y1, X2, Y2),
     start_room(X1, Y1), finish_room(X2, Y2).
 
 % At least one breached room must be connected physically to another room

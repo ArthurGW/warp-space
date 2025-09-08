@@ -100,8 +100,13 @@ breach_square(X, Y, X, Y, 1, 2; X, Y+1, X, Y, 1, 2)
 
 % No two breaches can be adjacent
 :- breach_square(X, Y, BX1, BY1, _, _),
-    breach_square(X + 1, Y, BX2, BY2, _, _; X, Y + 1, BX2, BY2, _, _),
-    not same_square(BX1, BY1, BX2, BY2).
+    breach_square(X + 1, Y, BX2, BY2, _, _),
+    not same_square(BX1, BY1, BX2, BY2),
+    grid(BX1, BY1), grid(BX2, BY2).
+:- breach_square(X, Y, BX1, BY1, _, _),
+    breach_square(X, Y + 1, BX2, BY2, _, _),
+    not same_square(BX1, BY1, BX2, BY2),
+    grid(BX1, BY1), grid(BX2, BY2).
 
 % Every (ship) row and column must have some part of a room in it (-4 to account for space and hull around ship)
 % This reads as "count the number of X values that are both in a room and in a ship square, and reject if there are not

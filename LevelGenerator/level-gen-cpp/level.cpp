@@ -225,6 +225,7 @@ class Level::LevelImpl
                 {
                     if (adj->is_portal) portals += 2;  // Bidirectional, so add 2
 
+                    // Connect both ways
                     adjacency_vec.emplace_back(adj.value());
                     adjacency_vec.emplace_back(adj->second_id, adj->first_id, adj->is_portal);
                     continue;

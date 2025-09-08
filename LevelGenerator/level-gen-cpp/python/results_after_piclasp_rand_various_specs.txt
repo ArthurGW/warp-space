@@ -1044,3 +1044,649 @@ Answer: 32 (Time: 43.606s) Optimization: 25
 
 
 Process finished with exit code 0
+
+
+PARAMS: ('-t 4,split', 8)
+CONFIG: auto
+Solving took 240.48957538604736s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+*** Info : (clingo): Sending shutdown signal...
+*** ERROR: (clingo): solving stopped by signal
+*** Info : (clingo): Shutdown completed in 0.038 seconds
+
+Answer: 1 (Time: 47.626s) Optimization: 64
+Answer: 2 (Time: 47.632s) Optimization: 63
+Answer: 3 (Time: 48.352s) Optimization: 61
+Answer: 4 (Time: 48.355s) Optimization: 60
+Answer: 5 (Time: 48.358s) Optimization: 59
+Answer: 6 (Time: 48.363s) Optimization: 58
+Answer: 7 (Time: 48.373s) Optimization: 57
+Answer: 8 (Time: 48.378s) Optimization: 56
+Answer: 9 (Time: 52.682s) Optimization: 55
+Answer: 10 (Time: 52.685s) Optimization: 53
+Answer: 11 (Time: 52.687s) Optimization: 52
+Answer: 12 (Time: 52.690s) Optimization: 51
+Answer: 13 (Time: 52.694s) Optimization: 49
+Answer: 14 (Time: 52.697s) Optimization: 48
+Answer: 15 (Time: 52.700s) Optimization: 47
+Answer: 16 (Time: 52.703s) Optimization: 45
+Answer: 17 (Time: 52.705s) Optimization: 44
+Answer: 18 (Time: 52.708s) Optimization: 43
+Answer: 19 (Time: 52.712s) Optimization: 42
+Answer: 20 (Time: 52.716s) Optimization: 41
+Answer: 21 (Time: 52.718s) Optimization: 40
+Answer: 22 (Time: 52.723s) Optimization: 39
+Answer: 23 (Time: 52.727s) Optimization: 38
+Answer: 24 (Time: 62.272s) Optimization: 37
+Answer: 25 (Time: 62.277s) Optimization: 36
+Answer: 26 (Time: 62.284s) Optimization: 35
+Answer: 27 (Time: 62.287s) Optimization: 34
+Answer: 28 (Time: 62.292s) Optimization: 33
+Answer: 29 (Time: 62.295s) Optimization: 32
+Answer: 30 (Time: 62.303s) Optimization: 31
+Answer: 31 (Time: 62.312s) Optimization: 30
+Answer: 32 (Time: 62.319s) Optimization: 29
+Answer: 33 (Time: 62.323s) Optimization: 28
+Answer: 34 (Time: 62.327s) Optimization: 27
+Answer: 35 (Time: 62.330s) Optimization: 26
+Answer: 36 (Time: 86.016s) Optimization: 25
+Answer: 37 (Time: 87.333s) Optimization: 24
+Answer: 38 (Time: 100.271s) Optimization: 23
+Answer: 39 (Time: 100.306s) Optimization: 22
+Answer: 40 (Time: 118.043s) Optimization: 21
+
+PARAMS: ('-t 4,split', 8)
+CONFIG: jumpy
+Solving took 240.44841051101685s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+*** Info : (clingo): Sending shutdown signal...
+*** ERROR: (clingo): solving stopped by signal
+*** Info : (clingo): Shutdown completed in 0.022 seconds
+
+Answer: 1 (Time: 24.394s) Optimization: 89
+Answer: 2 (Time: 28.160s) Optimization: 61
+Answer: 3 (Time: 28.162s) Optimization: 58
+Answer: 4 (Time: 28.165s) Optimization: 57
+Answer: 5 (Time: 28.170s) Optimization: 54
+Answer: 6 (Time: 28.173s) Optimization: 53
+Answer: 7 (Time: 28.179s) Optimization: 52
+Answer: 8 (Time: 28.182s) Optimization: 51
+Answer: 9 (Time: 31.365s) Optimization: 49
+Answer: 10 (Time: 31.368s) Optimization: 48
+Answer: 11 (Time: 31.371s) Optimization: 47
+Answer: 12 (Time: 31.375s) Optimization: 46
+Answer: 13 (Time: 31.377s) Optimization: 43
+Answer: 14 (Time: 31.380s) Optimization: 42
+Answer: 15 (Time: 38.771s) Optimization: 41
+Answer: 16 (Time: 42.948s) Optimization: 40
+Answer: 17 (Time: 51.206s) Optimization: 39
+Answer: 18 (Time: 51.208s) Optimization: 38
+Answer: 19 (Time: 51.213s) Optimization: 37
+Answer: 20 (Time: 51.217s) Optimization: 36
+Answer: 21 (Time: 54.385s) Optimization: 35
+Answer: 22 (Time: 56.237s) Optimization: 34
+Answer: 23 (Time: 59.290s) Optimization: 33
+Answer: 24 (Time: 59.296s) Optimization: 32
+Answer: 25 (Time: 73.079s) Optimization: 30
+Answer: 26 (Time: 73.090s) Optimization: 28
+Answer: 27 (Time: 73.097s) Optimization: 25
+Answer: 28 (Time: 93.518s) Optimization: 24
+Answer: 29 (Time: 113.077s) Optimization: 23
+Answer: 30 (Time: 123.736s) Optimization: 22
+Answer: 31 (Time: 123.742s) Optimization: 21
+Answer: 32 (Time: 123.756s) Optimization: 20
+
+
+PARAMS: ('-t 4,split', 9)
+CONFIG: auto
+Solving took 240.3021490573883s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+*** Info : (clingo): Sending shutdown signal...
+*** ERROR: (clingo): solving stopped by signal
+*** Info : (clingo): Shutdown completed in 0.025 seconds
+
+Answer: 1 (Time: 65.044s) Optimization: 78
+Answer: 2 (Time: 65.049s) Optimization: 76
+Answer: 3 (Time: 65.053s) Optimization: 74
+Answer: 4 (Time: 65.057s) Optimization: 72
+Answer: 5 (Time: 65.062s) Optimization: 70
+Answer: 6 (Time: 65.065s) Optimization: 68
+Answer: 7 (Time: 65.070s) Optimization: 67
+Answer: 8 (Time: 65.074s) Optimization: 65
+Answer: 9 (Time: 65.077s) Optimization: 63
+Answer: 10 (Time: 80.607s) Optimization: 62
+Answer: 11 (Time: 80.613s) Optimization: 61
+Answer: 12 (Time: 93.350s) Optimization: 59
+Answer: 13 (Time: 93.358s) Optimization: 58
+Answer: 14 (Time: 93.372s) Optimization: 56
+Answer: 15 (Time: 99.206s) Optimization: 55
+Answer: 16 (Time: 99.248s) Optimization: 53
+Answer: 17 (Time: 99.931s) Optimization: 52
+Answer: 18 (Time: 99.935s) Optimization: 51
+Answer: 19 (Time: 101.778s) Optimization: 49
+Answer: 20 (Time: 101.793s) Optimization: 48
+Answer: 21 (Time: 101.799s) Optimization: 46
+Answer: 22 (Time: 102.174s) Optimization: 45
+Answer: 23 (Time: 102.176s) Optimization: 44
+Answer: 24 (Time: 124.671s) Optimization: 43
+Answer: 25 (Time: 124.673s) Optimization: 42
+Answer: 26 (Time: 124.675s) Optimization: 41
+Answer: 27 (Time: 124.682s) Optimization: 40
+Answer: 28 (Time: 124.685s) Optimization: 39
+Answer: 29 (Time: 124.690s) Optimization: 38
+Answer: 30 (Time: 124.753s) Optimization: 37
+Answer: 31 (Time: 124.756s) Optimization: 36
+Answer: 32 (Time: 149.784s) Optimization: 35
+Answer: 33 (Time: 149.789s) Optimization: 34
+Answer: 34 (Time: 188.370s) Optimization: 33
+Answer: 35 (Time: 188.375s) Optimization: 31
+Answer: 36 (Time: 188.384s) Optimization: 30
+Answer: 37 (Time: 188.390s) Optimization: 28
+
+PARAMS: ('-t 4,split', 9)
+CONFIG: jumpy
+Solving took 240.3353190422058s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+*** Info : (clingo): Sending shutdown signal...
+*** ERROR: (clingo): solving stopped by signal
+*** Info : (clingo): Shutdown completed in 0.048 seconds
+
+Answer: 1 (Time: 109.397s) Optimization: 55
+Answer: 2 (Time: 109.401s) Optimization: 53
+Answer: 3 (Time: 123.946s) Optimization: 50
+Answer: 4 (Time: 123.950s) Optimization: 48
+Answer: 5 (Time: 123.959s) Optimization: 47
+Answer: 6 (Time: 123.964s) Optimization: 45
+Answer: 7 (Time: 156.173s) Optimization: 44
+Answer: 8 (Time: 156.176s) Optimization: 42
+Answer: 9 (Time: 156.180s) Optimization: 41
+Answer: 10 (Time: 165.197s) Optimization: 40
+Answer: 11 (Time: 165.200s) Optimization: 38
+Answer: 12 (Time: 165.202s) Optimization: 37
+Answer: 13 (Time: 165.206s) Optimization: 36
+Answer: 14 (Time: 165.208s) Optimization: 35
+Answer: 15 (Time: 165.214s) Optimization: 34
+Answer: 16 (Time: 165.219s) Optimization: 33
+Answer: 17 (Time: 165.228s) Optimization: 32
+Answer: 18 (Time: 213.127s) Optimization: 31
+Answer: 19 (Time: 227.663s) Optimization: 30
+Answer: 20 (Time: 227.664s) Optimization: 29
+Answer: 21 (Time: 227.668s) Optimization: 28
+Answer: 22 (Time: 227.671s) Optimization: 27
+
+
+"C:\Program Files\Python312\python.exe" C:\Source\warp-space\LevelGenerator\level-gen-cpp\python\performance_test.py
+PARAMS: ('-t 4,split', 10)
+CONFIG: auto
+Solving took 32.00434684753418s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 17.697s) Optimization: 77
+Answer: 2 (Time: 17.700s) Optimization: 76
+Answer: 3 (Time: 17.707s) Optimization: 75
+Answer: 4 (Time: 17.709s) Optimization: 74
+Answer: 5 (Time: 17.711s) Optimization: 73
+Answer: 6 (Time: 19.168s) Optimization: 57
+Answer: 7 (Time: 20.948s) Optimization: 56
+Answer: 8 (Time: 20.950s) Optimization: 55
+Answer: 9 (Time: 20.952s) Optimization: 54
+Answer: 10 (Time: 20.954s) Optimization: 53
+Answer: 11 (Time: 20.956s) Optimization: 52
+Answer: 12 (Time: 20.958s) Optimization: 51
+Answer: 13 (Time: 20.960s) Optimization: 50
+Answer: 14 (Time: 20.962s) Optimization: 49
+Answer: 15 (Time: 20.964s) Optimization: 48
+Answer: 16 (Time: 20.968s) Optimization: 47
+Answer: 17 (Time: 20.969s) Optimization: 46
+Answer: 18 (Time: 20.971s) Optimization: 45
+Answer: 19 (Time: 20.974s) Optimization: 44
+Answer: 20 (Time: 20.978s) Optimization: 43
+Answer: 21 (Time: 20.980s) Optimization: 42
+Answer: 22 (Time: 20.983s) Optimization: 41
+Answer: 23 (Time: 20.985s) Optimization: 40
+Answer: 24 (Time: 20.987s) Optimization: 39
+Answer: 25 (Time: 20.989s) Optimization: 38
+Answer: 26 (Time: 20.992s) Optimization: 37
+Answer: 27 (Time: 22.125s) Optimization: 34
+Answer: 28 (Time: 23.135s) Optimization: 33
+Answer: 29 (Time: 23.136s) Optimization: 32
+Answer: 30 (Time: 23.142s) Optimization: 31
+Answer: 31 (Time: 23.153s) Optimization: 30
+Answer: 32 (Time: 23.161s) Optimization: 29
+Answer: 33 (Time: 23.163s) Optimization: 28
+Answer: 34 (Time: 23.165s) Optimization: 27
+Answer: 35 (Time: 23.168s) Optimization: 26
+Answer: 36 (Time: 25.416s) Optimization: 25
+Answer: 37 (Time: 25.419s) Optimization: 24
+Answer: 38 (Time: 25.424s) Optimization: 23
+Answer: 39 (Time: 26.260s) Optimization: 22
+Answer: 40 (Time: 26.263s) Optimization: 21
+Answer: 41 (Time: 29.600s) Optimization: 20
+Answer: 42 (Time: 29.605s) Optimization: 19
+Answer: 43 (Time: 29.612s) Optimization: 18
+Answer: 44 (Time: 29.616s) Optimization: 17
+Answer: 45 (Time: 29.872s) Optimization: 16
+Answer: 46 (Time: 31.772s) Optimization: 15
+Answer: 47 (Time: 31.775s) Optimization: 14
+Answer: 48 (Time: 31.777s) Optimization: 13
+Answer: 49 (Time: 31.783s) Optimization: 12
+Answer: 50 (Time: 31.789s) Optimization: 11
+
+PARAMS: ('-t 4,split', 10)
+CONFIG: jumpy
+Solving took 108.49311995506287s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 13.275s) Optimization: 43
+Answer: 2 (Time: 13.278s) Optimization: 41
+Answer: 3 (Time: 13.280s) Optimization: 40
+Answer: 4 (Time: 13.283s) Optimization: 39
+Answer: 5 (Time: 13.285s) Optimization: 38
+Answer: 6 (Time: 13.287s) Optimization: 37
+Answer: 7 (Time: 13.289s) Optimization: 36
+Answer: 8 (Time: 13.291s) Optimization: 35
+Answer: 9 (Time: 13.294s) Optimization: 34
+Answer: 10 (Time: 13.296s) Optimization: 33
+Answer: 11 (Time: 13.298s) Optimization: 32
+Answer: 12 (Time: 15.593s) Optimization: 31
+Answer: 13 (Time: 15.595s) Optimization: 30
+Answer: 14 (Time: 15.597s) Optimization: 29
+Answer: 15 (Time: 15.601s) Optimization: 28
+Answer: 16 (Time: 15.606s) Optimization: 27
+Answer: 17 (Time: 15.608s) Optimization: 26
+Answer: 18 (Time: 15.704s) Optimization: 25
+Answer: 19 (Time: 15.707s) Optimization: 24
+Answer: 20 (Time: 15.710s) Optimization: 23
+Answer: 21 (Time: 15.718s) Optimization: 22
+Answer: 22 (Time: 17.695s) Optimization: 21
+Answer: 23 (Time: 17.699s) Optimization: 20
+Answer: 24 (Time: 18.977s) Optimization: 19
+Answer: 25 (Time: 18.979s) Optimization: 18
+Answer: 26 (Time: 19.674s) Optimization: 17
+Answer: 27 (Time: 21.360s) Optimization: 16
+Answer: 28 (Time: 21.362s) Optimization: 15
+Answer: 29 (Time: 21.369s) Optimization: 14
+Answer: 30 (Time: 29.775s) Optimization: 13
+Answer: 31 (Time: 30.593s) Optimization: 12
+Answer: 32 (Time: 30.809s) Optimization: 11
+Answer: 33 (Time: 30.812s) Optimization: 10
+Answer: 34 (Time: 30.820s) Optimization: 9
+Answer: 35 (Time: 30.832s) Optimization: 8
+Answer: 36 (Time: 30.850s) Optimization: 7
+Answer: 37 (Time: 30.876s) Optimization: 6
+Answer: 38 (Time: 33.366s) Optimization: 5
+Answer: 39 (Time: 44.077s) Optimization: 4
+Answer: 40 (Time: 44.271s) Optimization: 3
+Answer: 41 (Time: 44.274s) Optimization: 2
+Answer: 42 (Time: 44.277s) Optimization: 1
+Answer: 43 (Time: 44.279s) Optimization: 0
+Answer: 44 (Time: 44.281s) Optimization: -1
+Answer: 45 (Time: 44.284s) Optimization: -2
+Answer: 46 (Time: 44.287s) Optimization: -3
+Answer: 47 (Time: 44.289s) Optimization: -4
+Answer: 48 (Time: 44.290s) Optimization: -5
+Answer: 49 (Time: 107.392s) Optimization: -6
+Answer: 50 (Time: 108.267s) Optimization: -7
+
+"C:\Program Files\Python312\python.exe" C:\Source\warp-space\LevelGenerator\level-gen-cpp\python\performance_test.py
+PARAMS: ('-t 4,split', 11)
+CONFIG: auto
+Solving took 29.584596395492554s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 15.703s) Optimization: 144
+Answer: 2 (Time: 15.707s) Optimization: 140
+Answer: 3 (Time: 15.709s) Optimization: 136
+Answer: 4 (Time: 18.389s) Optimization: 135
+Answer: 5 (Time: 18.392s) Optimization: 133
+Answer: 6 (Time: 18.393s) Optimization: 131
+Answer: 7 (Time: 18.395s) Optimization: 129
+Answer: 8 (Time: 18.398s) Optimization: 127
+Answer: 9 (Time: 18.400s) Optimization: 125
+Answer: 10 (Time: 18.402s) Optimization: 123
+Answer: 11 (Time: 18.404s) Optimization: 122
+Answer: 12 (Time: 18.406s) Optimization: 120
+Answer: 13 (Time: 18.408s) Optimization: 118
+Answer: 14 (Time: 18.411s) Optimization: 117
+Answer: 15 (Time: 18.413s) Optimization: 115
+Answer: 16 (Time: 18.415s) Optimization: 114
+Answer: 17 (Time: 18.417s) Optimization: 112
+Answer: 18 (Time: 18.419s) Optimization: 110
+Answer: 19 (Time: 18.421s) Optimization: 109
+Answer: 20 (Time: 18.423s) Optimization: 108
+Answer: 21 (Time: 18.425s) Optimization: 106
+Answer: 22 (Time: 21.008s) Optimization: 105
+Answer: 23 (Time: 21.011s) Optimization: 103
+Answer: 24 (Time: 21.021s) Optimization: 101
+Answer: 25 (Time: 21.789s) Optimization: 100
+Answer: 26 (Time: 21.792s) Optimization: 98
+Answer: 27 (Time: 21.798s) Optimization: 97
+Answer: 28 (Time: 21.813s) Optimization: 96
+Answer: 29 (Time: 21.818s) Optimization: 95
+Answer: 30 (Time: 22.808s) Optimization: 94
+Answer: 31 (Time: 22.813s) Optimization: 92
+Answer: 32 (Time: 22.819s) Optimization: 90
+Answer: 33 (Time: 22.830s) Optimization: 89
+Answer: 34 (Time: 25.128s) Optimization: 87
+Answer: 35 (Time: 25.135s) Optimization: 84
+Answer: 36 (Time: 25.293s) Optimization: 83
+Answer: 37 (Time: 25.299s) Optimization: 81
+Answer: 38 (Time: 26.334s) Optimization: 80
+Answer: 39 (Time: 26.336s) Optimization: 78
+Answer: 40 (Time: 26.338s) Optimization: 77
+Answer: 41 (Time: 26.342s) Optimization: 76
+Answer: 42 (Time: 26.345s) Optimization: 75
+Answer: 43 (Time: 26.349s) Optimization: 73
+Answer: 44 (Time: 26.352s) Optimization: 72
+Answer: 45 (Time: 26.355s) Optimization: 71
+Answer: 46 (Time: 26.357s) Optimization: 69
+Answer: 47 (Time: 26.370s) Optimization: 68
+Answer: 48 (Time: 26.382s) Optimization: 66
+Answer: 49 (Time: 28.979s) Optimization: 65
+Answer: 50 (Time: 29.355s) Optimization: 63
+
+PARAMS: ('-t 4,split', 11)
+CONFIG: jumpy
+Solving took 15.70232892036438s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 11.147s) Optimization: 169
+Answer: 2 (Time: 11.150s) Optimization: 167
+Answer: 3 (Time: 11.152s) Optimization: 165
+Answer: 4 (Time: 11.154s) Optimization: 164
+Answer: 5 (Time: 11.156s) Optimization: 162
+Answer: 6 (Time: 11.158s) Optimization: 160
+Answer: 7 (Time: 11.160s) Optimization: 158
+Answer: 8 (Time: 11.163s) Optimization: 157
+Answer: 9 (Time: 11.166s) Optimization: 155
+Answer: 10 (Time: 11.168s) Optimization: 153
+Answer: 11 (Time: 11.173s) Optimization: 152
+Answer: 12 (Time: 11.176s) Optimization: 150
+Answer: 13 (Time: 11.179s) Optimization: 148
+Answer: 14 (Time: 11.183s) Optimization: 146
+Answer: 15 (Time: 11.186s) Optimization: 145
+Answer: 16 (Time: 11.189s) Optimization: 143
+Answer: 17 (Time: 11.191s) Optimization: 141
+Answer: 18 (Time: 11.194s) Optimization: 139
+Answer: 19 (Time: 11.197s) Optimization: 138
+Answer: 20 (Time: 11.200s) Optimization: 136
+Answer: 21 (Time: 11.202s) Optimization: 134
+Answer: 22 (Time: 11.269s) Optimization: 132
+Answer: 23 (Time: 11.271s) Optimization: 130
+Answer: 24 (Time: 11.274s) Optimization: 128
+Answer: 25 (Time: 11.277s) Optimization: 127
+Answer: 26 (Time: 11.279s) Optimization: 125
+Answer: 27 (Time: 11.283s) Optimization: 123
+Answer: 28 (Time: 11.287s) Optimization: 121
+Answer: 29 (Time: 11.292s) Optimization: 119
+Answer: 30 (Time: 11.299s) Optimization: 117
+Answer: 31 (Time: 11.304s) Optimization: 115
+Answer: 32 (Time: 12.804s) Optimization: 114
+Answer: 33 (Time: 13.343s) Optimization: 111
+Answer: 34 (Time: 13.346s) Optimization: 109
+Answer: 35 (Time: 13.349s) Optimization: 108
+Answer: 36 (Time: 13.352s) Optimization: 105
+Answer: 37 (Time: 13.356s) Optimization: 103
+Answer: 38 (Time: 13.359s) Optimization: 101
+Answer: 39 (Time: 13.364s) Optimization: 99
+Answer: 40 (Time: 13.369s) Optimization: 98
+Answer: 41 (Time: 13.372s) Optimization: 95
+Answer: 42 (Time: 13.374s) Optimization: 93
+Answer: 43 (Time: 13.377s) Optimization: 91
+Answer: 44 (Time: 13.960s) Optimization: 90
+Answer: 45 (Time: 13.962s) Optimization: 89
+Answer: 46 (Time: 13.970s) Optimization: 87
+Answer: 47 (Time: 14.022s) Optimization: 85
+Answer: 48 (Time: 15.492s) Optimization: 84
+Answer: 49 (Time: 15.494s) Optimization: 83
+Answer: 50 (Time: 15.496s) Optimization: 81
+
+
+PARAMS: ('-t 4,split', 12)
+CONFIG: auto
+Solving took 240.31869053840637s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+*** Info : (clingo): Sending shutdown signal...
+*** ERROR: (clingo): solving stopped by signal
+*** Info : (clingo): Shutdown completed in 0.061 seconds
+
+
+PARAMS: ('-t 4,split', 12)
+CONFIG: jumpy
+Solving took 240.26105976104736s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+*** Info : (clingo): Sending shutdown signal...
+*** ERROR: (clingo): solving stopped by signal
+*** Info : (clingo): Shutdown completed in 0.011 seconds
+
+"C:\Program Files\Python312\python.exe" C:\Source\warp-space\LevelGenerator\level-gen-cpp\python\performance_test.py
+PARAMS: ('-t 4,split', 13)
+CONFIG: auto
+Solving took 25.400150060653687s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 6.489s) Optimization: 174
+Answer: 2 (Time: 12.285s) Optimization: 133
+Answer: 3 (Time: 12.289s) Optimization: 127
+Answer: 4 (Time: 12.291s) Optimization: 123
+Answer: 5 (Time: 12.295s) Optimization: 121
+Answer: 6 (Time: 12.299s) Optimization: 119
+Answer: 7 (Time: 12.303s) Optimization: 117
+Answer: 8 (Time: 12.306s) Optimization: 115
+Answer: 9 (Time: 12.310s) Optimization: 113
+Answer: 10 (Time: 12.314s) Optimization: 111
+Answer: 11 (Time: 13.825s) Optimization: 110
+Answer: 12 (Time: 13.827s) Optimization: 106
+Answer: 13 (Time: 13.830s) Optimization: 102
+Answer: 14 (Time: 13.929s) Optimization: 101
+Answer: 15 (Time: 13.932s) Optimization: 99
+Answer: 16 (Time: 13.935s) Optimization: 98
+Answer: 17 (Time: 13.938s) Optimization: 96
+Answer: 18 (Time: 14.056s) Optimization: 95
+Answer: 19 (Time: 14.314s) Optimization: 93
+Answer: 20 (Time: 14.321s) Optimization: 91
+Answer: 21 (Time: 14.323s) Optimization: 90
+Answer: 22 (Time: 14.328s) Optimization: 86
+Answer: 23 (Time: 14.330s) Optimization: 82
+Answer: 24 (Time: 14.333s) Optimization: 81
+Answer: 25 (Time: 14.337s) Optimization: 77
+Answer: 26 (Time: 14.339s) Optimization: 73
+Answer: 27 (Time: 14.350s) Optimization: 71
+Answer: 28 (Time: 14.948s) Optimization: 70
+Answer: 29 (Time: 14.952s) Optimization: 68
+Answer: 30 (Time: 14.954s) Optimization: 67
+Answer: 31 (Time: 14.957s) Optimization: 66
+Answer: 32 (Time: 14.959s) Optimization: 65
+Answer: 33 (Time: 14.962s) Optimization: 64
+Answer: 34 (Time: 14.973s) Optimization: 63
+Answer: 35 (Time: 15.231s) Optimization: 61
+Answer: 36 (Time: 15.240s) Optimization: 59
+Answer: 37 (Time: 15.242s) Optimization: 57
+Answer: 38 (Time: 16.930s) Optimization: 55
+Answer: 39 (Time: 16.934s) Optimization: 54
+Answer: 40 (Time: 19.390s) Optimization: 52
+Answer: 41 (Time: 21.140s) Optimization: 51
+Answer: 42 (Time: 21.355s) Optimization: 50
+Answer: 43 (Time: 21.714s) Optimization: 49
+Answer: 44 (Time: 22.025s) Optimization: 48
+Answer: 45 (Time: 22.563s) Optimization: 46
+Answer: 46 (Time: 22.816s) Optimization: 45
+Answer: 47 (Time: 22.830s) Optimization: 44
+Answer: 48 (Time: 23.356s) Optimization: 43
+Answer: 49 (Time: 25.036s) Optimization: 42
+Answer: 50 (Time: 25.256s) Optimization: 40
+
+PARAMS: ('-t 4,split', 13)
+CONFIG: jumpy
+Solving took 13.67671513557434s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 9.188s) Optimization: 170
+Answer: 2 (Time: 10.650s) Optimization: 159
+Answer: 3 (Time: 10.653s) Optimization: 157
+Answer: 4 (Time: 11.243s) Optimization: 152
+Answer: 5 (Time: 11.309s) Optimization: 136
+Answer: 6 (Time: 11.310s) Optimization: 132
+Answer: 7 (Time: 11.313s) Optimization: 129
+Answer: 8 (Time: 11.316s) Optimization: 128
+Answer: 9 (Time: 11.317s) Optimization: 125
+Answer: 10 (Time: 11.319s) Optimization: 124
+Answer: 11 (Time: 11.322s) Optimization: 123
+Answer: 12 (Time: 11.326s) Optimization: 122
+Answer: 13 (Time: 11.328s) Optimization: 121
+Answer: 14 (Time: 11.331s) Optimization: 120
+Answer: 15 (Time: 11.335s) Optimization: 119
+Answer: 16 (Time: 11.337s) Optimization: 118
+Answer: 17 (Time: 11.372s) Optimization: 116
+Answer: 18 (Time: 11.498s) Optimization: 115
+Answer: 19 (Time: 11.500s) Optimization: 114
+Answer: 20 (Time: 11.510s) Optimization: 113
+Answer: 21 (Time: 11.512s) Optimization: 112
+Answer: 22 (Time: 11.653s) Optimization: 111
+Answer: 23 (Time: 11.657s) Optimization: 110
+Answer: 24 (Time: 11.661s) Optimization: 109
+Answer: 25 (Time: 11.665s) Optimization: 108
+Answer: 26 (Time: 12.184s) Optimization: 107
+Answer: 27 (Time: 12.186s) Optimization: 106
+Answer: 28 (Time: 12.193s) Optimization: 105
+Answer: 29 (Time: 12.195s) Optimization: 104
+Answer: 30 (Time: 12.200s) Optimization: 103
+Answer: 31 (Time: 12.202s) Optimization: 101
+Answer: 32 (Time: 12.205s) Optimization: 100
+Answer: 33 (Time: 12.217s) Optimization: 99
+Answer: 34 (Time: 12.222s) Optimization: 98
+Answer: 35 (Time: 12.224s) Optimization: 97
+Answer: 36 (Time: 12.229s) Optimization: 96
+Answer: 37 (Time: 12.231s) Optimization: 94
+Answer: 38 (Time: 12.232s) Optimization: 93
+Answer: 39 (Time: 13.284s) Optimization: 91
+Answer: 40 (Time: 13.478s) Optimization: 90
+Answer: 41 (Time: 13.482s) Optimization: 88
+Answer: 42 (Time: 13.485s) Optimization: 87
+Answer: 43 (Time: 13.487s) Optimization: 85
+Answer: 44 (Time: 13.497s) Optimization: 84
+Answer: 45 (Time: 13.505s) Optimization: 82
+Answer: 46 (Time: 13.507s) Optimization: 81
+Answer: 47 (Time: 13.511s) Optimization: 79
+Answer: 48 (Time: 13.516s) Optimization: 77
+Answer: 49 (Time: 13.525s) Optimization: 76
+Answer: 50 (Time: 13.532s) Optimization: 75
+
+
+Process finished with exit code 0
+
+"C:\Program Files\Python312\python.exe" C:\Source\warp-space\LevelGenerator\level-gen-cpp\python\performance_test.py
+PARAMS: ('-t 4,split', 14)
+CONFIG: auto
+Solving took 8.081644296646118s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 4.947s) Optimization: 126
+Answer: 2 (Time: 5.083s) Optimization: 125
+Answer: 3 (Time: 5.086s) Optimization: 123
+Answer: 4 (Time: 5.445s) Optimization: 121
+Answer: 5 (Time: 5.451s) Optimization: 120
+Answer: 6 (Time: 5.455s) Optimization: 118
+Answer: 7 (Time: 5.459s) Optimization: 116
+Answer: 8 (Time: 5.465s) Optimization: 115
+Answer: 9 (Time: 5.469s) Optimization: 113
+Answer: 10 (Time: 5.837s) Optimization: 112
+Answer: 11 (Time: 5.839s) Optimization: 111
+Answer: 12 (Time: 5.841s) Optimization: 110
+Answer: 13 (Time: 5.844s) Optimization: 108
+Answer: 14 (Time: 5.846s) Optimization: 107
+Answer: 15 (Time: 6.151s) Optimization: 105
+Answer: 16 (Time: 6.154s) Optimization: 103
+Answer: 17 (Time: 6.158s) Optimization: 101
+Answer: 18 (Time: 6.160s) Optimization: 99
+Answer: 19 (Time: 6.163s) Optimization: 97
+Answer: 20 (Time: 6.165s) Optimization: 95
+Answer: 21 (Time: 6.169s) Optimization: 94
+Answer: 22 (Time: 6.171s) Optimization: 92
+Answer: 23 (Time: 6.173s) Optimization: 90
+Answer: 24 (Time: 6.175s) Optimization: 88
+Answer: 25 (Time: 6.179s) Optimization: 86
+Answer: 26 (Time: 6.182s) Optimization: 85
+Answer: 27 (Time: 6.184s) Optimization: 83
+Answer: 28 (Time: 6.187s) Optimization: 81
+Answer: 29 (Time: 6.451s) Optimization: 78
+Answer: 30 (Time: 6.457s) Optimization: 76
+Answer: 31 (Time: 6.472s) Optimization: 75
+Answer: 32 (Time: 6.475s) Optimization: 74
+Answer: 33 (Time: 6.478s) Optimization: 72
+Answer: 34 (Time: 6.788s) Optimization: 70
+Answer: 35 (Time: 6.929s) Optimization: 69
+Answer: 36 (Time: 7.386s) Optimization: 68
+Answer: 37 (Time: 7.403s) Optimization: 67
+Answer: 38 (Time: 7.415s) Optimization: 65
+Answer: 39 (Time: 7.425s) Optimization: 64
+Answer: 40 (Time: 7.431s) Optimization: 62
+Answer: 41 (Time: 7.490s) Optimization: 61
+Answer: 42 (Time: 7.499s) Optimization: 59
+Answer: 43 (Time: 7.505s) Optimization: 57
+Answer: 44 (Time: 7.513s) Optimization: 56
+Answer: 45 (Time: 7.516s) Optimization: 54
+Answer: 46 (Time: 7.523s) Optimization: 52
+Answer: 47 (Time: 7.938s) Optimization: 51
+Answer: 48 (Time: 7.945s) Optimization: 49
+Answer: 49 (Time: 7.951s) Optimization: 48
+Answer: 50 (Time: 7.960s) Optimization: 47
+
+PARAMS: ('-t 4,split', 14)
+CONFIG: jumpy
+Solving took 7.813887357711792s
+*** Warn : (clingo): #models not 0: optimality of last model not guaranteed.
+
+Answer: 1 (Time: 4.861s) Optimization: 138
+Answer: 2 (Time: 4.865s) Optimization: 133
+Answer: 3 (Time: 4.867s) Optimization: 130
+Answer: 4 (Time: 4.869s) Optimization: 127
+Answer: 5 (Time: 4.871s) Optimization: 125
+Answer: 6 (Time: 4.873s) Optimization: 122
+Answer: 7 (Time: 4.875s) Optimization: 120
+Answer: 8 (Time: 4.879s) Optimization: 117
+Answer: 9 (Time: 4.881s) Optimization: 115
+Answer: 10 (Time: 4.884s) Optimization: 112
+Answer: 11 (Time: 4.886s) Optimization: 110
+Answer: 12 (Time: 4.889s) Optimization: 109
+Answer: 13 (Time: 4.892s) Optimization: 107
+Answer: 14 (Time: 4.895s) Optimization: 104
+Answer: 15 (Time: 4.898s) Optimization: 102
+Answer: 16 (Time: 5.129s) Optimization: 101
+Answer: 17 (Time: 5.233s) Optimization: 99
+Answer: 18 (Time: 5.260s) Optimization: 97
+Answer: 19 (Time: 5.496s) Optimization: 96
+Answer: 20 (Time: 5.503s) Optimization: 95
+Answer: 21 (Time: 5.505s) Optimization: 94
+Answer: 22 (Time: 5.513s) Optimization: 93
+Answer: 23 (Time: 5.517s) Optimization: 92
+Answer: 24 (Time: 5.821s) Optimization: 91
+Answer: 25 (Time: 5.829s) Optimization: 90
+Answer: 26 (Time: 5.831s) Optimization: 87
+Answer: 27 (Time: 5.849s) Optimization: 85
+Answer: 28 (Time: 5.851s) Optimization: 84
+Answer: 29 (Time: 5.853s) Optimization: 82
+Answer: 30 (Time: 5.855s) Optimization: 81
+Answer: 31 (Time: 5.859s) Optimization: 78
+Answer: 32 (Time: 5.862s) Optimization: 75
+Answer: 33 (Time: 5.863s) Optimization: 72
+Answer: 34 (Time: 5.868s) Optimization: 71
+Answer: 35 (Time: 5.871s) Optimization: 68
+Answer: 36 (Time: 5.873s) Optimization: 65
+Answer: 37 (Time: 5.878s) Optimization: 63
+Answer: 38 (Time: 5.880s) Optimization: 60
+Answer: 39 (Time: 5.889s) Optimization: 59
+Answer: 40 (Time: 5.901s) Optimization: 57
+Answer: 41 (Time: 5.915s) Optimization: 56
+Answer: 42 (Time: 6.091s) Optimization: 55
+Answer: 43 (Time: 6.108s) Optimization: 53
+Answer: 44 (Time: 6.118s) Optimization: 51
+Answer: 45 (Time: 6.136s) Optimization: 49
+Answer: 46 (Time: 6.143s) Optimization: 47
+Answer: 47 (Time: 6.184s) Optimization: 46
+Answer: 48 (Time: 6.263s) Optimization: 45
+Answer: 49 (Time: 6.305s) Optimization: 44
+Answer: 50 (Time: 7.689s) Optimization: 43
+
+
+Process finished with exit code 0
