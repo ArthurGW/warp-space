@@ -94,10 +94,10 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 REQUIRE_FALSE(level == nullptr);
 
                 // These values have been determined empirically
-                REQUIRE(level->get_cost() == 25);
+                REQUIRE(level->get_cost() == 23);
                 REQUIRE(level->get_num_map_squares() == 90UL);
                 REQUIRE(level->get_num_rooms() == 7UL);
-                REQUIRE(level->get_num_adjacencies() == 18UL);
+                REQUIRE(level->get_num_doors() == 16UL);
             }
 
             THEN("the best level can iterate over symbols")
@@ -113,7 +113,7 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 // These values match the test above
                 REQUIRE(count_parts(level->map_squares()) == 90UL);
                 REQUIRE(count_parts(level->rooms()) == 7UL);
-                REQUIRE(count_parts(level->adjacencies()) == 18UL);
+                REQUIRE(count_parts(level->doors()) == 16UL);
             }
 
             THEN("the best level has the right number of breaches")
@@ -143,14 +143,10 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 const auto* level = gen.best_level();
                 REQUIRE_FALSE(level == nullptr);
 
-                auto adj_iter = level->adjacencies();
-                auto portals = accumulate_parts<Adjacency>(
-                    adj_iter,
-                    [](const auto& adj) { return adj.is_portal; }
-                );
+                auto portal_iter = level->portals();
 
                 REQUIRE(level->get_num_portals() == 4UL);   // num_portals * 2 since they are bidirectional
-                REQUIRE(portals.size() == 4UL);
+                REQUIRE(count_parts(portal_iter) == 4UL);
             }
 
             THEN("the best level has a start room and a finish room")

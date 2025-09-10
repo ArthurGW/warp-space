@@ -87,9 +87,9 @@ SCENARIO("other levels can be generated", "[levelgen][solve][fuzz]")
                 REQUIRE(num_restricted_rooms >= min_rooms);
                 REQUIRE(num_restricted_rooms <= max_rooms);
 
-                // Every room must have at least one adjacency, theoretical limit is every room adjacent to every other
-                REQUIRE(level->get_num_adjacencies() >= num_rooms);
-                REQUIRE(level->get_num_adjacencies() <= num_rooms * num_rooms);
+                // Every room must have at least one door, theoretical limit is every room adjacent to every other
+                REQUIRE(level->get_num_doors() >= num_rooms);
+                REQUIRE(level->get_num_doors() <= num_rooms * num_rooms);
 
                 // Correct numbers of breaches and portals
                 REQUIRE(level->get_num_breaches() == num_breaches);

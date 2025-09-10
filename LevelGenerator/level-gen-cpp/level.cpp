@@ -108,15 +108,10 @@ namespace
         return tl::make_optional<MapSquare>(sqx, sqy, type);
     }
 
-    inline tl::optional<Adjacency> try_get_adjacency(const Clingo::Symbol &sym, const std::vector<Room>& room_vec)
+    template <class T>
+    inline tl::optional<T> try_get_connection(const char *symbol_name, const Clingo::Symbol &sym, const std::vector<Room>& room_vec)
     {
-        bool is_portal = false;
-
-        if (sym.match("portal", 4))
-        {
-            is_portal = true;
-        }
-        else if (!sym.match("connected", 4))
+        if (!sym.match(symbol_name, 4))
         {
             return tl::nullopt;
         }
@@ -130,7 +125,17 @@ namespace
             return tl::nullopt;
         }
 
-        return tl::make_optional<Adjacency>(first, second, is_portal);
+        return tl::make_optional<T>(first, second);
+    }
+
+    inline tl::optional<Door> try_get_door(const Clingo::Symbol &sym, const std::vector<Room>& room_vec)
+    {
+        return try_get_connection<Door>("connected", sym, room_vec);
+    }
+
+    inline tl::optional<Portal> try_get_portal(const Clingo::Symbol &sym, const std::vector<Room>& room_vec)
+    {
+        return try_get_connection<Portal>("portal", sym, room_vec);
     }
 
     inline tl::optional<std::tuple<Room, size_t>> try_get_breach(const Clingo::Symbol &sym, const std::vector<Room>& room_vec, size_t next_id)
@@ -169,22 +174,28 @@ bool operator==(const Room& first, const Room& second)
            && (first.room_id == 0 || second.room_id == 0 || first.room_id == second.room_id);
 }
 
-bool operator==(const Adjacency& first, const Adjacency& second)
+bool operator==(const Door& first, const Door& second)
 {
     return first.first_id == second.first_id
-           && first.second_id == second.second_id
-           && first.is_portal == second.is_portal;
+           && first.second_id == second.second_id;
+}
+
+bool operator==(const Portal& first, const Portal& second)
+{
+    return first.first_id == second.first_id
+           && first.second_id == second.second_id;
 }
 
 class Level::LevelImpl
 {
     public:
         LevelImpl(unsigned width, unsigned height, int64_t cost, const std::vector<uint64_t>& data) 
-        : cost(static_cast<int>(cost)), width(width), height(height), corridors(0), breaches(0), portals(0)
+        : cost(static_cast<int>(cost)), width(width), height(height), num_corridors(0), num_breaches(0)
         {
             std::unordered_map<uint64_t, SquareType> square_lookup;
 
             // Map symbols to simple data structures to return from the API
+            // First pass gets map objects - rooms, corridors, and other grid squares
             for (const auto& sym_val : data)
             {
                 const Clingo::Symbol sym{sym_val};
@@ -197,7 +208,7 @@ class Level::LevelImpl
                 {
                     if (room->type == RoomType::Corridor)
                     {
-                        ++corridors;
+                        ++num_corridors;
                     }
 
                     room_vec.emplace_back(room.value());
@@ -216,27 +227,34 @@ class Level::LevelImpl
                 }
             }
 
-            // Second pass to get connections, breaches, and start/finish points, referring to already-created rooms
+            // Second pass gets connections, breaches, and start/finish points, referring to already-created rooms
             for (const auto& sym_val : data)
             {
                 const Clingo::Symbol sym{sym_val};
 
-                if (auto adj = try_get_adjacency(sym, room_vec))
+                if (auto portal = try_get_portal(sym, room_vec))
                 {
-                    if (adj->is_portal) portals += 2;  // Bidirectional, so add 2
-
                     // Connect both ways
-                    adjacency_vec.emplace_back(adj.value());
-                    adjacency_vec.emplace_back(adj->second_id, adj->first_id, adj->is_portal);
+                    portal_vec.emplace_back(portal.value());
+                    portal_vec.emplace_back(portal->second_id, portal->first_id);
+                    continue;
+                }
+
+                if (auto door = try_get_door(sym, room_vec))
+                {
+                    // Connect both ways
+                    door_vec.emplace_back(door.value());
+                    door_vec.emplace_back(door->second_id, door->first_id);
                     continue;
                 }
 
                 if (auto breach = try_get_breach(sym, room_vec, room_vec.size() + 1))
                 {
+                    // Add a breach room, and a two-way "door" to the connected room
                     room_vec.emplace_back(std::get<0>(breach.value()));
-                    adjacency_vec.emplace_back(std::get<1>(breach.value()), room_vec.back().room_id, false);
-                    adjacency_vec.emplace_back(room_vec.back().room_id, std::get<1>(breach.value()), false);
-                    ++breaches;
+                    door_vec.emplace_back(std::get<1>(breach.value()), room_vec.back().room_id);
+                    door_vec.emplace_back(room_vec.back().room_id, std::get<1>(breach.value()));
+                    ++num_breaches;
                     continue;
                 }
 
@@ -273,24 +291,29 @@ class Level::LevelImpl
             return LevelPartIter<Room>{&room_vec};
         }
 
-        LevelPartIter<Adjacency> adjacencies()
+        LevelPartIter<Door> doors()
         {
-            return LevelPartIter<Adjacency>{&adjacency_vec};
+            return LevelPartIter<Door>{&door_vec};
         }
 
-        size_t num_map_squares() const
+        LevelPartIter<Portal> portals()
+        {
+            return LevelPartIter<Portal>{&portal_vec};
+        }
+
+        size_t get_num_map_squares() const
         {
             return square_vec.size();
         }
 
-        size_t num_corridors() const
+        size_t get_num_corridors() const
         {
-            return corridors;
+            return num_corridors;
         }
 
-        size_t num_breaches() const
+        size_t get_num_breaches() const
         {
-            return breaches;
+            return num_breaches;
         }
 
         size_t start_room() const
@@ -303,19 +326,19 @@ class Level::LevelImpl
             return finish_room_id;
         }
 
-        size_t num_rooms() const
+        size_t get_num_rooms() const
         {
             return room_vec.size();
         }
 
-        size_t num_adjacencies() const
+        size_t get_num_doors() const
         {
-            return adjacency_vec.size();
+            return door_vec.size();
         }
 
-        size_t num_portals() const
+        size_t get_num_portals() const
         {
-            return portals;
+            return portal_vec.size();
         }
 
         int get_cost() const
@@ -337,12 +360,14 @@ class Level::LevelImpl
 
         std::vector<MapSquare> square_vec;
         std::vector<Room> room_vec;
-        std::vector<Adjacency> adjacency_vec;
-        size_t corridors;
-        size_t breaches;
-        size_t portals;
+        std::vector<Door> door_vec;
+        std::vector<Portal> portal_vec;
+
+        size_t num_corridors;
+        size_t num_breaches;
         size_t start_room_id;
         size_t finish_room_id;
+
         const unsigned width;
         const unsigned height;
 
@@ -360,24 +385,29 @@ LevelPartIter<Room> Level::rooms() const
     return impl->rooms();
 }
 
-LevelPartIter<Adjacency> Level::adjacencies() const
+LevelPartIter<Door> Level::doors() const
 {
-    return impl->adjacencies();
+    return impl->doors();
+}
+
+LevelPartIter<Portal> Level::portals() const
+{
+    return impl->portals();
 }
 
 size_t Level::get_num_map_squares() const
 {
-    return impl->num_map_squares();
+    return impl->get_num_map_squares();
 }
 
 size_t Level::get_num_corridors() const
 {
-    return impl->num_corridors();
+    return impl->get_num_corridors();
 }
 
 size_t Level::get_num_breaches() const
 {
-    return impl->num_breaches();
+    return impl->get_num_breaches();
 }
 
 size_t Level::get_start_room() const
@@ -393,17 +423,17 @@ size_t Level::get_finish_room() const
 
 size_t Level::get_num_rooms() const
 {
-    return impl->num_rooms();
+    return impl->get_num_rooms();
 }
 
-size_t Level::get_num_adjacencies() const
+size_t Level::get_num_doors() const
 {
-    return impl->num_adjacencies();
+    return impl->get_num_doors();
 }
 
 size_t Level::get_num_portals() const
 {
-    return impl->num_portals();
+    return impl->get_num_portals();
 }
 
 int Level::get_cost() const

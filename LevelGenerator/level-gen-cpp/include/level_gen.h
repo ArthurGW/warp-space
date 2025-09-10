@@ -60,15 +60,24 @@ struct LEVEL_GEN_API Room {
         friend bool LEVEL_GEN_API operator==(const Room& first, const Room& second);
 };
 
-struct LEVEL_GEN_API Adjacency {
+struct LEVEL_GEN_API Door {
         size_t first_id;
         size_t second_id;
-        bool is_portal;
 
-        Adjacency(size_t first_id, size_t second_id, bool is_portal)
-            : first_id(first_id), second_id(second_id), is_portal(is_portal) {}
+        Door(size_t first_id, size_t second_id)
+            : first_id(first_id), second_id(second_id) {}
 
-        friend bool LEVEL_GEN_API operator==(const Adjacency& first, const Adjacency& second);
+        friend bool LEVEL_GEN_API operator==(const Door& first, const Door& second);
+};
+
+struct LEVEL_GEN_API Portal {
+    size_t first_id;
+    size_t second_id;
+
+    Portal(size_t first_id, size_t second_id)
+            : first_id(first_id), second_id(second_id) {}
+
+    friend bool LEVEL_GEN_API operator==(const Portal& first, const Portal& second);
 };
 
 struct LEVEL_GEN_API MapSquare {
@@ -130,7 +139,10 @@ template struct LEVEL_GEN_API
 LevelPartIter<Room>;
 
 template struct LEVEL_GEN_API
-LevelPartIter<Adjacency>;
+LevelPartIter<Door>;
+
+template struct LEVEL_GEN_API
+LevelPartIter<Portal>;
 
 class LEVEL_GEN_API Level {
     public:
@@ -153,7 +165,9 @@ class LEVEL_GEN_API Level {
 
         LevelPartIter<Room> rooms() const;
 
-        LevelPartIter<Adjacency> adjacencies() const;
+        LevelPartIter<Door> doors() const;
+
+        LevelPartIter<Portal> portals() const;
 
         size_t get_num_map_squares() const;
 
@@ -167,7 +181,7 @@ class LEVEL_GEN_API Level {
 
         size_t get_num_rooms() const;
 
-        size_t get_num_adjacencies() const;
+        size_t get_num_doors() const;
 
         size_t get_num_portals() const;
 
