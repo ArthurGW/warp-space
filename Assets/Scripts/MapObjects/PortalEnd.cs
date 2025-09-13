@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace MapObjects
 {
-    [RequireComponent(typeof(Collider), typeof(MeshRenderer))]
+    [RequireComponent(typeof(Collider), typeof(MeshRenderer), typeof(AudioSource))]
     public class PortalEnd : MonoBehaviour
     {
         /// <summary>
@@ -13,6 +13,8 @@ namespace MapObjects
         public uint priority;
 
         private Vector2? _spawnPoint;
+        
+        private AudioSource _audioSource;
         
         private Vector2 SpawnPoint
         {
@@ -58,12 +60,14 @@ namespace MapObjects
             _collider.enabled = false;
             _visualPortal = GetComponent<MeshRenderer>();
             _visualPortal.enabled = false;
+            _audioSource = GetComponent<AudioSource>();
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if (!other.CompareTag("Player") || !_destination) return;
-            
+            _audioSource.Play();
+            _destination._audioSource.Play();
             portalActivated.Invoke(_destination.SpawnPoint, _destination.SpawnOrientation);
         }
         
