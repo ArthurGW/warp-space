@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
@@ -9,6 +10,7 @@ using Player;
 using TMPro;
 using static MapObjects.ObjectUtils;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -60,6 +62,7 @@ public class ProgressionManager : MonoBehaviour
     [SerializeField] private Button restartButton;
     [SerializeField] private TextMeshProUGUI updateText;
     private string _initialUpdateText;
+    [SerializeField] private TextMeshProUGUI waitForQuitText;
 
     [SerializeField] private AudioClip alarmSound;
     [SerializeField] private AudioClip warpSound;
@@ -71,6 +74,9 @@ public class ProgressionManager : MonoBehaviour
     private PlayerController _playerController;
     
     private static int _generationRunning = 0;
+
+    private InputAction _quit;
+    private bool _waitingForQuit;
     
     private void Awake()
     {
@@ -106,6 +112,9 @@ public class ProgressionManager : MonoBehaviour
         _levelSeed = seed;  // ...but the level seed changes on each level generation
 
         restartButton.onClick.AddListener(OnRestartGame);
+        
+        _quit = InputSystem.actions.FindAction("Player/Quit");
+        waitForQuitText.enabled = false;
     }
 
     private async void Start()
@@ -131,6 +140,31 @@ public class ProgressionManager : MonoBehaviour
         {
             Debug.LogException(e);
         }
+    }
+
+    private void Update()
+    {
+#if !UNITY_EDITOR
+        switch (_quit.triggered)
+        {
+            case true when _waitingForQuit:
+                Application.Quit();
+                break;
+            case true:
+                _waitingForQuit = true;
+                StartCoroutine(nameof(WaitForQuit));
+                break;
+        }
+#endif
+    }
+
+    private IEnumerator WaitForQuit()
+    {
+        _waitingForQuit = true;
+        waitForQuitText.enabled = true;
+        yield return new WaitForSecondsRealtime(5f);
+        _waitingForQuit = false;
+        waitForQuitText.enabled = false;
     }
 
     private async Awaitable WaitForFade(int trigger)
