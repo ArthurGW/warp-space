@@ -115,10 +115,11 @@ namespace Tests.EditMode.LevelGeneratorTests
             using var bestLevelUnderTest = gen.BestLevel();
                 
             // Assert - these values are the same as in the C++ equivalent tests with the same seed
-            Assert.That(bestLevelUnderTest.Cost, Is.EqualTo(4));
+            Assert.That(bestLevelUnderTest.Cost, Is.EqualTo(23));
             Assert.That(bestLevelUnderTest.NumMapSquares, Is.EqualTo(90));
             Assert.That(bestLevelUnderTest.NumRooms, Is.EqualTo(7));
-            Assert.That(bestLevelUnderTest.NumAdjacencies, Is.EqualTo(12));
+            Assert.That(bestLevelUnderTest.NumDoors, Is.EqualTo(16));
+            Assert.That(bestLevelUnderTest.NumPortals, Is.EqualTo(0));
         }
 
         private static uint CountAndDisposeSymbols<T>(LevelPartIter<T> iter, bool useExtensions) where T : IDisposable
@@ -171,12 +172,14 @@ namespace Tests.EditMode.LevelGeneratorTests
             using var bestLevelUnderTest = gen.BestLevel();
             using var mapSquares = bestLevelUnderTest.MapSquares();
             using var rooms= bestLevelUnderTest.Rooms();
-            using var adjacencies = bestLevelUnderTest.Adjacencies();
+            using var doors = bestLevelUnderTest.Doors();
+            using var portals = bestLevelUnderTest.Portals();
                 
             // Assert - these values are the same as in the C++ equivalent tests with the same seed
             Assert.That(CountAndDisposeSymbols(mapSquares, false), Is.EqualTo(90));
             Assert.That(CountAndDisposeSymbols(rooms, false), Is.EqualTo(7));
-            Assert.That(CountAndDisposeSymbols(adjacencies, false), Is.EqualTo(12));
+            Assert.That(CountAndDisposeSymbols(doors, false), Is.EqualTo(16));
+            Assert.That(CountAndDisposeSymbols(portals, false), Is.EqualTo(0));
         }
         
         [Test]
@@ -192,12 +195,14 @@ namespace Tests.EditMode.LevelGeneratorTests
             using var bestLevel = gen.BestLevel();
             using var mapSquaresUnderTest = bestLevel.MapSquares();
             using var roomsUnderTest= bestLevel.Rooms();
-            using var adjacenciesUnderTest = bestLevel.Adjacencies();
+            using var doorsUnderTest = bestLevel.Doors();
+            using var portalsUnderTest = bestLevel.Portals();
                 
             // Assert - these values are the same as in the C++ equivalent tests with the same seed
             Assert.That(CountAndDisposeSymbols(mapSquaresUnderTest, true), Is.EqualTo(90));
             Assert.That(CountAndDisposeSymbols(roomsUnderTest, true), Is.EqualTo(7));
-            Assert.That(CountAndDisposeSymbols(adjacenciesUnderTest, true), Is.EqualTo(12));
+            Assert.That(CountAndDisposeSymbols(doorsUnderTest, true), Is.EqualTo(16));
+            Assert.That(CountAndDisposeSymbols(portalsUnderTest, true), Is.EqualTo(0));
         }
     }
 }

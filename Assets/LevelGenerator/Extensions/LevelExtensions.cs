@@ -73,10 +73,16 @@ namespace LevelGenerator.Extensions
             return $"Room({room.RoomId}: {room.X},{room.Y},{room.W},{room.H},{room.Type})";
         }
         
-        public static string AsString(this Adjacency adjacency)
+        public static string AsString(this Door door)
         {
-            return $"Adjacency({adjacency.FirstId},{adjacency.SecondId})";
+            return $"Door({door.FirstId},{door.SecondId})";
         }
+        
+        public static string AsString(this Portal portal)
+        {
+            return $"Portal({portal.FirstId},{portal.SecondId})";
+        }
+
         
         public static string AsString(this MapSquare square)
         {

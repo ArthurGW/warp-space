@@ -34,6 +34,11 @@ namespace MapObjects
             return !rc ? null : rc.RoomData;
         }
 
+        public void TurnOnLights()
+        {
+            _lightController.TurnOnLights();
+        }
+
         private void Awake()
         {
             _lightController = GetComponent<LightController>();

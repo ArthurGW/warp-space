@@ -11,7 +11,15 @@ namespace System.Runtime.CompilerServices
 
 namespace Layout
 {
-    public record MapResult(List<MapSquareData> Squares, List<RoomData> Rooms, Dictionary<ulong, HashSet<(ulong id, bool isPortal)>> Adjacencies, ulong StartRoomId, ulong FinishRoomId, ulong NumLevelsGenerated);
+    public record MapResult(
+		List<MapSquareData> Squares,
+		List<RoomData> Rooms,
+		Dictionary<ulong, HashSet<ulong>> Doors,
+		Dictionary<ulong, HashSet<ulong>> Portals,
+		ulong StartRoomId,
+		ulong FinishRoomId,
+		ulong NumLevelsGenerated
+	);
     
     public static class SquareSize
     {
@@ -26,9 +34,13 @@ namespace Layout
         {
             result.Squares.ForEach(sq => Debug.Log(sq));
             result.Rooms.ForEach(rm => Debug.Log(rm));
-            foreach (var adj in result.Adjacencies)
+            foreach (var door in result.Doors)
             {
-                Debug.Log($"AdjacencyData({adj.Key}: {string.Join(',', adj.Value)})");
+                Debug.Log($"Doors({door.Key}: {string.Join(',', door.Value)})");
+            }
+            foreach (var portal in result.Portals)
+            {
+                Debug.Log($"Portals({portal.Key}: {string.Join(',', portal.Value)})");
             }
             Debug.Log($"Start Room: {result.StartRoomId}");
             Debug.Log($"Finish Room: {result.FinishRoomId}");

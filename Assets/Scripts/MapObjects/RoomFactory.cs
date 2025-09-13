@@ -20,7 +20,6 @@ namespace MapObjects
         [SerializeField] private Transform roomContainer;
 
         private ILookup<ulong, Door> _doorsByRoomId;
-        private ILookup<ulong, Door> _portalsByRoomId;
 
         private void Awake()
         {
@@ -37,11 +36,11 @@ namespace MapObjects
         }
 
         public void ConstructRooms(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById,
-            Dictionary<ulong, HashSet<(ulong id, bool isPortal)>> adjacencies, ulong startRoom)
+            Dictionary<ulong, HashSet<ulong>> doors, Dictionary<ulong, HashSet<ulong>> portals, ulong startRoom)
         {
             DestroyRooms();
             
-            InitDoors(rooms, roomsById, adjacencies);
+            InitDoors(rooms, roomsById, doors);
             
 #if UNITY_EDITOR
             _corridorFactory = GetComponent<CorridorFactory>();
@@ -52,54 +51,74 @@ namespace MapObjects
                 var roomController = Instantiate(roomPrefab, roomContainer, false);
                 roomController.SetData(room, _doorsByRoomId);
                 if (room.Id == startRoom)
-                    roomController.GetComponent<LightController>().TurnOnLights();
+                    roomController.TurnOnLights();
             }
 
-            
+            ConnectPortals(rooms, portals);
         }
         
         private void InitDoors(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById, 
-            Dictionary<ulong, HashSet<(ulong id, bool isPortal)>> adjacencies)
+            Dictionary<ulong, HashSet<ulong>> doorsByRoomId)
         {
             var seen = new HashSet<(ulong firstId, ulong secondId)>();
             var doors = new List<(ulong roomId, Door door)>();
 
             foreach (var room in rooms) 
             {
-                foreach (var adjRoom in adjacencies[room.Id].Where(entry => !entry.isPortal))
+                foreach (var adjRoomId in doorsByRoomId[room.Id])
                 {
-                    var minId = Math.Min(room.Id, adjRoom.id);
-                    var maxId = Math.Max(room.Id, adjRoom.id);
-                    if (!seen.Add((minId, maxId))) continue;  // Already processed
-                    var newDoors = MakeDoor(room, roomsById[adjRoom.id]);
+                    var minId = Math.Min(room.Id, adjRoomId);
+                    var maxId = Math.Max(room.Id, adjRoomId);
+                    if (!seen.Add((minId, maxId))) continue;  // Already processed the other way round
+                    var newDoors = MakeDoor(room, roomsById[adjRoomId]);
                     doors.Add((room.Id, newDoors.roomDoor));
-                    doors.Add((adjRoom.id, newDoors.adjRoomDoor));
+                    doors.Add((adjRoomId, newDoors.adjRoomDoor));
                 }
             }
             
             _doorsByRoomId = doors.ToLookup(entry => entry.roomId,  entry => entry.door);
         }
         
-        private void InitPortals(List<RoomData> rooms, Dictionary<ulong, RoomData> roomsById, 
-            Dictionary<ulong, HashSet<(ulong id, bool isPortal)>> adjacencies)
+        private void ConnectPortals(List<RoomData> rooms, Dictionary<ulong, HashSet<ulong>> portalsByRoomId)
         {
             var seen = new HashSet<(ulong firstId, ulong secondId)>();
-            var doors = new List<(ulong roomId, Door door)>();
+
+            // Get potential portal locations for each room, in a random-but-sorted order
+            var allPortalEnds = GetComponentsInChildren<PortalEnd>();
+            for (var i = 0; i < allPortalEnds.Length; i++)
+            {
+                var j = Random.Range(0, allPortalEnds.Length);
+                (allPortalEnds[i], allPortalEnds[j]) = (allPortalEnds[j], allPortalEnds[i]);
+            }
+            
+            var portalEndsByRoomId = GetComponentsInChildren<RoomController>()
+                .ToDictionary(
+                    rm => rm.RoomData.Id,
+                    rm => 
+                        allPortalEnds
+                            .Where(p => p.transform.IsChildOf(rm.transform))
+                            .OrderByDescending(p => p.priority)
+                            .ToList()
+                );
 
             foreach (var room in rooms) 
             {
-                foreach (var adjRoom in adjacencies[room.Id].Where(entry => !entry.isPortal))
+                foreach (var adjRoomId in portalsByRoomId[room.Id])
                 {
-                    var minId = Math.Min(room.Id, adjRoom.id);
-                    var maxId = Math.Max(room.Id, adjRoom.id);
-                    if (!seen.Add((minId, maxId))) continue;  // Already processed
-                    var newDoors = MakeDoor(room, roomsById[adjRoom.id]);
-                    doors.Add((room.Id, newDoors.roomDoor));
-                    doors.Add((adjRoom.id, newDoors.adjRoomDoor));
+                    var minId = Math.Min(room.Id, adjRoomId);
+                    var maxId = Math.Max(room.Id, adjRoomId);
+                    if (!seen.Add((minId, maxId))) continue;  // Already processed the other way round
+                    var start = portalEndsByRoomId[room.Id].First(p => !p.HasDestinationPortal);
+                    var end = portalEndsByRoomId[adjRoomId].First(p => !p.HasDestinationPortal);
+                    start.SetDestinationPortal(end);
+                    end.SetDestinationPortal(start);
                 }
             }
-            
-            _doorsByRoomId = doors.ToLookup(entry => entry.roomId,  entry => entry.door);
+
+            foreach (var portal in allPortalEnds)
+            {
+                if (!portal.HasDestinationPortal) Destroy(portal);
+            }
         }
 
         private static (Door roomDoor, Door adjRoomDoor) MakeDoor(RoomData room, RoomData adjRoom)

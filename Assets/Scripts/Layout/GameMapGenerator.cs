@@ -122,6 +122,7 @@ namespace Layout
         private MapResult DoSolve(LevelGenerator.LevelGenerator gen)
         {
             gen.SolveSafe(CheckCancel);
+            
             using var level = gen.BestLevel();
             if (level == null)
             {
@@ -150,22 +151,23 @@ namespace Layout
                 }
             ).ToList();
 
-            using var adjacencies = level.Adjacencies();
-            var newAdjacencies = new Dictionary<ulong, HashSet<(ulong id, bool isPortal)>>();
-            foreach (var adjacency in adjacencies)
+            using var doors = level.Doors();
+            var newDoors = newRooms.ToDictionary(rm => rm.Id, rm => new HashSet<ulong>());
+            foreach (var door in doors)
             {
-                if (!newAdjacencies.TryGetValue(adjacency.FirstId, out var adjacentTo))
-                {
-                    adjacentTo = new HashSet<(ulong id, bool isPortal)>();
-                    newAdjacencies.Add(adjacency.FirstId, adjacentTo);
-                }
-
-                adjacentTo.Add((adjacency.SecondId, adjacency.IsPortal));
-                adjacency.Dispose();
+                if (newDoors.TryGetValue(door.FirstId, out var doorTo)) doorTo.Add(door.SecondId);
+                door.Dispose();
             }
             
-            var mapResult = new MapResult(newSquares, newRooms, newAdjacencies, startRoomId, finishRoomId, gen.NumLevels);
-            return mapResult;
+            using var portals = level.Portals();
+            var newPortals = newRooms.ToDictionary(rm => rm.Id, rm => new HashSet<ulong>());
+            foreach (var portal in portals)
+            {
+                if (newPortals.TryGetValue(portal.FirstId, out var portalTo)) portalTo.Add(portal.SecondId);
+                portal.Dispose();
+            }
+            
+            return new MapResult(newSquares, newRooms, newDoors, newPortals, startRoomId, finishRoomId, gen.NumLevels);
         }
     }
 }

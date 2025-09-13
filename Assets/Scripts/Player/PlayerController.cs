@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Enemy;
 using Enemy.States;
@@ -65,6 +66,47 @@ namespace Player
         {
             get => _controller.enabled;
             set => _controller.enabled = value;
+        }
+
+        public void TeleportTo(Vector2 destination)
+        {
+            StartCoroutine(nameof(DoTeleport), destination);
+        }
+        
+        public void TeleportTo(Vector2 destination, Quaternion orientation)
+        {
+            StartCoroutine(nameof(DoTeleport), (destination, orientation));
+        }
+
+        private IEnumerator DoTeleport(Vector2 destination)
+        {
+            EnableMovement = false;
+            try
+            {
+                var posY = _controller.height / 2;
+                transform.position = new Vector3(destination.x, posY, destination.y);
+                yield return new WaitForSeconds(0.1f);
+            }
+            finally
+            {
+                EnableMovement = true;
+            }
+        }
+        
+        private IEnumerator DoTeleport((Vector2 destination, Quaternion orientation) dest)
+        {
+            EnableMovement = false;
+            try
+            {
+                var posY = _controller.height / 2;
+                transform.position = new Vector3(dest.destination.x, posY, dest.destination.y);
+                transform.rotation = dest.orientation;
+                yield return new WaitForSeconds(0.1f);
+            }
+            finally
+            {
+                EnableMovement = true;
+            }
         }
 
         public void Resurrect()

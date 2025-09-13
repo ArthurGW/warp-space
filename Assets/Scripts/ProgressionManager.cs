@@ -5,7 +5,6 @@ using System.Threading;
 using Animations;
 using Enemy;
 using Layout;
-using MapObjects;
 using Player;
 using TMPro;
 using static MapObjects.ObjectUtils;
@@ -172,7 +171,7 @@ public class ProgressionManager : MonoBehaviour
         while(!CheckCancel())
         {
             // Keep a few levels queued up for faster transitions
-            var toGenerate = 3 - _results.Count;
+            var toGenerate = 5 - _results.Count;
 
             // Vary the levels - random width and height, new seed each time, increasing breaches (up to a point)
             // Generate params now as Random.Range can't be used in the background thread

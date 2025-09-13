@@ -28,7 +28,7 @@ namespace Enemy.States
             var roomData = RoomController.GetRoomDataForPosition(Enemy.position);
             if (roomData is not { Type: RoomType.Room })
             {
-                Debug.LogError("Patrol state should be in a room");
+                Debug.LogWarning("Patrol state should be in a room");
                 return;
             }
             SetRoom(roomData.Value);
@@ -74,6 +74,9 @@ namespace Enemy.States
         protected override EnemyState DoIteration()
         {
             if (CanDetectPlayer) return new PursueState(Enemy, EnemyAgent, Player);
+
+            // If we failed to set a route, move to another room
+            if (_patrolPoints.Length == 0) return new ChangeRoomState(Enemy, EnemyAgent, Player, true);
             
             if (!IsAtDestination) return null;
             
