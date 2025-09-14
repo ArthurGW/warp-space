@@ -5,6 +5,7 @@ using UnityEngine.Events;
 namespace MapObjects
 {
     [RequireComponent(typeof(Collider), typeof(MeshRenderer), typeof(AudioSource))]
+    [RequireComponent(typeof(Pulser))]
     public class PortalEnd : MonoBehaviour
     {
         /// <summary>
@@ -52,6 +53,7 @@ namespace MapObjects
 
         private Collider _collider;
         private MeshRenderer _visualPortal;
+        private Pulser _pulser;        
         
         private void Awake()
         {
@@ -61,6 +63,7 @@ namespace MapObjects
             _visualPortal = GetComponent<MeshRenderer>();
             _visualPortal.enabled = false;
             _audioSource = GetComponent<AudioSource>();
+            _pulser = GetComponent<Pulser>();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -73,11 +76,30 @@ namespace MapObjects
         
         public bool HasDestinationPortal => _destination;
 
-        public void SetDestinationPortal(PortalEnd other)
+        private void SetDestinationPortal(PortalEnd other)
         {
             _destination = other;
             _collider.enabled = true;
             _visualPortal.enabled = true;
+        }
+
+        public void ConnectTo(PortalEnd other)
+        {
+            SetDestinationPortal(other);
+            other.SetDestinationPortal(this);
+            
+            // Randomise display for a bit of visual variety, while keeping paired portals in sync
+            var rotationZ = Random.Range(0f, 360f);
+            transform.Rotate(0f, 0f, rotationZ);
+            other.transform.Rotate(0f, 0f, rotationZ);
+
+            var startingPhase = Random.Range(0f, Mathf.PI * 2);
+            _pulser.startingPhase = startingPhase;
+            other._pulser.startingPhase = startingPhase;
+
+            var rate = Random.Range(2.5f, 3.5f);
+            _pulser.rate = rate;
+            other._pulser.rate = rate;
         }
     }
 }

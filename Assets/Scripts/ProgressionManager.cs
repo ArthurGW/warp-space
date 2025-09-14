@@ -75,8 +75,10 @@ public class ProgressionManager : MonoBehaviour
     
     private static int _generationRunning = 0;
 
+#if !UNITY_EDITOR
     private InputAction _quit;
     private bool _waitingForQuit;
+#endif
     
     private void Awake()
     {
@@ -112,9 +114,11 @@ public class ProgressionManager : MonoBehaviour
         _levelSeed = seed;  // ...but the level seed changes on each level generation
 
         restartButton.onClick.AddListener(OnRestartGame);
-        
+
+#if !UNITY_EDITOR
         _quit = InputSystem.actions.FindAction("Player/Quit");
         waitForQuitText.enabled = false;
+#endif
     }
 
     private async void Start()
@@ -142,9 +146,9 @@ public class ProgressionManager : MonoBehaviour
         }
     }
 
+#if !UNITY_EDITOR
     private void Update()
     {
-#if !UNITY_EDITOR
         switch (_quit.triggered)
         {
             case true when _waitingForQuit:
@@ -155,7 +159,6 @@ public class ProgressionManager : MonoBehaviour
                 StartCoroutine(nameof(WaitForQuit));
                 break;
         }
-#endif
     }
 
     private IEnumerator WaitForQuit()
@@ -166,6 +169,7 @@ public class ProgressionManager : MonoBehaviour
         _waitingForQuit = false;
         waitForQuitText.enabled = false;
     }
+#endif
 
     private async Awaitable WaitForFade(int trigger)
     {

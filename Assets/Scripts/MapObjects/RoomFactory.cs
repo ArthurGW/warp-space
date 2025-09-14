@@ -110,8 +110,7 @@ namespace MapObjects
                     if (!seen.Add((minId, maxId))) continue;  // Already processed the other way round
                     var start = portalEndsByRoomId[room.Id].First(p => !p.HasDestinationPortal);
                     var end = portalEndsByRoomId[adjRoomId].First(p => !p.HasDestinationPortal);
-                    start.SetDestinationPortal(end);
-                    end.SetDestinationPortal(start);
+                    start.ConnectTo(end);
                 }
             }
 

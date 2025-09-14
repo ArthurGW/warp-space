@@ -5,11 +5,12 @@ TagManager:
   serializedVersion: 3
   tags:
   - WarpControl
-  - WarpBlue
   - SceneChange
   - Enemy
   - Music
   - SoundFX
+  - Pulser
+  - WarpBlue
   layers:
   - Default
   - TransparentFX

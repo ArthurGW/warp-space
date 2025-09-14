@@ -13,10 +13,11 @@ GameObject:
   - component: {fileID: 6047524852836512263}
   - component: {fileID: 1706848297986326517}
   - component: {fileID: 7916221500545088693}
+  - component: {fileID: 4427331641900349543}
   - component: {fileID: 3422939190256365788}
   m_Layer: 0
   m_Name: PowerRing (1)
-  m_TagString: WarpBlue
+  m_TagString: Pulser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10730,6 +10731,23 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1690573618542494435}
   m_Mesh: {fileID: 0}
+--- !u!114 &4427331641900349543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690573618542494435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3980d9165144851b20ec18b276d3582, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstMaterial: {fileID: 2100000, guid: 2ec2ead6d17196f4991f34cf32bc5407, type: 2}
+  secondMaterial: {fileID: 2100000, guid: e8ab4700b4805884fb895d0855aaf64a, type: 2}
+  pulseAmount: 0
+  startingPhase: 1.5708
+  rate: 1.5
 --- !u!64 &3422939190256365788
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -10765,10 +10783,11 @@ GameObject:
   - component: {fileID: 195564148976765286}
   - component: {fileID: 8888691051929511860}
   - component: {fileID: 7509178488199431829}
+  - component: {fileID: 5823902768408481602}
   - component: {fileID: 1449289719930397282}
   m_Layer: 0
   m_Name: PowerRing (3)
-  m_TagString: WarpBlue
+  m_TagString: Pulser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21482,6 +21501,23 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2245013212608961747}
   m_Mesh: {fileID: 0}
+--- !u!114 &5823902768408481602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2245013212608961747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3980d9165144851b20ec18b276d3582, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstMaterial: {fileID: 2100000, guid: 2ec2ead6d17196f4991f34cf32bc5407, type: 2}
+  secondMaterial: {fileID: 2100000, guid: e8ab4700b4805884fb895d0855aaf64a, type: 2}
+  pulseAmount: 0
+  startingPhase: 4.7124
+  rate: 1.5
 --- !u!64 &1449289719930397282
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -23020,10 +23056,11 @@ GameObject:
   - component: {fileID: 3407684910637000605}
   - component: {fileID: 5637665637070813707}
   - component: {fileID: 505294494070485784}
+  - component: {fileID: 7118234798962193099}
   - component: {fileID: 7785365226721811332}
   m_Layer: 0
   m_Name: Pipe
-  m_TagString: WarpBlue
+  m_TagString: Pulser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26999,6 +27036,23 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4693825536013056434}
   m_Mesh: {fileID: 0}
+--- !u!114 &7118234798962193099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4693825536013056434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3980d9165144851b20ec18b276d3582, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstMaterial: {fileID: 2100000, guid: 2ec2ead6d17196f4991f34cf32bc5407, type: 2}
+  secondMaterial: {fileID: 2100000, guid: e8ab4700b4805884fb895d0855aaf64a, type: 2}
+  pulseAmount: 0
+  startingPhase: 0
+  rate: 0.75
 --- !u!64 &7785365226721811332
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -27034,10 +27088,11 @@ GameObject:
   - component: {fileID: 7339846779309794806}
   - component: {fileID: 1595645499987865065}
   - component: {fileID: 5305031147996937448}
+  - component: {fileID: 1613007580247819977}
   - component: {fileID: 8849686794063206550}
   m_Layer: 0
   m_Name: PowerRing (2)
-  m_TagString: WarpBlue
+  m_TagString: Pulser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -37751,6 +37806,23 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4995014986750394983}
   m_Mesh: {fileID: 0}
+--- !u!114 &1613007580247819977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4995014986750394983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3980d9165144851b20ec18b276d3582, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstMaterial: {fileID: 2100000, guid: 2ec2ead6d17196f4991f34cf32bc5407, type: 2}
+  secondMaterial: {fileID: 2100000, guid: e8ab4700b4805884fb895d0855aaf64a, type: 2}
+  pulseAmount: 0
+  startingPhase: 3.1416
+  rate: 1.5
 --- !u!64 &8849686794063206550
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -37786,10 +37858,11 @@ GameObject:
   - component: {fileID: 5030803241522761845}
   - component: {fileID: 7857177760426661227}
   - component: {fileID: 1067190130957912273}
+  - component: {fileID: 2434711564034889171}
   - component: {fileID: 2942532529481960962}
   m_Layer: 0
   m_Name: PowerRing
-  m_TagString: WarpBlue
+  m_TagString: Pulser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48503,6 +48576,23 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5154461164848277765}
   m_Mesh: {fileID: 0}
+--- !u!114 &2434711564034889171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5154461164848277765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3980d9165144851b20ec18b276d3582, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstMaterial: {fileID: 2100000, guid: 2ec2ead6d17196f4991f34cf32bc5407, type: 2}
+  secondMaterial: {fileID: 2100000, guid: e8ab4700b4805884fb895d0855aaf64a, type: 2}
+  pulseAmount: 0
+  startingPhase: 0
+  rate: 1.5
 --- !u!64 &2942532529481960962
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -48536,7 +48626,6 @@ GameObject:
   - component: {fileID: 3863860964886202005}
   - component: {fileID: 3268942315649917783}
   - component: {fileID: 1692547578003450199}
-  - component: {fileID: 5960281621364819102}
   - component: {fileID: 7027178175235279065}
   - component: {fileID: 6395212938539492608}
   m_Layer: 0
@@ -48600,29 +48689,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ea84e47fb4d48798e7559e6c4a30a29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstMaterial: {fileID: 2100000, guid: 2ec2ead6d17196f4991f34cf32bc5407, type: 2}
-  secondMaterial: {fileID: 2100000, guid: e8ab4700b4805884fb895d0855aaf64a, type: 2}
-  pulseAmount: 0
   onWarp:
     m_PersistentCalls:
       m_Calls: []
---- !u!111 &5960281621364819102
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8995690838197578871}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Animation: {fileID: 7400000, guid: e54b06baf2224824fa0a58c854eb27b3, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: e54b06baf2224824fa0a58c854eb27b3, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_UpdateMode: 0
-  m_CullingType: 0
 --- !u!82 &7027178175235279065
 AudioSource:
   m_ObjectHideFlags: 0

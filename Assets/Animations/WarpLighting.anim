@@ -54,7 +54,7 @@ AnimationClip:
     attribute: pulseAmount
     path: 
     classID: 114
-    script: {fileID: 11500000, guid: 4ea84e47fb4d48798e7559e6c4a30a29, type: 3}
+    script: {fileID: 11500000, guid: f3980d9165144851b20ec18b276d3582, type: 3}
     flags: 0
   m_PPtrCurves: []
   m_SampleRate: 24
@@ -123,7 +123,7 @@ AnimationClip:
     attribute: pulseAmount
     path: 
     classID: 114
-    script: {fileID: 11500000, guid: 4ea84e47fb4d48798e7559e6c4a30a29, type: 3}
+    script: {fileID: 11500000, guid: f3980d9165144851b20ec18b276d3582, type: 3}
     flags: 0
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
