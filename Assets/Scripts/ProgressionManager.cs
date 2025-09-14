@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Animations;
@@ -46,6 +46,7 @@ public class ProgressionManager : MonoBehaviour
     private AudioSource _musicSource;
     private AudioSource _fxSource;
     
+    private bool _warpInfoShown;
     private bool _portalInfoShown;
     
     private PlayerController _playerController;
@@ -220,8 +221,14 @@ public class ProgressionManager : MonoBehaviour
         }
         return result;
     }
-    
-    private static async Awaitable FlyBetween(Transform cameraTransform, Vector3 startPos, Quaternion startRot,Vector3 endPos, Quaternion endRot)
+
+    private static async Awaitable FlyBetween(
+        Transform cameraTransform,
+        Vector3 startPos,
+        Quaternion startRot,
+        Vector3 endPos,
+        Quaternion endRot,
+        float speedMultiplier)
     {
         var phase = Mathf.PI;
         while (phase <= Mathf.PI * 2f)
@@ -230,7 +237,7 @@ public class ProgressionManager : MonoBehaviour
             var amount = (Mathf.Cos(phase) + 1f) / 2f;
             cameraTransform.position = Vector3.Lerp(startPos, endPos, amount);
             cameraTransform.rotation = Quaternion.Slerp(startRot, endRot, amount);
-            phase += Time.unscaledDeltaTime;
+            phase += Time.unscaledDeltaTime * speedMultiplier;
         }
         await WaitForUnscaledTime(Time.unscaledTime + 1);
     }
@@ -245,18 +252,67 @@ public class ProgressionManager : MonoBehaviour
         );
         
         // View position offset by offset, at 45 degrees
-        var offsetVector =  (spawnOffsetVector.normalized + Vector3.up).normalized * offset;
-        var viewPos = portal.transform.position + offsetVector;
-        return (viewPos, Quaternion.LookRotation(-offsetVector.normalized));
+        var offsetVector =  (spawnOffsetVector.normalized + Vector3.up).normalized;
+        var viewPos = portal.transform.position + offsetVector * offset;
+        return (viewPos, Quaternion.LookRotation(-offsetVector));
+    }
+    
+    private async Awaitable DoFlythrough(List<(Vector3 pos, Quaternion rot)> destinations)
+    {
+        var cameraTransform = _playerController.CameraFollow.CameraTransform;
+        var startingPosition = cameraTransform.position;
+        var startingRotation = cameraTransform.rotation;
+        _playerController.CameraFollow.enabled = false;
+
+        destinations = destinations
+            .Prepend((startingPosition, startingRotation))
+            .Append((startingPosition, startingRotation))
+            .ToList();
+
+        try
+        {
+            for (var i = 0; i < destinations.Count - 1; ++i)
+            {
+                await FlyBetween(
+                    cameraTransform,
+                    destinations[i].pos,
+                    destinations[i].rot,
+                    destinations[i + 1].pos,
+                    destinations[i + 1].rot,
+                    i == destinations.Count - 2 ? 2f : 1f
+                );
+            }
+        }
+        finally
+        {
+            cameraTransform.position = startingPosition;
+            cameraTransform.rotation = startingRotation;
+            _playerController.CameraFollow.enabled = true;
+        }
+    }
+    
+    private async Awaitable DoWarpFlythrough()
+    {
+        try
+        {
+            var warp = FindAnyObjectByType<WarpController>();
+            if (!warp) return;
+        
+            var offsetVector =  (Vector3.left + Vector3.up).normalized;
+            var viewPos = warp.transform.position + offsetVector * _playerController.CameraFollow.offset;
+            var viewRot = Quaternion.LookRotation(-offsetVector);
+        
+            await DoFlythrough(new List<(Vector3, Quaternion)>{(viewPos, viewRot)});
+        }
+        finally
+        {
+            _warpInfoShown = true;
+        }
     }
 
     private async Awaitable DoPortalFlythrough()
     {
-        var cameraTransform = _playerController.CameraFollow.CameraTransform;
         var offset = _playerController.CameraFollow.offset;
-        var startingPosition = cameraTransform.position;
-        var startingRotation = cameraTransform.rotation;
-        _playerController.CameraFollow.enabled = false;
 
         try
         {
@@ -268,35 +324,12 @@ public class ProgressionManager : MonoBehaviour
 
             var firstView = GetPortalView(firstPortal, offset);
             var secondView = GetPortalView(secondPortal, offset);
-        
-            await FlyBetween(
-                cameraTransform,
-                startingPosition,
-                startingRotation,
-                firstView.pos,
-                firstView.rot
-            );
-            await FlyBetween(
-                cameraTransform,
-                firstView.pos,
-                firstView.rot,
-                secondView.pos,
-                secondView.rot
-            );
-            await FlyBetween(
-                cameraTransform,
-                secondView.pos,
-                secondView.rot,
-                startingPosition,
-                startingRotation
-            );
+
+            await DoFlythrough(new List<(Vector3, Quaternion)> { firstView, secondView });
         }
         finally
         {
             _portalInfoShown = true;
-            _playerController.CameraFollow.enabled = true;
-            cameraTransform.position = startingPosition;
-            cameraTransform.rotation = startingRotation;
         }
         
     }
@@ -422,8 +455,10 @@ public class ProgressionManager : MonoBehaviour
             await WaitForFade(_fadeInHash);
             fadeAnimator.gameObject.SetActive(false);
             needsFadeOut = true;
-            
-            if (level != null && level.Portals.Any(pair => pair.Value.Count > 0) && !_portalInfoShown)
+
+            if (!_warpInfoShown)
+                await DoWarpFlythrough();
+            else if (level != null && level.Portals.Any(pair => pair.Value.Count > 0) && !_portalInfoShown)
                 await DoPortalFlythrough();
         }
         catch (Exception e)
