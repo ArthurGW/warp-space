@@ -40,6 +40,7 @@ namespace Player
             _look = InputSystem.actions.FindAction("Player/Look");
             _controller = GetComponent<CharacterController>();
             _cameraFollow = GetComponent<CameraFollowPlayer>();
+            _cameraFollow.MovementEnabled = true;
             _listener = GetComponent<AudioListener>();
             
             playerDeath ??= new UnityEvent();
@@ -64,8 +65,12 @@ namespace Player
 
         public bool EnableMovement
         {
-            get => _controller.enabled;
-            set => _controller.enabled = value;
+            get => _controller?.enabled ?? true;
+            set
+            {
+                if (_controller != null) _controller.enabled = value;
+                if (_cameraFollow != null) _cameraFollow.MovementEnabled = value;
+            }
         }
 
         public void TeleportTo(Vector2 destination)
@@ -80,6 +85,13 @@ namespace Player
 
         private IEnumerator DoTeleport(Vector2 destination)
         {
+#if UNITY_EDITOR
+            _controller ??= GetComponent<CharacterController>();
+            _cameraFollow ??= GetComponent<CameraFollowPlayer>();
+            _listener ??= GetComponent<AudioListener>();
+            
+            playerDeath ??= new UnityEvent();
+#endif
             EnableMovement = false;
             try
             {
@@ -101,6 +113,7 @@ namespace Player
                 var posY = _controller.height / 2;
                 transform.position = new Vector3(dest.destination.x, posY, dest.destination.y);
                 transform.rotation = dest.orientation;
+                _cameraFollow.lookProportion = 1f;  // Look from above, to show the player where they are
                 yield return new WaitForSeconds(0.1f);
             }
             finally
@@ -143,6 +156,7 @@ namespace Player
                 fakePlayer.AddComponent<AudioListener>();
                 var newFollow = fakePlayer.AddComponent<CameraFollowPlayer>();
                 newFollow.CopyParams(_cameraFollow);
+                newFollow.MovementEnabled = true;
                 
                 Cursor.lockState = CursorLockMode.None;
                 playerDeath.Invoke();

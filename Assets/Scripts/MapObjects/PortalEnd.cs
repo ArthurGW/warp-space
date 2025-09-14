@@ -77,6 +77,15 @@ namespace MapObjects
 
         private void SetDestinationPortal(PortalEnd other)
         {
+#if UNITY_EDITOR
+            portalActivated ??= new UnityEvent<Vector2, Quaternion>();
+            _collider ??= GetComponent<Collider>();
+            _collider.enabled = false;
+            _visualPortal ??= GetComponentInChildren<MeshRenderer>().gameObject;
+            _visualPortal.SetActive(false);
+            _audioSource ??= GetComponent<AudioSource>();
+            _pulser = _visualPortal.GetComponent<Pulser>();
+#endif
             _destination = other;
             _collider.enabled = true;
             _visualPortal.SetActive(true);

@@ -14,8 +14,12 @@ namespace Player
         public float offset = 50f;
         public float zoomSpeed = 4f;
         public float lookProportion = 0.5f;
-        private float _lookAngle = 0f;
+        private float _lookAngle = 0.6f;
         public float lookSpeed = 0.1f;
+        public float minAngle = 10f;
+        public float maxAngle = 89f;  // Not 90 as then the y-rotation is undefined
+        
+        public bool MovementEnabled { get; set; }
 
         public void CopyParams(CameraFollowPlayer other)
         {
@@ -36,17 +40,18 @@ namespace Player
         
         private void Update()
         {
-            if (_zoomAction.ReadValueAsObject() is float amount)
+            if (MovementEnabled)
             {
-                offset = Mathf.Clamp(offset + amount * zoomSpeed * Time.deltaTime, 5, 250);
+                if (_zoomAction.ReadValueAsObject() is float amount)
+                {
+                    offset = Mathf.Clamp(offset + amount * zoomSpeed * Time.deltaTime, 5, 250);
+                }
+
+                if (_lookAction.ReadValueAsObject() is Vector2 look)
+                {
+                    lookProportion = Mathf.Clamp(lookProportion - look.y * lookSpeed * Time.deltaTime, 0f, 1f);
+                }
             }
-            
-            if (_lookAction.ReadValueAsObject() is Vector2 look)
-            {
-                lookProportion = Mathf.Clamp(lookProportion - look.y * lookSpeed * Time.deltaTime, 0f, 1f);
-                _lookAngle = Mathf.LerpAngle(10, 80, lookProportion);
-            }
-            
             Follow();
         }
 
@@ -54,6 +59,7 @@ namespace Player
         {
             if (!gameObject.activeInHierarchy) return;
             
+            _lookAngle = Mathf.LerpAngle(minAngle, maxAngle, lookProportion);
             var sin = MathF.Sin(_lookAngle * MathF.PI/180);
             var cos = MathF.Cos(_lookAngle * MathF.PI/180);
             var vertical = transform.up * (offset * sin);

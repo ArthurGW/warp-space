@@ -99,6 +99,7 @@ GameObject:
   - component: {fileID: 6324115869484797399}
   - component: {fileID: 5290552849399524086}
   - component: {fileID: 7510779216507084852}
+  - component: {fileID: 1001914352036411047}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -137,6 +138,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 20
   rotationSpeed: 15
+  maxHealth: 100
+  particleDamage: 2
+  playerDeath:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!143 &6324115869484797399
 CharacterController:
   m_ObjectHideFlags: 0
@@ -180,12 +186,30 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 0
-  m_Extents: {x: 1, y: 1.5, z: 1}
+  m_Extents: {x: 0.8, y: 1.5, z: 0.8}
   m_MoveThreshold: 0.1
   m_Carve: 0
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!114 &1001914352036411047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5287272316015571332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 584f34467753442ba7d856682693d18f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 25
+  zoomSpeed: 100
+  lookProportion: 0.5
+  lookSpeed: 0.25
+  minAngle: 10
+  maxAngle: 89
 --- !u!1 &7922746958571770073
 GameObject:
   m_ObjectHideFlags: 0

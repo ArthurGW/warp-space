@@ -151,9 +151,12 @@ public class ProgressionManager : MonoBehaviour
             _results = new ConcurrentQueue<MapResult>();
             _levelsPerGeneration = levelsFirstGeneration;
             RestartGeneration();
-            
-            _musicSource.clip = music[Random.Range(0, music.Length)];
-            _musicSource.Play();
+
+            if (!_musicSource.isPlaying)
+            {
+                _musicSource.clip = music[Random.Range(0, music.Length)];
+                _musicSource.Play();
+            }
             _fxSource.PlayOneShot(alarmSound);
             
             _initialUpdateText = updateText.text;
