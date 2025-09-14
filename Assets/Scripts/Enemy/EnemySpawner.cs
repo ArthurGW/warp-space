@@ -1,26 +1,47 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
-public class EnemySpawner : MonoBehaviour
+namespace Enemy
 {
-    [SerializeField] private GameObject enemyPrefab;
-    
-    public float minTimeBetweenSpawns = 5f;
-    public float maxTimeBetweenSpawns = 10f;
-    
-    private void Start()
+    public class EnemySpawner : MonoBehaviour
     {
-        StartCoroutine(nameof(SpawnLoop));
-    }
+        [SerializeField] private GameObject enemyPrefab;
+    
+        public float minTimeBetweenSpawns = 5f;
+        public float maxTimeBetweenSpawns = 10f;
 
-    private IEnumerator SpawnLoop()
-    {
-        while (!destroyCancellationToken.IsCancellationRequested)
+        public float enemySpeed;
+        public float enemyAccel;
+        public float enemyAngularSpeed;
+    
+        private void Start()
         {
-            Instantiate(enemyPrefab, transform, false);
-            yield return new WaitForSeconds(Random.Range(minTimeBetweenSpawns, maxTimeBetweenSpawns));
+            StartCoroutine(nameof(SpawnLoop));
+        }
+
+        private IEnumerator SpawnLoop()
+        {
+            while (!destroyCancellationToken.IsCancellationRequested)
+            {
+                var enemy = Instantiate(enemyPrefab, transform, false);
+                var agent = enemy.GetComponent<NavMeshAgent>();
+                agent.speed = enemySpeed;
+                agent.acceleration = enemyAccel;
+                agent.angularSpeed = enemyAngularSpeed;
+                yield return new WaitForSeconds(Random.Range(minTimeBetweenSpawns, maxTimeBetweenSpawns));
+            }
+        }
+
+        public void SetEnemyCharacteristics(float speed, float accel, float angularSpeed, float minSpawnTime,
+            float maxSpawnTime)
+        {
+            minTimeBetweenSpawns = minSpawnTime;
+            maxTimeBetweenSpawns = maxSpawnTime;
+            enemySpeed = speed;
+            enemyAccel = accel;
+            enemyAngularSpeed = angularSpeed;
         }
     }
-
 }

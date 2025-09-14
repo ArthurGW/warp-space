@@ -8,6 +8,7 @@ using Enemy;
 using Layout;
 using Player;
 using TMPro;
+using Unity.VisualScripting;
 using static MapObjects.ObjectUtils;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -19,66 +20,85 @@ using Random = UnityEngine.Random;
 /// Singleton to manage difficulty progression throughout the game 
 /// </summary>
 [RequireComponent(typeof(PauseController))]
+[DisallowMultipleComponent]
 public class ProgressionManager : MonoBehaviour
 {
     private static ProgressionManager _instance;
-
-    public uint seed = 0;
-    private uint _levelSeed = 0;
-    public bool resetSeedOnPlay = true;
-
     private GameMapGenerator _mapGenerator;
     private GameMapController _mapController;
 
     private ConcurrentQueue<MapResult> _results;
-
+    
+    private uint _levelSeed;
     private uint _levelsPerGeneration;
-    public uint levelsFirstGeneration = 3u;
-    public uint maxLevelsPerGeneration = 5u;
-    public uint minRoomCount = 3u;
-    public uint maxRoomCount = 10u;
-    public uint numSolverThreads = 2u;
-    
     private float _breaches = 1f;
-    public float breachIncreaseRate = 0.5f;
-    public uint maxBreaches = 5u;
-
-    private float _portals = 0f;
-    public float portalIncreaseRate = 0.5f;
-    public uint maxPortals = 10u;
+    private float _portals;
     
-    [SerializeField]
-    private Animator fadeAnimator;
-
+    // This is the player's "score"
+    private uint _numWarps;
+    
+    private static int _generationRunning = 0;
+    
     private FadeComplete _fadeComplete;
-
-    public bool needsFadeOut = false;
-
     private int _fadeInHash;
     private int _fadeOutHash;
-
-    private uint _numWarps = 0u;
-    [SerializeField] private TextMeshProUGUI numWarpsText;
-    [SerializeField] private Button restartButton;
-    [SerializeField] private TextMeshProUGUI updateText;
     private string _initialUpdateText;
-    [SerializeField] private TextMeshProUGUI waitForQuitText;
-
-    [SerializeField] private AudioClip alarmSound;
-    [SerializeField] private AudioClip warpSound;
-    [SerializeField] private AudioClip[] music;
-
     private AudioSource _musicSource;
     private AudioSource _fxSource;
     
     private PlayerController _playerController;
     
-    private static int _generationRunning = 0;
-
 #if !UNITY_EDITOR
     private InputAction _quit;
     private bool _waitingForQuit;
 #endif
+    
+    [Header("Level Generation")]
+    public uint seed;
+    public bool resetSeedOnPlay = true;
+
+    public uint levelsFirstGeneration = 3u;
+    public uint maxLevelsPerGeneration = 5u;
+    
+    public uint numSolverThreads = 2u;
+    
+    [Header("Level Characteristics")]
+    public uint minRoomCount = 3u;
+    public uint maxRoomCount = 12u;
+
+    public float breachIncreaseRate = 0.5f;
+    public uint maxBreaches = 5u;
+
+    public float portalIncreaseRate = 0.5f;
+    public uint maxPortals = 10u;
+    
+    [Header("Enemy Characteristics")]
+    public float enemySpeed = 8f;
+    public float enemySpeedMultiplier = 1.05f;
+
+    public float enemyAccel = 10f;
+    public float enemyAccelMultiplier = 1.05f;
+
+    public float enemyAngularSpeed = 210f;
+    public float enemyAngularSpeedMultiplier = 1.05f;
+
+    public float enemyMinSpawnTime = 5f;
+    public float enemyMinSpawnTimeMultiplier = 0.95f;
+    public float enemyMaxSpawnTime = 8f;
+    public float enemyMaxSpawnTimeMultiplier = 0.95f;
+    
+    [Header("Controls & Display")]
+    [SerializeField] private Animator fadeAnimator;
+    public bool needsFadeOut;
+
+    [SerializeField] private Button restartButton;
+    [SerializeField] private TextMeshProUGUI numWarpsText;
+    [SerializeField] private TextMeshProUGUI updateText;
+    [SerializeField] private TextMeshProUGUI waitForQuitText;
+
+    [SerializeField] private AudioClip alarmSound;
+    [SerializeField] private AudioClip warpSound;
+    [SerializeField] private AudioClip[] music;
     
     private void Awake()
     {
@@ -175,6 +195,13 @@ public class ProgressionManager : MonoBehaviour
     {
         fadeAnimator.SetTrigger(trigger);
         await _fadeComplete.onComplete;
+    }
+    
+    private static async Awaitable WaitForUnscaledTime(float time)
+    {
+        await Awaitable.NextFrameAsync();
+        while (Time.unscaledTime < time)
+            await Awaitable.NextFrameAsync();
     }
     
     private async Awaitable<MapResult> WaitForLevel()
@@ -275,21 +302,32 @@ public class ProgressionManager : MonoBehaviour
                 needsFadeOut = false;
             }
 
+            // Ensure faded-out for some time, to allow time for audio and a breather for the player
+            var minimumTime = Time.unscaledTime + 4f;
+
             _mapController.DestroyMap();
 
             var level = await WaitForLevel();
             if (level != null)
             {
                 _mapController.OnMapGenerated(level);
+                _mapController.SetEnemyCharacteristics(
+                    enemySpeed, enemyAccel, enemyAngularSpeed, enemyMinSpawnTime, enemyMaxSpawnTime
+                );
+                enemySpeed *= enemySpeedMultiplier;
+                enemyAccel *= enemyAccelMultiplier;
+                enemyAngularSpeed *= enemyAngularSpeedMultiplier;
+                enemyMinSpawnTime *= enemyMinSpawnTimeMultiplier;
+                enemyMaxSpawnTime *= enemyMaxSpawnTimeMultiplier;
+                enemyMaxSpawnTime = Mathf.Max(enemyMaxSpawnTime, enemyMinSpawnTime + 0.5f);
             }
             else
             {
                 Debug.LogError("failed to generate map");
                 _mapController.OnMapGenerationFailed();
             }
-            
-            await Awaitable.NextFrameAsync();
-            await Awaitable.EndOfFrameAsync();
+
+            await WaitForUnscaledTime(minimumTime);
             await WaitForFade(_fadeInHash);
             fadeAnimator.gameObject.SetActive(false);
             needsFadeOut = true;

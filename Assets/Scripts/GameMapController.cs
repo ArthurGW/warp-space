@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Enemy;
 using Layout;
 using LevelGenerator;
 using MapObjects;
@@ -72,6 +73,14 @@ public class GameMapController : MonoBehaviour
         }
             
         _navMeshSurface.RemoveData();
+    }
+
+    public void SetEnemyCharacteristics(float speed, float accel, float angularSpeed, float minSpawnTime, float maxSpawnTime)
+    {
+        foreach (var spawner in GetComponentsInChildren<EnemySpawner>())
+        {
+            spawner.SetEnemyCharacteristics(speed, accel, angularSpeed, minSpawnTime, maxSpawnTime);
+        }
     }
 
     public void OnMapGenerated(MapResult result)

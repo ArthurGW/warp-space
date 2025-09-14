@@ -4,8 +4,7 @@ using UnityEngine.Events;
 
 namespace MapObjects
 {
-    [RequireComponent(typeof(Collider), typeof(MeshRenderer), typeof(AudioSource))]
-    [RequireComponent(typeof(Pulser))]
+    [RequireComponent(typeof(Collider), typeof(AudioSource))]
     public class PortalEnd : MonoBehaviour
     {
         /// <summary>
@@ -52,7 +51,7 @@ namespace MapObjects
         private PortalEnd _destination;
 
         private Collider _collider;
-        private MeshRenderer _visualPortal;
+        private GameObject _visualPortal;
         private Pulser _pulser;        
         
         private void Awake()
@@ -60,10 +59,10 @@ namespace MapObjects
             portalActivated ??= new UnityEvent<Vector2, Quaternion>();
             _collider = GetComponent<Collider>();
             _collider.enabled = false;
-            _visualPortal = GetComponent<MeshRenderer>();
-            _visualPortal.enabled = false;
+            _visualPortal = GetComponentInChildren<MeshRenderer>().gameObject;
+            _visualPortal.SetActive(false);
             _audioSource = GetComponent<AudioSource>();
-            _pulser = GetComponent<Pulser>();
+            _pulser = _visualPortal.GetComponent<Pulser>();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -80,7 +79,7 @@ namespace MapObjects
         {
             _destination = other;
             _collider.enabled = true;
-            _visualPortal.enabled = true;
+            _visualPortal.SetActive(true);
         }
 
         public void ConnectTo(PortalEnd other)
@@ -90,8 +89,8 @@ namespace MapObjects
             
             // Randomise display for a bit of visual variety, while keeping paired portals in sync
             var rotationZ = Random.Range(0f, 360f);
-            transform.Rotate(0f, 0f, rotationZ);
-            other.transform.Rotate(0f, 0f, rotationZ);
+            _visualPortal.transform.Rotate(0f, 0f, rotationZ);
+            other._visualPortal.transform.Rotate(0f, 0f, rotationZ);
 
             var startingPhase = Random.Range(0f, Mathf.PI * 2);
             _pulser.startingPhase = startingPhase;
