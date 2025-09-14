@@ -20,10 +20,11 @@ namespace Player
         
         public float movementSpeed;
         public float rotationSpeed;
-        
+
         private CharacterController _controller;
-        private CameraFollowPlayer _cameraFollow;
         private AudioListener _listener;
+        
+        public CameraFollowPlayer CameraFollow { get; private set; }
 
         public uint maxHealth = 100u;
 
@@ -39,8 +40,8 @@ namespace Player
             _move = InputSystem.actions.FindAction("Player/Move");
             _look = InputSystem.actions.FindAction("Player/Look");
             _controller = GetComponent<CharacterController>();
-            _cameraFollow = GetComponent<CameraFollowPlayer>();
-            _cameraFollow.MovementEnabled = true;
+            CameraFollow = GetComponent<CameraFollowPlayer>();
+            CameraFollow.MovementEnabled = true;
             _listener = GetComponent<AudioListener>();
             
             playerDeath ??= new UnityEvent();
@@ -69,7 +70,7 @@ namespace Player
             set
             {
                 if (_controller != null) _controller.enabled = value;
-                if (_cameraFollow != null) _cameraFollow.MovementEnabled = value;
+                if (CameraFollow != null) CameraFollow.MovementEnabled = value;
             }
         }
 
@@ -87,7 +88,7 @@ namespace Player
         {
 #if UNITY_EDITOR
             _controller ??= GetComponent<CharacterController>();
-            _cameraFollow ??= GetComponent<CameraFollowPlayer>();
+            CameraFollow ??= GetComponent<CameraFollowPlayer>();
             _listener ??= GetComponent<AudioListener>();
             
             playerDeath ??= new UnityEvent();
@@ -113,7 +114,7 @@ namespace Player
                 var posY = _controller.height / 2;
                 transform.position = new Vector3(dest.destination.x, posY, dest.destination.y);
                 transform.rotation = dest.orientation;
-                _cameraFollow.lookProportion = 1f;  // Look from above, to show the player where they are
+                CameraFollow.lookProportion = 1f;  // Look from above, to show the player where they are
                 yield return new WaitForSeconds(0.1f);
             }
             finally
@@ -124,7 +125,7 @@ namespace Player
 
         public void Resurrect()
         {
-            _cameraFollow.enabled = true;
+            CameraFollow.enabled = true;
             _listener.enabled = true;
             EnableMovement = true;
             Health = maxHealth;
@@ -140,7 +141,7 @@ namespace Player
                 
                 var enemy = FindAnyObjectByType<EnemyController>();
 
-                _cameraFollow.enabled = false;
+                CameraFollow.enabled = false;
                 _listener.enabled = false;
                 EnableMovement = false;
                 var previousPos = transform.position;
@@ -155,7 +156,7 @@ namespace Player
                 fakePlayer.SetState(new PursueState(fakePlayer.transform, fakePlayer.GetComponent<NavMeshAgent>(), transform));
                 fakePlayer.AddComponent<AudioListener>();
                 var newFollow = fakePlayer.AddComponent<CameraFollowPlayer>();
-                newFollow.CopyParams(_cameraFollow);
+                newFollow.CopyParams(CameraFollow);
                 newFollow.MovementEnabled = true;
                 
                 Cursor.lockState = CursorLockMode.None;

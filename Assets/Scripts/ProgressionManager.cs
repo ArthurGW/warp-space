@@ -6,14 +6,14 @@ using System.Threading;
 using Animations;
 using Enemy;
 using Layout;
+using MapObjects;
 using Player;
 using TMPro;
-using Unity.VisualScripting;
 using static MapObjects.ObjectUtils;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
 /// <summary>
@@ -45,6 +45,8 @@ public class ProgressionManager : MonoBehaviour
     private string _initialUpdateText;
     private AudioSource _musicSource;
     private AudioSource _fxSource;
+    
+    private bool _portalInfoShown;
     
     private PlayerController _playerController;
     
@@ -218,6 +220,86 @@ public class ProgressionManager : MonoBehaviour
         }
         return result;
     }
+    
+    private static async Awaitable FlyBetween(Transform cameraTransform, Vector3 startPos, Quaternion startRot,Vector3 endPos, Quaternion endRot)
+    {
+        var phase = Mathf.PI;
+        while (phase <= Mathf.PI * 2f)
+        {
+            await Awaitable.NextFrameAsync();
+            var amount = (Mathf.Cos(phase) + 1f) / 2f;
+            cameraTransform.position = Vector3.Lerp(startPos, endPos, amount);
+            cameraTransform.rotation = Quaternion.Slerp(startRot, endRot, amount);
+            phase += Time.unscaledDeltaTime;
+        }
+        await WaitForUnscaledTime(Time.unscaledTime + 1);
+    }
+
+    private static (Vector3 pos, Quaternion rot) GetPortalView(PortalEnd portal, float offset)
+    {
+        var spawnPoint = portal.SpawnPoint;
+        var spawnOffsetVector = new Vector3(
+            spawnPoint.x - portal.transform.position.x,
+            portal.transform.position.y,
+            spawnPoint.y - portal.transform.position.z
+        );
+        
+        // View position offset by offset, at 45 degrees
+        var offsetVector =  (spawnOffsetVector.normalized + Vector3.up).normalized * offset;
+        var viewPos = portal.transform.position + offsetVector;
+        return (viewPos, Quaternion.LookRotation(-offsetVector.normalized));
+    }
+
+    private async Awaitable DoPortalFlythrough()
+    {
+        var cameraTransform = _playerController.CameraFollow.CameraTransform;
+        var offset = _playerController.CameraFollow.offset;
+        var startingPosition = cameraTransform.position;
+        var startingRotation = cameraTransform.rotation;
+        _playerController.CameraFollow.enabled = false;
+
+        try
+        {
+            var firstPortal = FindAnyObjectByType<PortalEnd>();
+            if (!firstPortal) return;
+        
+            var secondPortal = firstPortal.Destination;
+            if (!secondPortal) return;
+
+            var firstView = GetPortalView(firstPortal, offset);
+            var secondView = GetPortalView(secondPortal, offset);
+        
+            await FlyBetween(
+                cameraTransform,
+                startingPosition,
+                startingRotation,
+                firstView.pos,
+                firstView.rot
+            );
+            await FlyBetween(
+                cameraTransform,
+                firstView.pos,
+                firstView.rot,
+                secondView.pos,
+                secondView.rot
+            );
+            await FlyBetween(
+                cameraTransform,
+                secondView.pos,
+                secondView.rot,
+                startingPosition,
+                startingRotation
+            );
+        }
+        finally
+        {
+            _portalInfoShown = true;
+            _playerController.CameraFollow.enabled = true;
+            cameraTransform.position = startingPosition;
+            cameraTransform.rotation = startingRotation;
+        }
+        
+    }
 
     public void RestartGeneration()
     {
@@ -323,6 +405,12 @@ public class ProgressionManager : MonoBehaviour
                 enemyMinSpawnTime *= enemyMinSpawnTimeMultiplier;
                 enemyMaxSpawnTime *= enemyMaxSpawnTimeMultiplier;
                 enemyMaxSpawnTime = Mathf.Max(enemyMaxSpawnTime, enemyMinSpawnTime + 0.5f);
+
+                if (level.Portals.Any(pair => pair.Value.Count > 0) && !_portalInfoShown)
+                {
+                    updateText.text += "\n\nPortals are appearing! Use them to travel around the ship!";
+                    await WaitForUnscaledTime(Time.unscaledTime + 4f);
+                }
             }
             else
             {
@@ -334,6 +422,9 @@ public class ProgressionManager : MonoBehaviour
             await WaitForFade(_fadeInHash);
             fadeAnimator.gameObject.SetActive(false);
             needsFadeOut = true;
+            
+            if (level != null && level.Portals.Any(pair => pair.Value.Count > 0) && !_portalInfoShown)
+                await DoPortalFlythrough();
         }
         catch (Exception e)
         {

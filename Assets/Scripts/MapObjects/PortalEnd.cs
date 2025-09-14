@@ -12,11 +12,21 @@ namespace MapObjects
         /// </summary>
         public uint priority;
 
+        public UnityEvent<Vector2, Quaternion> portalActivated;
+        
         private Vector2? _spawnPoint;
-        
+        private Quaternion? _spawnOrientation;
+
         private AudioSource _audioSource;
+
+        private Collider _collider;
+
+        private GameObject _visualPortal;
+        private Pulser _pulser;
         
-        private Vector2 SpawnPoint
+        private GameObject _glower;
+
+        public Vector2 SpawnPoint
         {
             get
             {
@@ -29,10 +39,8 @@ namespace MapObjects
                 return _spawnPoint.Value;
             }
         }
-        
-        private Quaternion? _spawnOrientation;
-        
-        private Quaternion SpawnOrientation
+
+        public Quaternion SpawnOrientation
         {
             get
             {
@@ -45,15 +53,9 @@ namespace MapObjects
                 return _spawnOrientation.Value;
             }
         }
-
-        public UnityEvent<Vector2, Quaternion> portalActivated;
-
-        private PortalEnd _destination;
-
-        private Collider _collider;
-        private GameObject _visualPortal;
-        private Pulser _pulser;        
         
+        public PortalEnd Destination { get; private set; }
+
         private void Awake()
         {
             portalActivated ??= new UnityEvent<Vector2, Quaternion>();
@@ -63,32 +65,34 @@ namespace MapObjects
             _visualPortal.SetActive(false);
             _audioSource = GetComponent<AudioSource>();
             _pulser = _visualPortal.GetComponent<Pulser>();
+            _glower = GetComponentInChildren<Light>().gameObject;
+            _glower.SetActive(false);
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.CompareTag("Player") || !_destination) return;
+            if (!other.CompareTag("Player") || !Destination) return;
             _audioSource.Play();
-            _destination._audioSource.Play();
-            portalActivated.Invoke(_destination.SpawnPoint, _destination.SpawnOrientation);
+            Destination._audioSource.Play();
+            portalActivated.Invoke(Destination.SpawnPoint, Destination.SpawnOrientation);
         }
         
-        public bool HasDestinationPortal => _destination;
+        public bool HasDestinationPortal => Destination != null;
 
         private void SetDestinationPortal(PortalEnd other)
         {
 #if UNITY_EDITOR
             portalActivated ??= new UnityEvent<Vector2, Quaternion>();
             _collider ??= GetComponent<Collider>();
-            _collider.enabled = false;
             _visualPortal ??= GetComponentInChildren<MeshRenderer>().gameObject;
-            _visualPortal.SetActive(false);
             _audioSource ??= GetComponent<AudioSource>();
             _pulser = _visualPortal.GetComponent<Pulser>();
+            _glower ??= GetComponentInChildren<Light>().gameObject;
 #endif
-            _destination = other;
+            Destination = other;
             _collider.enabled = true;
             _visualPortal.SetActive(true);
+            _glower.SetActive(true);
         }
 
         public void ConnectTo(PortalEnd other)

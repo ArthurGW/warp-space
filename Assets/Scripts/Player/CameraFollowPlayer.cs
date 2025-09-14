@@ -20,6 +20,8 @@ namespace Player
         public float maxAngle = 89f;  // Not 90 as then the y-rotation is undefined
         
         public bool MovementEnabled { get; set; }
+        
+        public Transform CameraTransform => _mainCameraTransform;
 
         public void CopyParams(CameraFollowPlayer other)
         {
