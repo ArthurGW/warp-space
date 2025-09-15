@@ -432,13 +432,7 @@ public class ProgressionManager : MonoBehaviour
                 _mapController.SetEnemyCharacteristics(
                     enemySpeed, enemyAccel, enemyAngularSpeed, enemyMinSpawnTime, enemyMaxSpawnTime
                 );
-                enemySpeed *= enemySpeedMultiplier;
-                enemyAccel *= enemyAccelMultiplier;
-                enemyAngularSpeed *= enemyAngularSpeedMultiplier;
-                enemyMinSpawnTime *= enemyMinSpawnTimeMultiplier;
-                enemyMaxSpawnTime *= enemyMaxSpawnTimeMultiplier;
-                enemyMaxSpawnTime = Mathf.Max(enemyMaxSpawnTime, enemyMinSpawnTime + 0.5f);
-
+                
                 if (level.Portals.Any(pair => pair.Value.Count > 0) && !_portalInfoShown)
                 {
                     updateText.text += "\n\nPortals are appearing! Use them to travel around the ship!";
@@ -478,6 +472,16 @@ public class ProgressionManager : MonoBehaviour
     {
         updateText.text = "Warping...";
         numWarpsText.text = $"Warps: {++_numWarps}";
+        
+        // Make the enemies harder
+        enemySpeed *= enemySpeedMultiplier;
+        enemyAccel *= enemyAccelMultiplier;
+        enemyAngularSpeed *= enemyAngularSpeedMultiplier;
+        enemyAngularSpeed = Mathf.Min(enemyAngularSpeed, 360f);
+        enemyMinSpawnTime *= enemyMinSpawnTimeMultiplier;
+        enemyMaxSpawnTime *= enemyMaxSpawnTimeMultiplier;
+        enemyMaxSpawnTime = Mathf.Max(enemyMaxSpawnTime, enemyMinSpawnTime + 0.5f);
+        
         _fxSource.Stop();
         _fxSource.PlayOneShot(warpSound);
         NextLevel();

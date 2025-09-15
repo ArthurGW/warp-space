@@ -1,9 +1,9 @@
-﻿using System.Linq;
+﻿using System;
 using Layout;
 using LevelGenerator;
 using MapObjects;
 using UnityEngine;
-using UnityEngine.AI;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace Enemy.States
@@ -21,6 +21,7 @@ namespace Enemy.States
         public PatrolState(EnemyController enemy, Transform player) : base(enemy, player)
         {
             _gameMapController = Object.FindAnyObjectByType<GameMapController>();
+            _patrolPoints = Array.Empty<Vector3>();
         }
         
         protected override void Enter()
