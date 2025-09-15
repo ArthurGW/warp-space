@@ -228,7 +228,8 @@ public class ProgressionManager : MonoBehaviour
         Quaternion startRot,
         Vector3 endPos,
         Quaternion endRot,
-        float speedMultiplier)
+        float speedMultiplier,
+        bool pauseAtEnd)
     {
         var phase = Mathf.PI;
         while (phase <= Mathf.PI * 2f)
@@ -239,7 +240,8 @@ public class ProgressionManager : MonoBehaviour
             cameraTransform.rotation = Quaternion.Slerp(startRot, endRot, amount);
             phase += Time.unscaledDeltaTime * speedMultiplier;
         }
-        await WaitForUnscaledTime(Time.unscaledTime + 1);
+        if (pauseAtEnd)
+            await WaitForUnscaledTime(Time.unscaledTime + 1f / speedMultiplier);  // Pause at the end point
     }
 
     private static (Vector3 pos, Quaternion rot) GetPortalView(PortalEnd portal, float offset)
@@ -279,7 +281,8 @@ public class ProgressionManager : MonoBehaviour
                     destinations[i].rot,
                     destinations[i + 1].pos,
                     destinations[i + 1].rot,
-                    i == destinations.Count - 2 ? 2f : 1f
+                    i == destinations.Count - 2 ? 2f : 1f,  // Fly back to the start at double speed
+                    i == destinations.Count - 2  // Don't pause at the final stop
                 );
             }
         }
@@ -367,8 +370,8 @@ public class ProgressionManager : MonoBehaviour
                 
                 var paramTuple = (
                     numLevels: _levelsPerGeneration,
-                    width: (uint)Random.Range(14, 18),
-                    height: (uint)Random.Range(7, 8) * 2,
+                    width: (uint)Random.Range(14, 21),
+                    height: (uint)Random.Range(7, 9) * 2,
                     numBreaches,
                     numPortals,
                     levelSeed: _levelSeed++
