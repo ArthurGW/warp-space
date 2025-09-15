@@ -1,20 +1,19 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace MapObjects
 {
-    [RequireComponent(typeof(BoxCollider))]
+    [RequireComponent(typeof(SphereCollider))]
     public class WarpController : MonoBehaviour
     {
-        private BoxCollider _switchDetector;
+        private SphereCollider _switchDetector;
         
         public UnityEvent onWarp;
 
         private void Awake()
         {
             onWarp ??= new UnityEvent();
-            _switchDetector = GetComponent<BoxCollider>();
+            _switchDetector = GetComponent<SphereCollider>();
         }
 
         private void OnTriggerEnter(Collider other)
