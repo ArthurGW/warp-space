@@ -1,0 +1,31 @@
+fileFormatVersion: 2
+guid: b878334bbc55e4e94abc0354bc2f2838
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183649
+  packageName: Shapeforms Audio Free Sound Effects
+  packageVersion: 1.1
+  assetPath: Assets/Shapeforms Audio Free Sound Effects/Sci Fi Weapons Cyberpunk
+    Arsenal Preview/AUDIO/BEEP_Targeting Loop_06.wav
+  uploadId: 426875
+AudioImporter:
+  externalObjects: {}
+  serializedVersion: 8
+  defaultSettings:
+    serializedVersion: 2
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 44100
+    compressionFormat: 1
+    quality: 1
+    conversionMode: 0
+    preloadAudioData: 1
+  platformSettingOverrides: {}
+  forceToMono: 1
+  normalize: 1
+  loadInBackground: 0
+  ambisonic: 0
+  3D: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

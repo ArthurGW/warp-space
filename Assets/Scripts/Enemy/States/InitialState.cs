@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.AI;
 
 namespace Enemy.States
 {
@@ -10,19 +9,19 @@ namespace Enemy.States
     {
         private const uint InitialMoveDist = 20u;
         
-        public InitialState(Transform enemy, NavMeshAgent enemyAgent, Transform player) : base(enemy, enemyAgent, player)
+        public InitialState(EnemyController enemy, Transform player) : base(enemy, player)
         {
         }
 
         protected override void Enter()
         {
-            EnemyAgent.SetDestination(Enemy.position + Enemy.forward * InitialMoveDist);
+            EnemyAgent.SetDestination(EnemyTransform.position + EnemyTransform.forward * InitialMoveDist);
         }
 
         protected override EnemyState DoIteration()
         {
             return IsAtDestination
-                ? new PatrolState(Enemy, EnemyAgent, Player)
+                ? new PatrolState(Enemy, PlayerTransform)
                 : null;
         }
         

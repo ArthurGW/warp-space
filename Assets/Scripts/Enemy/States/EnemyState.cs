@@ -7,9 +7,10 @@ namespace Enemy.States
     // Based on https://learn.unity.com/course/artificial-intelligence-for-beginners/unit/finite-state-machines-1
     public abstract class EnemyState
     {
-        protected readonly Transform Enemy;
+        protected readonly EnemyController Enemy;
+        protected readonly Transform EnemyTransform;
         protected readonly NavMeshAgent EnemyAgent;
-        protected readonly Transform Player;
+        protected readonly Transform PlayerTransform;
 
         private EnemyState _nextState;
 
@@ -33,6 +34,10 @@ namespace Enemy.States
             _subState = SubState.Exiting;
         }
 
+        /// <summary>
+        /// The main external entry point for the state, should be called each frame
+        /// </summary>
+        /// <returns>A new state to change to, or null to stay in the same state</returns>
         public EnemyState Update()
         {
             switch (_subState)
@@ -59,17 +64,26 @@ namespace Enemy.States
             return null;
         }
 
-        protected EnemyState(Transform enemy, NavMeshAgent enemyAgent, Transform player)
+        public virtual void OnTriggerEnter(Collider other)
+        {
+        }
+
+        public virtual void OnTriggerStay(Collider other)
+        {
+        }
+
+        protected EnemyState(EnemyController enemy, Transform playerTransform)
         {
             _nextState = null;
             _subState = SubState.Entering;
             
             // Detect everything except other enemies
             _detectionMask = ~LayerMask.GetMask("Enemy");
-
+            
             Enemy = enemy;
-            EnemyAgent = enemyAgent;
-            Player = player;
+            EnemyTransform = enemy.transform;
+            EnemyAgent = enemy.GetComponent<NavMeshAgent>();
+            PlayerTransform = playerTransform;
         }
         
         protected bool IsAtDestination => !EnemyAgent.pathPending && EnemyAgent.hasPath
@@ -78,7 +92,7 @@ namespace Enemy.States
         protected int FindClosestPoint(Vector3[] points)
         {
             return points
-                .Select((pt, ind) => (Vector3.Distance(pt, Enemy.position), ind))
+                .Select((pt, ind) => (Vector3.Distance(pt, EnemyTransform.position), ind))
                 .Aggregate(((float dist, int ind) first, (float dist, int ind) second) => first.dist <= second.dist ? first : second
                 ).Item2;
         }
@@ -87,12 +101,19 @@ namespace Enemy.States
         {
             get
             {
-                var directionToPlayer = (Player.position - Enemy.position).normalized;
-                if (!Physics.Raycast(
-                        Enemy.position, directionToPlayer, out var hit, SensorRange, _detectionMask, QueryTriggerInteraction.Ignore)
+                var directionToPlayer = (PlayerTransform.position - EnemyTransform.position).normalized;
+                if (
+                    !Physics.Raycast(
+                        EnemyTransform.position,
+                        directionToPlayer,
+                        out var hit,
+                        SensorRange,
+                        _detectionMask,
+                        QueryTriggerInteraction.Ignore
+                    )
                 )
                     return false;
-                return hit.transform == Player;
+                return hit.transform == PlayerTransform;
             }
         }
         

@@ -20,8 +20,8 @@ namespace Enemy.States
 
         private readonly bool _chooseClosestRoom;
         
-        public ChangeRoomState(Transform enemy, NavMeshAgent enemyAgent, Transform player, bool chooseClosestRoom) 
-            : base(enemy, enemyAgent, player)
+        public ChangeRoomState(EnemyController enemy, Transform player, bool chooseClosestRoom) 
+            : base(enemy, player)
         {
             _gameMapController = Object.FindAnyObjectByType<GameMapController>();
             _chooseClosestRoom = chooseClosestRoom;
@@ -33,7 +33,7 @@ namespace Enemy.States
             var closestRoomId = ulong.MaxValue;
             foreach (var rid in choices)
             {
-                var sqrDist = _gameMapController.RoomsById[rid].ToWorldBounds().SqrDistance(Enemy.position);
+                var sqrDist = _gameMapController.RoomsById[rid].ToWorldBounds().SqrDistance(EnemyTransform.position);
                 if (!(sqrDist < closestDist)) continue;
                             
                 closestDist  = sqrDist;
@@ -46,8 +46,8 @@ namespace Enemy.States
         protected override void Enter()
         {
             // Move to a room connected to the current location
-            var roomData = RoomController.GetRoomDataForPosition(Enemy.position) ??
-                           CorridorController.GetRoomDataForPosition(Enemy.position);
+            var roomData = RoomController.GetRoomDataForPosition(EnemyTransform.position) ??
+                           CorridorController.GetRoomDataForPosition(EnemyTransform.position);
             if (!roomData.HasValue)
             {
                 Debug.LogError("ChangeRoomState couldn't find room data");
@@ -75,15 +75,15 @@ namespace Enemy.States
 
         protected override EnemyState DoIteration()
         {
-            if (CanDetectPlayer) return new PursueState(Enemy, EnemyAgent, Player);
+            if (CanDetectPlayer) return new PursueState(Enemy, PlayerTransform);
             
             if (!_foundDestination)
             {
                 if (_startRoom.Type == RoomType.Room)
-                    return new PatrolState(Enemy, EnemyAgent, Player);
+                    return new PatrolState(Enemy, PlayerTransform);
             }   
             else if (IsAtDestination)
-                return new PatrolState(Enemy, EnemyAgent, Player);
+                return new PatrolState(Enemy, PlayerTransform);
             return null;
         }
 

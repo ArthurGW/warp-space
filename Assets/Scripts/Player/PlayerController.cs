@@ -136,34 +136,38 @@ namespace Player
         {
             if (Health > 0u && Health <= damage)
             {
-                // Dead! Player turns into an enemy
                 Health = 0u;
-                
-                var enemy = FindAnyObjectByType<EnemyController>();
-
-                CameraFollow.enabled = false;
-                _listener.enabled = false;
-                EnableMovement = false;
-                var previousPos = transform.position;
-                var previousRotation = transform.rotation;
-                transform.Translate(1000f, 0f, 0f);  // Translate far offscreen to hide from enemy tracking
-
-                // Make a fake player-turned-to-enemy for the camera to follow
-                var fakePlayer = Instantiate(enemy, previousPos, previousRotation, null);
-                fakePlayer.name = "FakePlayer";
-                fakePlayer.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
-                fakePlayer.GetComponent<NavMeshAgent>().SetDestination(previousPos);
-                fakePlayer.SetState(new PursueState(fakePlayer.transform, fakePlayer.GetComponent<NavMeshAgent>(), transform));
-                fakePlayer.AddComponent<AudioListener>();
-                var newFollow = fakePlayer.AddComponent<CameraFollowPlayer>();
-                newFollow.CopyParams(CameraFollow);
-                newFollow.MovementEnabled = true;
-                
-                Cursor.lockState = CursorLockMode.None;
-                playerDeath.Invoke();
+                Die();
             }
 			else
 				Health -= damage;
+        }
+
+        private void Die()
+        {
+            // Dead! Player turns into an enemy
+            var enemy = FindAnyObjectByType<EnemyController>();
+
+            CameraFollow.enabled = false;
+            _listener.enabled = false;
+            EnableMovement = false;
+            var previousPos = transform.position;
+            var previousRotation = transform.rotation;
+            transform.Translate(1000f, 0f, 0f);  // Translate far offscreen to hide from enemy tracking
+
+            // Make a fake player-turned-to-enemy for the camera to follow
+            var fakePlayer = Instantiate(enemy, previousPos, previousRotation, null);
+            fakePlayer.name = "FakePlayer";
+            fakePlayer.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            fakePlayer.GetComponent<NavMeshAgent>().SetDestination(previousPos);
+            fakePlayer.SetState(new PursueState(fakePlayer, transform));
+            fakePlayer.AddComponent<AudioListener>();
+            var newFollow = fakePlayer.AddComponent<CameraFollowPlayer>();
+            newFollow.CopyParams(CameraFollow);
+            newFollow.MovementEnabled = true;
+                
+            Cursor.lockState = CursorLockMode.None;
+            playerDeath.Invoke();
         }
 
         private void OnParticleCollision(GameObject other)

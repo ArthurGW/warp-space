@@ -18,14 +18,14 @@ namespace Enemy.States
         private RoomData _patrolRoom;
         private readonly GameMapController _gameMapController;
         
-        public PatrolState(Transform enemy, NavMeshAgent enemyAgent, Transform player) : base(enemy, enemyAgent, player)
+        public PatrolState(EnemyController enemy, Transform player) : base(enemy, player)
         {
             _gameMapController = Object.FindAnyObjectByType<GameMapController>();
         }
         
         protected override void Enter()
         {
-            var roomData = RoomController.GetRoomDataForPosition(Enemy.position);
+            var roomData = RoomController.GetRoomDataForPosition(EnemyTransform.position);
             if (roomData is not { Type: RoomType.Room })
             {
                 Debug.LogWarning("Patrol state should be in a room");
@@ -73,16 +73,16 @@ namespace Enemy.States
 
         protected override EnemyState DoIteration()
         {
-            if (CanDetectPlayer) return new PursueState(Enemy, EnemyAgent, Player);
+            if (CanDetectPlayer) return new PursueState(Enemy, PlayerTransform);
 
             // If we failed to set a route, move to another room
-            if (_patrolPoints.Length == 0) return new ChangeRoomState(Enemy, EnemyAgent, Player, true);
+            if (_patrolPoints.Length == 0) return new ChangeRoomState(Enemy, PlayerTransform, true);
             
             if (!IsAtDestination) return null;
             
             if (_gameMapController.GetConnectedRooms(_patrolRoom.Id).Count > 0 && Random.value < 0.25f)
                 // Change to another random connected room
-                return new ChangeRoomState(Enemy, EnemyAgent, Player, false);
+                return new ChangeRoomState(Enemy, PlayerTransform, false);
                 
             // Patrol next point
             UpdateDestination();

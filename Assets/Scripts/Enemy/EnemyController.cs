@@ -10,7 +10,8 @@ namespace Enemy
         private Transform _player;
 
         private AudioSource _audioSource;
-        [SerializeField] private AudioClip shockSound;
+        public AudioClip shockSound;
+        public AudioClip lockOnSound;
 
         private ParticleSystem _particleSystem;
 
@@ -24,7 +25,7 @@ namespace Enemy
             _player = GameObject.FindGameObjectWithTag("Player").transform;
             _audioSource = GetComponent<AudioSource>();
             _particleSystem = GetComponent<ParticleSystem>();
-            _state = new InitialState(transform, GetComponent<NavMeshAgent>(), _player);
+            _state = new InitialState(this, _player);
         }
 
         public void SetState(EnemyState state)
@@ -37,29 +38,16 @@ namespace Enemy
            var newState = _state.Update();
            if (newState != null)
                _state = newState;
-           if (_coolDown > 0f)
-               _coolDown -= Time.deltaTime;
         }
-
-        private void Fire()
-        {
-            _audioSource.PlayOneShot(shockSound);
-            _particleSystem.Play();
-            _coolDown = coolDownTime;
-        }
-
+        
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject != _player.gameObject) return;
-
-            Fire();
+            _state.OnTriggerEnter(other);
         }
 
         private void OnTriggerStay(Collider other)
         {
-            if (_coolDown > 0f || other.gameObject != _player.gameObject) return;
-            
-            Fire();
+            _state.OnTriggerStay(other);
         }
     }
 }
