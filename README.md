@@ -11,6 +11,8 @@ This repository features a binary release of the version of the project submitte
 
 This is in the form of a 7zip archive. Extract the archive and run `warp-space.exe`.
 
+This only runs on Microsoft Windows.
+
 ## Project Structure
 
 ### LevelGenerator
@@ -21,6 +23,9 @@ level designs, before parsing the returned logical symbols into an abstract repr
 
 This package also features a C# API, auto-generated using [CppSharp](https://github.com/mono/CppSharp) from the C++ 
 headers.
+
+Finally, it features python code used during prototyping and evaluating the pure-ASP generator (i.e. bypassing the C++
+and C# APIs). This code uses an executable version of clingo, rather than its API.
 
 ### Other Folders
 
