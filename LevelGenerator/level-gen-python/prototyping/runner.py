@@ -22,8 +22,8 @@ args = (
     f" {num_models} -c width={width} -c height={height} -c num_breaches={num_breaches}"
     f" -c min_rooms={min_rooms} -c max_rooms={max_rooms} -c num_portals={num_portals}"
     f" -t 1 --rand-freq=1.0 --seed={seed} --configuration=jumpy {piclasp_args}"
-    f" {os.path.abspath(os.path.join(this_dir, '..', 'programs', 'ship.lp'))}"
-    f" {os.path.abspath(os.path.join(this_dir, '..', 'programs', 'connections.lp'))}"
+    f" {os.path.abspath(os.path.join(this_dir, '..', 'asp', 'ship.lp'))}"
+    f" {os.path.abspath(os.path.join(this_dir, '..', 'asp', 'portal.lp'))}"
 )
 
 start = time()

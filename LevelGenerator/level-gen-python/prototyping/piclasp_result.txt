@@ -1,3 +1,9 @@
+# This is the fastest evaluation config found by running piclasp, running over three randomly-selected grounded problem
+# instances, with an 8-hour window to generate the config. Command used:
+#
+# ../piclasp.py -c 3600 -I ../instances/ -m 16000 -v -P ../pcs/clasp-3.2-option-config.txt --claspre ../claspre/claspre-x68_64-linux/claspre -b 28800
+
+# Result:
 --backprop --learn-explicit --no-gamma --eq=0 --sat-prepro=0 --trans-ext=integ --del-cfl=F,55 --heuristic=Vsids,94
 --restarts=no --strengthen=recursive,0 --del-glue=4,1 --del-grow=1.9111,94.6281 --del-init=30.3279,19,12774
 --deletion=ipHeap,30,1 --lookahead=no --init-moms --local-restarts --contraction=no --del-estimate=2

@@ -1166,10 +1166,6 @@ Process finished with exit code 0
 
 """
 
-rawparacomp = r"""
-
-"""
-
 # Parsed
 resstan = """
 Answer: 1 (Time: 38.690s)   jumpy
