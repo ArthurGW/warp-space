@@ -64,8 +64,8 @@ for params in itertools.product(
             f' {params[1:]}'
             " --time-limit=240"  # seconds
             f" --rand-freq=1.0 --seed={seed}"
-            f" {os.path.abspath(os.path.join(this_dir, '..', 'asp', f'ship{params[0]}.lp'))}"
-            f" {os.path.abspath(os.path.join(this_dir, '..', 'asp', f'portal{params[0]}.lp'))}"
+            f" {os.path.abspath(os.path.join(this_dir, 'asp', f'ship{params[0]}.lp'))}"
+            f" {os.path.abspath(os.path.join(this_dir, 'asp', f'portal{params[0]}.lp'))}"
         )
 
         print(f"PARAMS: {params}")

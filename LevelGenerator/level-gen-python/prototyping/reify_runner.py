@@ -22,7 +22,7 @@ args = (
     f" -c width={width} -c height={height}"
     f" -c min_rooms={min_rooms} -c max_rooms={max_rooms}"
     " --pre --rewrite-minimize"
-    f" {os.path.abspath(os.path.join(this_dir, '..', 'asp', f'ship_with_level_concepts.lp'))}"
+    f" {os.path.abspath(os.path.join(this_dir, 'asp', f'ship_with_level_concepts.lp'))}"
 )
 ret = subprocess.run(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 

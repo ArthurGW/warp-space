@@ -58,8 +58,8 @@ for param in (
             f" {param}"
             " --time-limit=240"  # seconds
             f" --rand-freq=1.0 --seed={seed}"
-            f" {os.path.abspath(os.path.join(this_dir, '..', 'asp', f'ship.lp'))}"
-            f" {os.path.abspath(os.path.join(this_dir, '..', 'asp', f'portal.lp'))}"
+            f" {os.path.abspath(os.path.join(this_dir, 'asp', f'ship.lp'))}"
+            f" {os.path.abspath(os.path.join(this_dir, 'asp', f'portal.lp'))}"
         )
 
         print(f"PARAM: {param}")
