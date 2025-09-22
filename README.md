@@ -9,7 +9,7 @@ Submitted for the module "CM3070 - Final Project" for the BSc Computer Science d
 This repository features a binary release of the version of the project submitted for CM3070, see
 [releases](https://github.com/ArthurGW/warp-space/releases).
 
-This is in the form of a 7zip archive. Extract the archive and run `warp-space.exe`.
+This is in the form of a zip archive. Extract the archive and run `warp-space.exe`.
 
 This only runs on Microsoft Windows.
 
