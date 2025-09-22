@@ -74,8 +74,6 @@ PARAM:  --opt-stop=5 CONFIG: handy
 Answer: 1 (Time: 61.649s) Optimization: 8
 
 PARAM:  --opt-stop=5 CONFIG: many
-Solving took 103.78137278556824s
-
 Answer: 1 (Time: 102.404s) Optimization: 5
 
 

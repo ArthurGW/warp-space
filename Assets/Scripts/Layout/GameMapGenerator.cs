@@ -88,7 +88,7 @@ namespace Layout
 
         public bool CheckCancel()
         {
-            return destroyCancellationToken.IsCancellationRequested ||  _disableTokenSource == null || _disableTokenSource.Token.IsCancellationRequested;
+            return destroyCancellationToken.IsCancellationRequested || _disableTokenSource == null || _disableTokenSource.Token.IsCancellationRequested;
         }
 
         public async Awaitable<MapResult> GenerateNewLevel()

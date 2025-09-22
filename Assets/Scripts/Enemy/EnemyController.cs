@@ -9,22 +9,16 @@ namespace Enemy
     {
         private Transform _player;
 
-        private AudioSource _audioSource;
         public AudioClip shockSound;
         public AudioClip lockOnSound;
-
-        private ParticleSystem _particleSystem;
 
         private EnemyState _state;
 
         public float coolDownTime = 3f;
-        private float _coolDown;
 
         private void Awake()
         {
             _player = GameObject.FindGameObjectWithTag("Player").transform;
-            _audioSource = GetComponent<AudioSource>();
-            _particleSystem = GetComponent<ParticleSystem>();
             _state = new InitialState(this, _player);
         }
 

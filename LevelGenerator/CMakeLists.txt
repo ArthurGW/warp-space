@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(LevelGenerator VERSION 0.0.2)
+project(LevelGenerator VERSION 0.1.0)
 
 cmake_policy(SET CMP0077 NEW)  # For this project
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)  # For subprojects

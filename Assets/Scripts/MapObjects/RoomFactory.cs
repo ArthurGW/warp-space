@@ -116,7 +116,7 @@ namespace MapObjects
 
             foreach (var portal in allPortalEnds)
             {
-                if (!portal.HasDestinationPortal) Destroy(portal.gameObject);
+                if (!portal.HasDestinationPortal) DestroyGameObject(portal.gameObject);
             }
         }
 

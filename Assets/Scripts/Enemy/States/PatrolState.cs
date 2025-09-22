@@ -49,8 +49,7 @@ namespace Enemy.States
         private Vector3[] FindPatrolRoute()
         {
             // Get a shuffled patrol pattern
-            var points = _patrolRoom.Corners.Clone() as Vector3[];
-            if (points == null) return new Vector3[]{};
+            if (_patrolRoom.Corners.Clone() is not Vector3[] points) return new Vector3[]{};
             
             for (var i = 0; i < points.Length; ++i)
             {

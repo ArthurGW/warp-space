@@ -83,7 +83,7 @@ SCENARIO("level generators can be solved", "[levelgen][solve]")
                 REQUIRE_FALSE(level->get_cost() == std::numeric_limits<int>::max());
             }
 
-            THEN("the best level has the correct count of symbols and and cost")
+            THEN("the best level has the correct count of symbols and cost")
             {
                 LevelGenerator gen{
                         1, 9, 10, 1, 6, 1, 0, 1234

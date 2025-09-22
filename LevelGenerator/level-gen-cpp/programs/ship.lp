@@ -75,6 +75,7 @@ num_breaches {
           not corridor(X3, Y),
           ship(X3, Y+2), ship(X3, Y+1), ship(X3, Y-1), ship(X3, Y-2)
 } num_breaches.
+
 breach_square(X, Y, X, Y, 2, 1; X+1, Y, X, Y, 2, 1)
     :- alien_breach(X, Y, 2, 1, _, _).
 breach_square(X, Y, X, Y, 1, 2; X, Y+1, X, Y, 1, 2)

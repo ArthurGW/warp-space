@@ -4,26 +4,33 @@ import subprocess
 from collections import defaultdict
 from time import time
 
-num_models = 1
-width = 9
-height = 10
-seed = 1234
-min_rooms = 1
-max_rooms = 6
-num_breaches = 1
-num_portals = 0
+num_models = 20
+width = 14
+height = 14
+seed = 735416165
+min_rooms = 3
+max_rooms = 12
+num_breaches = 2
+num_portals = 1
 
-piclasp_args = news = "--backprop --learn-explicit --no-gamma --eq=0 --sat-prepro=0 --trans-ext=integ --del-cfl=F,55 --heuristic=Domain,94 --restarts=no --strengthen=recursive,all --del-glue=4,1 --del-grow=1.9111,94.6281 --del-init=30.3279,19,12774 --deletion=ipHeap,30,lbd --lookahead=no --init-moms --local-restarts --contraction=no --del-estimate=2 --del-max=1803231815 --del-on-restart=4 --init-watches=first --loops=shared --otfs=1 --partial-check=30 --reverse-arcs=2 --save-progress=115 --score-other=no --score-res=multiset --sign-def=pos --update-lbd=0"
+piclasp_args = (
+    "--backprop --learn-explicit --no-gamma --eq=0 --sat-prepro=0 --trans-ext=integ --del-cfl=F,55"
+    " --heuristic=Domain,94 --restarts=no --strengthen=recursive,all --del-glue=4,1 --del-grow=1.9111,94.6281"
+    " --del-init=30.3279,19,12774 --deletion=ipHeap,30,lbd --lookahead=no --init-moms --local-restarts --contraction=no"
+    " --del-estimate=2 --del-max=1803231815 --del-on-restart=4 --init-watches=first --loops=shared --otfs=1"
+    " --partial-check=30 --reverse-arcs=2 --save-progress=115 --score-other=no --score-res=multiset --sign-def=pos"
+    " --update-lbd=0"
+)
 
 this_dir = os.path.dirname(__file__)
 
 args = (
-    f"{os.path.join(this_dir, 'clingo.exe')}"
+    f"{os.path.join(this_dir, '..', 'clingo', 'clingo.exe')}"
     f" {num_models} -c width={width} -c height={height} -c num_breaches={num_breaches}"
     f" -c min_rooms={min_rooms} -c max_rooms={max_rooms} -c num_portals={num_portals}"
-    f" -t 1 --rand-freq=1.0 --seed={seed} --configuration=jumpy {piclasp_args}"
-    f" {os.path.abspath(os.path.join(this_dir, 'asp', 'ship.lp'))}"
-    f" {os.path.abspath(os.path.join(this_dir, 'asp', 'portal.lp'))}"
+    f" -t 4,split --rand-freq=1.0 --seed={seed} --configuration=jumpy {piclasp_args}"
+    f" {os.path.abspath(os.path.join(this_dir, '..', '..', 'level-gen-cpp', 'programs', 'ship.lp'))}"
+    f" {os.path.abspath(os.path.join(this_dir, '..', '..', 'level-gen-cpp', 'programs', 'connections.lp'))}"
 )
 
 start = time()
@@ -38,7 +45,7 @@ if ('SATISFIABLE' not in data and 'OPTIMUM FOUND' not in data) or 'UNSATISFIABLE
         f'failed to generate level:{f'\n{ret.stderr}' if ret.stderr else ''}{f'\n{data}' if data else ''}')
 
 print(ret.stderr)
-print(data)
+# print(data)
 
 rid = 1
 bid = 1
@@ -73,7 +80,9 @@ def yield_ints(pattern, inp):
             yield int(mch),
 
 
+print("Optimisation levels:")
 print([opt[0] for opt in yield_ints(re.compile(r'Optimization: (-?\d+\s*)*'), data)])
+print()
 
 data = data[data.rfind(f'Answer: '):]
 
@@ -135,9 +144,12 @@ for xy in yield_ints(corridor_square, data):
 for row in ship:
     print('|'.join(row))
     print('-' * (5 * len(row) + len(row) - 1))
+print()
 
+print("Connections:")
 for r, adj in adjacency.items():
     print(f'{room_name(r)}: {[f'{room_name(rr)}{" (PORTAL)" if is_portal else ""}' for rr, is_portal in adj]}')
+print()
 
 for rm in yield_ints(start_room, data):  # Should be only one
     print(f'Start Room: {room_name(rm)}')

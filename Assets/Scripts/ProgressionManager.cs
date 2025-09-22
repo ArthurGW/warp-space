@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ using Player;
 using TMPro;
 using static MapObjects.ObjectUtils;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -60,8 +62,8 @@ public class ProgressionManager : MonoBehaviour
     public uint seed;
     public bool resetSeedOnPlay = true;
 
-    public uint levelsFirstGeneration = 3u;
-    public uint maxLevelsPerGeneration = 5u;
+    public uint levelsFirstGeneration = 10u;
+    public uint maxLevelsPerGeneration = 40u;
     
     public uint numSolverThreads = 2u;
     

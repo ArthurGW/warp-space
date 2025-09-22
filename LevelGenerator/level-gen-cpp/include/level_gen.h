@@ -148,8 +148,8 @@ class LEVEL_GEN_API Level {
     public:
         // Note - to avoid exposing clingo in the header here, we use a vector of clingo's numeric symbol representation,
         // rather than a more specific type
-
         CS_IGNORE Level(unsigned width, unsigned height, int64_t cost, const std::vector<uint64_t>& data);
+
         CS_IGNORE Level(Level && other) noexcept;
         CS_IGNORE Level& operator=(Level && other) = delete;
         CS_IGNORE Level(const Level& other) = delete;

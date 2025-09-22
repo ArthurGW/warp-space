@@ -1,4 +1,4 @@
-% ADDED FULL ROOM SIZE RECORD ON CONNECTED
+% ADDED FULL ROOM SIZE ON CONNECTED COST
 
 %* Specification for the connections in the ship *%
 
